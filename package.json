@@ -1,0 +1,20 @@
+{
+  "name": "zoid-boy",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "MIT",
+  "devDependencies": {
+    "@types/node": "^20.9.4",
+    "vite-node": "^0.34.6"
+  },
+  "dependencies": {
+    "ts-pattern": "^5.0.5",
+    "uint1array": "^1.2.0"
+  }
+}
