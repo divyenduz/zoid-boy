@@ -43,12 +43,12 @@ export class CPU {
 
   execute(instruction: Uint8Array) {
     match(instruction[0])
-      .with(0x0, () => {
-        throw new Error("Instruction not implemented");
+      .with(0x00, () => {
+        throw new Error("Instruction 'NOP', '00' not implemented");
       })
 
       // LD BC,d16
-      .with(0x1, () => {
+      .with(0x01, () => {
         const d16 = this.mmu.readWord(this.pc);
         this.bc = d16;
 
@@ -56,27 +56,27 @@ export class CPU {
         return 12;
       })
       // LD (BC),A
-      .with(0x2, () => {
+      .with(0x02, () => {
         this.mmu.writeByte(this.mmu.readWord(this.bc), this.a);
 
         this.pc[0] += 1;
         return 8;
       })
 
-      .with(0x3, () => {
-        throw new Error("Instruction not implemented");
+      .with(0x03, () => {
+        throw new Error("Instruction 'INC BC', '03' not implemented");
       })
 
-      .with(0x4, () => {
-        throw new Error("Instruction not implemented");
+      .with(0x04, () => {
+        throw new Error("Instruction 'INC B', '04' not implemented");
       })
 
-      .with(0x5, () => {
-        throw new Error("Instruction not implemented");
+      .with(0x05, () => {
+        throw new Error("Instruction 'DEC B', '05' not implemented");
       })
 
       // LD B,d8
-      .with(0x6, () => {
+      .with(0x06, () => {
         const d8 = this.mmu.readByte(this.pc);
         this.b = d8;
 
@@ -84,12 +84,12 @@ export class CPU {
         return 8;
       })
 
-      .with(0x7, () => {
-        throw new Error("Instruction not implemented");
+      .with(0x07, () => {
+        throw new Error("Instruction 'RLCA', '07' not implemented");
       })
 
       // LD (a16),SP
-      .with(0x8, () => {
+      .with(0x08, () => {
         const a16 = this.mmu.readWord(this.sp);
         this.mmu.writeWord(a16, this.sp);
 
@@ -97,32 +97,32 @@ export class CPU {
         return 20;
       })
 
-      .with(0x9, () => {
-        throw new Error("Instruction not implemented");
+      .with(0x09, () => {
+        throw new Error("Instruction 'ADD HL,BC', '09' not implemented");
       })
 
       // LD A,(BC)
-      .with(0xa, () => {
+      .with(0x0a, () => {
         this.a = this.mmu.readByte(this.bc);
 
         this.pc[0] += 1;
         return 8;
       })
 
-      .with(0xb, () => {
-        throw new Error("Instruction not implemented");
+      .with(0x0b, () => {
+        throw new Error("Instruction 'DEC BC', '0b' not implemented");
       })
 
-      .with(0xc, () => {
-        throw new Error("Instruction not implemented");
+      .with(0x0c, () => {
+        throw new Error("Instruction 'INC C', '0c' not implemented");
       })
 
-      .with(0xd, () => {
-        throw new Error("Instruction not implemented");
+      .with(0x0d, () => {
+        throw new Error("Instruction 'DEC C', '0d' not implemented");
       })
 
       // LD C,d8
-      .with(0xe, () => {
+      .with(0x0e, () => {
         const d8 = this.mmu.readByte(this.pc);
         this.c = d8;
 
@@ -130,12 +130,12 @@ export class CPU {
         return 8;
       })
 
-      .with(0xf, () => {
-        throw new Error("Instruction not implemented");
+      .with(0x0f, () => {
+        throw new Error("Instruction 'RRCA', '0f' not implemented");
       })
 
       .with(0x10, () => {
-        throw new Error("Instruction not implemented");
+        throw new Error("Instruction 'STOP 0', '10' not implemented");
       })
 
       // LD DE,d16
@@ -155,15 +155,15 @@ export class CPU {
       })
 
       .with(0x13, () => {
-        throw new Error("Instruction not implemented");
+        throw new Error("Instruction 'INC DE', '13' not implemented");
       })
 
       .with(0x14, () => {
-        throw new Error("Instruction not implemented");
+        throw new Error("Instruction 'INC D', '14' not implemented");
       })
 
       .with(0x15, () => {
-        throw new Error("Instruction not implemented");
+        throw new Error("Instruction 'DEC D', '15' not implemented");
       })
 
       // LD D,d8
@@ -176,15 +176,15 @@ export class CPU {
       })
 
       .with(0x17, () => {
-        throw new Error("Instruction not implemented");
+        throw new Error("Instruction 'RLA', '17' not implemented");
       })
 
       .with(0x18, () => {
-        throw new Error("Instruction not implemented");
+        throw new Error("Instruction 'JR r8', '18' not implemented");
       })
 
       .with(0x19, () => {
-        throw new Error("Instruction not implemented");
+        throw new Error("Instruction 'ADD HL,DE', '19' not implemented");
       })
 
       // LD A,(DE)
@@ -196,15 +196,15 @@ export class CPU {
       })
 
       .with(0x1b, () => {
-        throw new Error("Instruction not implemented");
+        throw new Error("Instruction 'DEC DE', '1b' not implemented");
       })
 
       .with(0x1c, () => {
-        throw new Error("Instruction not implemented");
+        throw new Error("Instruction 'INC E', '1c' not implemented");
       })
 
       .with(0x1d, () => {
-        throw new Error("Instruction not implemented");
+        throw new Error("Instruction 'DEC E', '1d' not implemented");
       })
 
       // LD E,d8
@@ -217,11 +217,11 @@ export class CPU {
       })
 
       .with(0x1f, () => {
-        throw new Error("Instruction not implemented");
+        throw new Error("Instruction 'RRA', '1f' not implemented");
       })
 
       .with(0x20, () => {
-        throw new Error("Instruction not implemented");
+        throw new Error("Instruction 'JR NZ,r8', '20' not implemented");
       })
 
       // LD HL,d16
@@ -241,15 +241,15 @@ export class CPU {
       })
 
       .with(0x23, () => {
-        throw new Error("Instruction not implemented");
+        throw new Error("Instruction 'INC HL', '23' not implemented");
       })
 
       .with(0x24, () => {
-        throw new Error("Instruction not implemented");
+        throw new Error("Instruction 'INC H', '24' not implemented");
       })
 
       .with(0x25, () => {
-        throw new Error("Instruction not implemented");
+        throw new Error("Instruction 'DEC H', '25' not implemented");
       })
 
       // LD H,d8
@@ -262,15 +262,15 @@ export class CPU {
       })
 
       .with(0x27, () => {
-        throw new Error("Instruction not implemented");
+        throw new Error("Instruction 'DAA', '27' not implemented");
       })
 
       .with(0x28, () => {
-        throw new Error("Instruction not implemented");
+        throw new Error("Instruction 'JR Z,r8', '28' not implemented");
       })
 
       .with(0x29, () => {
-        throw new Error("Instruction not implemented");
+        throw new Error("Instruction 'ADD HL,HL', '29' not implemented");
       })
 
       // LD A,(HL+)
@@ -282,15 +282,15 @@ export class CPU {
       })
 
       .with(0x2b, () => {
-        throw new Error("Instruction not implemented");
+        throw new Error("Instruction 'DEC HL', '2b' not implemented");
       })
 
       .with(0x2c, () => {
-        throw new Error("Instruction not implemented");
+        throw new Error("Instruction 'INC L', '2c' not implemented");
       })
 
       .with(0x2d, () => {
-        throw new Error("Instruction not implemented");
+        throw new Error("Instruction 'DEC L', '2d' not implemented");
       })
 
       // LD L,d8
@@ -303,11 +303,11 @@ export class CPU {
       })
 
       .with(0x2f, () => {
-        throw new Error("Instruction not implemented");
+        throw new Error("Instruction 'CPL', '2f' not implemented");
       })
 
       .with(0x30, () => {
-        throw new Error("Instruction not implemented");
+        throw new Error("Instruction 'JR NC,r8', '30' not implemented");
       })
 
       // LD SP,d16
@@ -327,15 +327,15 @@ export class CPU {
       })
 
       .with(0x33, () => {
-        throw new Error("Instruction not implemented");
+        throw new Error("Instruction 'INC SP', '33' not implemented");
       })
 
       .with(0x34, () => {
-        throw new Error("Instruction not implemented");
+        throw new Error("Instruction 'INC (HL)', '34' not implemented");
       })
 
       .with(0x35, () => {
-        throw new Error("Instruction not implemented");
+        throw new Error("Instruction 'DEC (HL)', '35' not implemented");
       })
 
       // LD (HL),d8
@@ -348,15 +348,15 @@ export class CPU {
       })
 
       .with(0x37, () => {
-        throw new Error("Instruction not implemented");
+        throw new Error("Instruction 'SCF', '37' not implemented");
       })
 
       .with(0x38, () => {
-        throw new Error("Instruction not implemented");
+        throw new Error("Instruction 'JR C,r8', '38' not implemented");
       })
 
       .with(0x39, () => {
-        throw new Error("Instruction not implemented");
+        throw new Error("Instruction 'ADD HL,SP', '39' not implemented");
       })
 
       // LD A,(HL-)
@@ -368,15 +368,15 @@ export class CPU {
       })
 
       .with(0x3b, () => {
-        throw new Error("Instruction not implemented");
+        throw new Error("Instruction 'DEC SP', '3b' not implemented");
       })
 
       .with(0x3c, () => {
-        throw new Error("Instruction not implemented");
+        throw new Error("Instruction 'INC A', '3c' not implemented");
       })
 
       .with(0x3d, () => {
-        throw new Error("Instruction not implemented");
+        throw new Error("Instruction 'DEC A', '3d' not implemented");
       })
 
       // LD A,d8
@@ -389,7 +389,7 @@ export class CPU {
       })
 
       .with(0x3f, () => {
-        throw new Error("Instruction not implemented");
+        throw new Error("Instruction 'CCF', '3f' not implemented");
       })
 
       // LD B,B
@@ -772,7 +772,7 @@ export class CPU {
       })
 
       .with(0x76, () => {
-        throw new Error("Instruction not implemented");
+        throw new Error("Instruction 'HALT', '76' not implemented");
       })
 
       // LD (HL),A
@@ -840,395 +840,395 @@ export class CPU {
       })
 
       .with(0x80, () => {
-        throw new Error("Instruction not implemented");
+        throw new Error("Instruction 'ADD A,B', '80' not implemented");
       })
 
       .with(0x81, () => {
-        throw new Error("Instruction not implemented");
+        throw new Error("Instruction 'ADD A,C', '81' not implemented");
       })
 
       .with(0x82, () => {
-        throw new Error("Instruction not implemented");
+        throw new Error("Instruction 'ADD A,D', '82' not implemented");
       })
 
       .with(0x83, () => {
-        throw new Error("Instruction not implemented");
+        throw new Error("Instruction 'ADD A,E', '83' not implemented");
       })
 
       .with(0x84, () => {
-        throw new Error("Instruction not implemented");
+        throw new Error("Instruction 'ADD A,H', '84' not implemented");
       })
 
       .with(0x85, () => {
-        throw new Error("Instruction not implemented");
+        throw new Error("Instruction 'ADD A,L', '85' not implemented");
       })
 
       .with(0x86, () => {
-        throw new Error("Instruction not implemented");
+        throw new Error("Instruction 'ADD A,(HL)', '86' not implemented");
       })
 
       .with(0x87, () => {
-        throw new Error("Instruction not implemented");
+        throw new Error("Instruction 'ADD A,A', '87' not implemented");
       })
 
       .with(0x88, () => {
-        throw new Error("Instruction not implemented");
+        throw new Error("Instruction 'ADC A,B', '88' not implemented");
       })
 
       .with(0x89, () => {
-        throw new Error("Instruction not implemented");
+        throw new Error("Instruction 'ADC A,C', '89' not implemented");
       })
 
       .with(0x8a, () => {
-        throw new Error("Instruction not implemented");
+        throw new Error("Instruction 'ADC A,D', '8a' not implemented");
       })
 
       .with(0x8b, () => {
-        throw new Error("Instruction not implemented");
+        throw new Error("Instruction 'ADC A,E', '8b' not implemented");
       })
 
       .with(0x8c, () => {
-        throw new Error("Instruction not implemented");
+        throw new Error("Instruction 'ADC A,H', '8c' not implemented");
       })
 
       .with(0x8d, () => {
-        throw new Error("Instruction not implemented");
+        throw new Error("Instruction 'ADC A,L', '8d' not implemented");
       })
 
       .with(0x8e, () => {
-        throw new Error("Instruction not implemented");
+        throw new Error("Instruction 'ADC A,(HL)', '8e' not implemented");
       })
 
       .with(0x8f, () => {
-        throw new Error("Instruction not implemented");
+        throw new Error("Instruction 'ADC A,A', '8f' not implemented");
       })
 
       .with(0x90, () => {
-        throw new Error("Instruction not implemented");
+        throw new Error("Instruction 'SUB B', '90' not implemented");
       })
 
       .with(0x91, () => {
-        throw new Error("Instruction not implemented");
+        throw new Error("Instruction 'SUB C', '91' not implemented");
       })
 
       .with(0x92, () => {
-        throw new Error("Instruction not implemented");
+        throw new Error("Instruction 'SUB D', '92' not implemented");
       })
 
       .with(0x93, () => {
-        throw new Error("Instruction not implemented");
+        throw new Error("Instruction 'SUB E', '93' not implemented");
       })
 
       .with(0x94, () => {
-        throw new Error("Instruction not implemented");
+        throw new Error("Instruction 'SUB H', '94' not implemented");
       })
 
       .with(0x95, () => {
-        throw new Error("Instruction not implemented");
+        throw new Error("Instruction 'SUB L', '95' not implemented");
       })
 
       .with(0x96, () => {
-        throw new Error("Instruction not implemented");
+        throw new Error("Instruction 'SUB (HL)', '96' not implemented");
       })
 
       .with(0x97, () => {
-        throw new Error("Instruction not implemented");
+        throw new Error("Instruction 'SUB A', '97' not implemented");
       })
 
       .with(0x98, () => {
-        throw new Error("Instruction not implemented");
+        throw new Error("Instruction 'SBC A,B', '98' not implemented");
       })
 
       .with(0x99, () => {
-        throw new Error("Instruction not implemented");
+        throw new Error("Instruction 'SBC A,C', '99' not implemented");
       })
 
       .with(0x9a, () => {
-        throw new Error("Instruction not implemented");
+        throw new Error("Instruction 'SBC A,D', '9a' not implemented");
       })
 
       .with(0x9b, () => {
-        throw new Error("Instruction not implemented");
+        throw new Error("Instruction 'SBC A,E', '9b' not implemented");
       })
 
       .with(0x9c, () => {
-        throw new Error("Instruction not implemented");
+        throw new Error("Instruction 'SBC A,H', '9c' not implemented");
       })
 
       .with(0x9d, () => {
-        throw new Error("Instruction not implemented");
+        throw new Error("Instruction 'SBC A,L', '9d' not implemented");
       })
 
       .with(0x9e, () => {
-        throw new Error("Instruction not implemented");
+        throw new Error("Instruction 'SBC A,(HL)', '9e' not implemented");
       })
 
       .with(0x9f, () => {
-        throw new Error("Instruction not implemented");
+        throw new Error("Instruction 'SBC A,A', '9f' not implemented");
       })
 
       .with(0xa0, () => {
-        throw new Error("Instruction not implemented");
+        throw new Error("Instruction 'AND B', 'a0' not implemented");
       })
 
       .with(0xa1, () => {
-        throw new Error("Instruction not implemented");
+        throw new Error("Instruction 'AND C', 'a1' not implemented");
       })
 
       .with(0xa2, () => {
-        throw new Error("Instruction not implemented");
+        throw new Error("Instruction 'AND D', 'a2' not implemented");
       })
 
       .with(0xa3, () => {
-        throw new Error("Instruction not implemented");
+        throw new Error("Instruction 'AND E', 'a3' not implemented");
       })
 
       .with(0xa4, () => {
-        throw new Error("Instruction not implemented");
+        throw new Error("Instruction 'AND H', 'a4' not implemented");
       })
 
       .with(0xa5, () => {
-        throw new Error("Instruction not implemented");
+        throw new Error("Instruction 'AND L', 'a5' not implemented");
       })
 
       .with(0xa6, () => {
-        throw new Error("Instruction not implemented");
+        throw new Error("Instruction 'AND (HL)', 'a6' not implemented");
       })
 
       .with(0xa7, () => {
-        throw new Error("Instruction not implemented");
+        throw new Error("Instruction 'AND A', 'a7' not implemented");
       })
 
       .with(0xa8, () => {
-        throw new Error("Instruction not implemented");
+        throw new Error("Instruction 'XOR B', 'a8' not implemented");
       })
 
       .with(0xa9, () => {
-        throw new Error("Instruction not implemented");
+        throw new Error("Instruction 'XOR C', 'a9' not implemented");
       })
 
       .with(0xaa, () => {
-        throw new Error("Instruction not implemented");
+        throw new Error("Instruction 'XOR D', 'aa' not implemented");
       })
 
       .with(0xab, () => {
-        throw new Error("Instruction not implemented");
+        throw new Error("Instruction 'XOR E', 'ab' not implemented");
       })
 
       .with(0xac, () => {
-        throw new Error("Instruction not implemented");
+        throw new Error("Instruction 'XOR H', 'ac' not implemented");
       })
 
       .with(0xad, () => {
-        throw new Error("Instruction not implemented");
+        throw new Error("Instruction 'XOR L', 'ad' not implemented");
       })
 
       .with(0xae, () => {
-        throw new Error("Instruction not implemented");
+        throw new Error("Instruction 'XOR (HL)', 'ae' not implemented");
       })
 
       .with(0xaf, () => {
-        throw new Error("Instruction not implemented");
+        throw new Error("Instruction 'XOR A', 'af' not implemented");
       })
 
       .with(0xb0, () => {
-        throw new Error("Instruction not implemented");
+        throw new Error("Instruction 'OR B', 'b0' not implemented");
       })
 
       .with(0xb1, () => {
-        throw new Error("Instruction not implemented");
+        throw new Error("Instruction 'OR C', 'b1' not implemented");
       })
 
       .with(0xb2, () => {
-        throw new Error("Instruction not implemented");
+        throw new Error("Instruction 'OR D', 'b2' not implemented");
       })
 
       .with(0xb3, () => {
-        throw new Error("Instruction not implemented");
+        throw new Error("Instruction 'OR E', 'b3' not implemented");
       })
 
       .with(0xb4, () => {
-        throw new Error("Instruction not implemented");
+        throw new Error("Instruction 'OR H', 'b4' not implemented");
       })
 
       .with(0xb5, () => {
-        throw new Error("Instruction not implemented");
+        throw new Error("Instruction 'OR L', 'b5' not implemented");
       })
 
       .with(0xb6, () => {
-        throw new Error("Instruction not implemented");
+        throw new Error("Instruction 'OR (HL)', 'b6' not implemented");
       })
 
       .with(0xb7, () => {
-        throw new Error("Instruction not implemented");
+        throw new Error("Instruction 'OR A', 'b7' not implemented");
       })
 
       .with(0xb8, () => {
-        throw new Error("Instruction not implemented");
+        throw new Error("Instruction 'CP B', 'b8' not implemented");
       })
 
       .with(0xb9, () => {
-        throw new Error("Instruction not implemented");
+        throw new Error("Instruction 'CP C', 'b9' not implemented");
       })
 
       .with(0xba, () => {
-        throw new Error("Instruction not implemented");
+        throw new Error("Instruction 'CP D', 'ba' not implemented");
       })
 
       .with(0xbb, () => {
-        throw new Error("Instruction not implemented");
+        throw new Error("Instruction 'CP E', 'bb' not implemented");
       })
 
       .with(0xbc, () => {
-        throw new Error("Instruction not implemented");
+        throw new Error("Instruction 'CP H', 'bc' not implemented");
       })
 
       .with(0xbd, () => {
-        throw new Error("Instruction not implemented");
+        throw new Error("Instruction 'CP L', 'bd' not implemented");
       })
 
       .with(0xbe, () => {
-        throw new Error("Instruction not implemented");
+        throw new Error("Instruction 'CP (HL)', 'be' not implemented");
       })
 
       .with(0xbf, () => {
-        throw new Error("Instruction not implemented");
+        throw new Error("Instruction 'CP A', 'bf' not implemented");
       })
 
       .with(0xc0, () => {
-        throw new Error("Instruction not implemented");
+        throw new Error("Instruction 'RET NZ', 'c0' not implemented");
       })
 
       .with(0xc1, () => {
-        throw new Error("Instruction not implemented");
+        throw new Error("Instruction 'POP BC', 'c1' not implemented");
       })
 
       .with(0xc2, () => {
-        throw new Error("Instruction not implemented");
+        throw new Error("Instruction 'JP NZ,a16', 'c2' not implemented");
       })
 
       .with(0xc3, () => {
-        throw new Error("Instruction not implemented");
+        throw new Error("Instruction 'JP a16', 'c3' not implemented");
       })
 
       .with(0xc4, () => {
-        throw new Error("Instruction not implemented");
+        throw new Error("Instruction 'CALL NZ,a16', 'c4' not implemented");
       })
 
       .with(0xc5, () => {
-        throw new Error("Instruction not implemented");
+        throw new Error("Instruction 'PUSH BC', 'c5' not implemented");
       })
 
       .with(0xc6, () => {
-        throw new Error("Instruction not implemented");
+        throw new Error("Instruction 'ADD A,d8', 'c6' not implemented");
       })
 
       .with(0xc7, () => {
-        throw new Error("Instruction not implemented");
+        throw new Error("Instruction 'RST 00H', 'c7' not implemented");
       })
 
       .with(0xc8, () => {
-        throw new Error("Instruction not implemented");
+        throw new Error("Instruction 'RET Z', 'c8' not implemented");
       })
 
       .with(0xc9, () => {
-        throw new Error("Instruction not implemented");
+        throw new Error("Instruction 'RET', 'c9' not implemented");
       })
 
       .with(0xca, () => {
-        throw new Error("Instruction not implemented");
+        throw new Error("Instruction 'JP Z,a16', 'ca' not implemented");
       })
 
       .with(0xcb, () => {
-        throw new Error("Instruction not implemented");
+        throw new Error("Instruction 'PREFIX CB', 'cb' not implemented");
       })
 
       .with(0xcc, () => {
-        throw new Error("Instruction not implemented");
+        throw new Error("Instruction 'CALL Z,a16', 'cc' not implemented");
       })
 
       .with(0xcd, () => {
-        throw new Error("Instruction not implemented");
+        throw new Error("Instruction 'CALL a16', 'cd' not implemented");
       })
 
       .with(0xce, () => {
-        throw new Error("Instruction not implemented");
+        throw new Error("Instruction 'ADC A,d8', 'ce' not implemented");
       })
 
       .with(0xcf, () => {
-        throw new Error("Instruction not implemented");
+        throw new Error("Instruction 'RST 08H', 'cf' not implemented");
       })
 
       .with(0xd0, () => {
-        throw new Error("Instruction not implemented");
+        throw new Error("Instruction 'RET NC', 'd0' not implemented");
       })
 
       .with(0xd1, () => {
-        throw new Error("Instruction not implemented");
+        throw new Error("Instruction 'POP DE', 'd1' not implemented");
       })
 
       .with(0xd2, () => {
-        throw new Error("Instruction not implemented");
+        throw new Error("Instruction 'JP NC,a16', 'd2' not implemented");
       })
 
       .with(0xd3, () => {
-        throw new Error("Instruction not implemented");
+        throw new Error("Instruction 'INVALID', 'd3' not implemented");
       })
 
       .with(0xd4, () => {
-        throw new Error("Instruction not implemented");
+        throw new Error("Instruction 'CALL NC,a16', 'd4' not implemented");
       })
 
       .with(0xd5, () => {
-        throw new Error("Instruction not implemented");
+        throw new Error("Instruction 'PUSH DE', 'd5' not implemented");
       })
 
       .with(0xd6, () => {
-        throw new Error("Instruction not implemented");
+        throw new Error("Instruction 'SUB d8', 'd6' not implemented");
       })
 
       .with(0xd7, () => {
-        throw new Error("Instruction not implemented");
+        throw new Error("Instruction 'RST 10H', 'd7' not implemented");
       })
 
       .with(0xd8, () => {
-        throw new Error("Instruction not implemented");
+        throw new Error("Instruction 'RET C', 'd8' not implemented");
       })
 
       .with(0xd9, () => {
-        throw new Error("Instruction not implemented");
+        throw new Error("Instruction 'RETI', 'd9' not implemented");
       })
 
       .with(0xda, () => {
-        throw new Error("Instruction not implemented");
+        throw new Error("Instruction 'JP C,a16', 'da' not implemented");
       })
 
       .with(0xdb, () => {
-        throw new Error("Instruction not implemented");
+        throw new Error("Instruction 'INVALID', 'db' not implemented");
       })
 
       .with(0xdc, () => {
-        throw new Error("Instruction not implemented");
+        throw new Error("Instruction 'CALL C,a16', 'dc' not implemented");
       })
 
       .with(0xdd, () => {
-        throw new Error("Instruction not implemented");
+        throw new Error("Instruction 'INVALID', 'dd' not implemented");
       })
 
       .with(0xde, () => {
-        throw new Error("Instruction not implemented");
+        throw new Error("Instruction 'SBC A,d8', 'de' not implemented");
       })
 
       .with(0xdf, () => {
-        throw new Error("Instruction not implemented");
+        throw new Error("Instruction 'RST 18H', 'df' not implemented");
       })
 
       .with(0xe0, () => {
-        throw new Error("Instruction not implemented");
+        throw new Error("Instruction 'LDH (a8),A', 'e0' not implemented");
       })
 
       .with(0xe1, () => {
-        throw new Error("Instruction not implemented");
+        throw new Error("Instruction 'POP HL', 'e1' not implemented");
       })
 
       // LD (C),A
@@ -1240,31 +1240,31 @@ export class CPU {
       })
 
       .with(0xe3, () => {
-        throw new Error("Instruction not implemented");
+        throw new Error("Instruction 'INVALID', 'e3' not implemented");
       })
 
       .with(0xe4, () => {
-        throw new Error("Instruction not implemented");
+        throw new Error("Instruction 'INVALID', 'e4' not implemented");
       })
 
       .with(0xe5, () => {
-        throw new Error("Instruction not implemented");
+        throw new Error("Instruction 'PUSH HL', 'e5' not implemented");
       })
 
       .with(0xe6, () => {
-        throw new Error("Instruction not implemented");
+        throw new Error("Instruction 'AND d8', 'e6' not implemented");
       })
 
       .with(0xe7, () => {
-        throw new Error("Instruction not implemented");
+        throw new Error("Instruction 'RST 20H', 'e7' not implemented");
       })
 
       .with(0xe8, () => {
-        throw new Error("Instruction not implemented");
+        throw new Error("Instruction 'ADD SP,r8', 'e8' not implemented");
       })
 
       .with(0xe9, () => {
-        throw new Error("Instruction not implemented");
+        throw new Error("Instruction 'JP (HL)', 'e9' not implemented");
       })
 
       // LD (a16),A
@@ -1277,31 +1277,31 @@ export class CPU {
       })
 
       .with(0xeb, () => {
-        throw new Error("Instruction not implemented");
+        throw new Error("Instruction 'INVALID', 'eb' not implemented");
       })
 
       .with(0xec, () => {
-        throw new Error("Instruction not implemented");
+        throw new Error("Instruction 'INVALID', 'ec' not implemented");
       })
 
       .with(0xed, () => {
-        throw new Error("Instruction not implemented");
+        throw new Error("Instruction 'INVALID', 'ed' not implemented");
       })
 
       .with(0xee, () => {
-        throw new Error("Instruction not implemented");
+        throw new Error("Instruction 'XOR d8', 'ee' not implemented");
       })
 
       .with(0xef, () => {
-        throw new Error("Instruction not implemented");
+        throw new Error("Instruction 'RST 28H', 'ef' not implemented");
       })
 
       .with(0xf0, () => {
-        throw new Error("Instruction not implemented");
+        throw new Error("Instruction 'LDH A,(a8)', 'f0' not implemented");
       })
 
       .with(0xf1, () => {
-        throw new Error("Instruction not implemented");
+        throw new Error("Instruction 'POP AF', 'f1' not implemented");
       })
 
       // LD A,(C)
@@ -1313,23 +1313,23 @@ export class CPU {
       })
 
       .with(0xf3, () => {
-        throw new Error("Instruction not implemented");
+        throw new Error("Instruction 'DI', 'f3' not implemented");
       })
 
       .with(0xf4, () => {
-        throw new Error("Instruction not implemented");
+        throw new Error("Instruction 'INVALID', 'f4' not implemented");
       })
 
       .with(0xf5, () => {
-        throw new Error("Instruction not implemented");
+        throw new Error("Instruction 'PUSH AF', 'f5' not implemented");
       })
 
       .with(0xf6, () => {
-        throw new Error("Instruction not implemented");
+        throw new Error("Instruction 'OR d8', 'f6' not implemented");
       })
 
       .with(0xf7, () => {
-        throw new Error("Instruction not implemented");
+        throw new Error("Instruction 'RST 30H', 'f7' not implemented");
       })
 
       // LD HL,SP+r8
@@ -1357,23 +1357,23 @@ export class CPU {
       })
 
       .with(0xfb, () => {
-        throw new Error("Instruction not implemented");
+        throw new Error("Instruction 'EI', 'fb' not implemented");
       })
 
       .with(0xfc, () => {
-        throw new Error("Instruction not implemented");
+        throw new Error("Instruction 'INVALID', 'fc' not implemented");
       })
 
       .with(0xfd, () => {
-        throw new Error("Instruction not implemented");
+        throw new Error("Instruction 'INVALID', 'fd' not implemented");
       })
 
       .with(0xfe, () => {
-        throw new Error("Instruction not implemented");
+        throw new Error("Instruction 'CP d8', 'fe' not implemented");
       })
 
       .with(0xff, () => {
-        throw new Error("Instruction not implemented");
+        throw new Error("Instruction 'RST 38H', 'ff' not implemented");
       })
 
       .otherwise(() => {

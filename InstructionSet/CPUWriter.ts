@@ -17,10 +17,15 @@ export class CPUWriter {
     );
   }
 
+  private numberToHex(n: number) {
+    return n.toString(16).padStart(2, "0");
+  }
+
   write() {
     const parser = new Parser();
     const executeFns = Object.values(InstructionSet).map((instruction) => {
       const { opcode, mnemonic, length, cycles, Z, N, H, C } = instruction;
+      const opcodeHex = this.numberToHex(opcode);
 
       const parsedInstruction = parser.parse(mnemonic);
       const debugOpcode = parsedInstruction[0].opcode === 0xa;
@@ -39,7 +44,7 @@ export class CPUWriter {
 
           let statements = [];
           statements.push(`// ${mnemonic}`);
-          statements.push(`.with(0x${opcode.toString(16)}, () => {`);
+          statements.push(`.with(0x${opcodeHex}, () => {`);
 
           const body = match({ left, right })
             // Left address - 8 bit
@@ -335,8 +340,8 @@ export class CPUWriter {
         })
         .otherwise(() => {
           return `
-          .with(0x${opcode.toString(16)}, () => {
-            throw new Error("Instruction not implemented");
+          .with(0x${opcodeHex}, () => {
+            throw new Error("Instruction '${mnemonic}', '${opcodeHex}' not implemented");
           })
         `;
         });
