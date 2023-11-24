@@ -37,6 +37,8 @@ export class CPU {
   clock_m: Uint8Array = new Uint8Array(1);
   clock_t: Uint8Array = new Uint8Array(1);
 
+  prefix_cb: boolean = false;
+
   previousInstruction: Uint8Array = new Uint8Array(1);
 
   constructor(private mmu: MMU) {}

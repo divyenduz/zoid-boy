@@ -12,7 +12,6 @@ async function main() {
 
   while (true) {
     const instruction = mmu.readByte(cpu.pc);
-    // console.log({ PC: `${cpu.PC}` }, { instruction: `${instruction}` });
     cpu.pc[0] += 1;
     cpu.execute(instruction);
 

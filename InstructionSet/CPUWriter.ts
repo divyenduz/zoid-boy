@@ -28,12 +28,18 @@ export class CPUWriter {
       const opcodeHex = this.numberToHex(opcode);
 
       const parsedInstruction = parser.parse(mnemonic);
-      const debugOpcode = parsedInstruction[0].opcode === 0xa;
+      const debugOpcode = parsedInstruction[0].opcode === 0xcb;
       if (debugOpcode) {
         console.log(parsedInstruction);
       }
 
+      let statements: string[] = [];
+
       const impl = match(parsedInstruction[0].instruction)
+        // TODO: this should be parsed as a single instruction called "prefix cb"
+        .with("prefix", () => {
+          return `this.prefix_cb = true;`;
+        })
         .with("ld", () => {
           const { left, right } = parsedInstruction[0];
           if (!left || !right) {
@@ -42,10 +48,7 @@ export class CPUWriter {
             );
           }
 
-          let statements = [];
-          statements.push(`// ${mnemonic}`);
-          statements.push(`.with(0x${opcodeHex}, () => {`);
-
+          let s: string[] = [];
           const body = match({ left, right })
             // Left address - 8 bit
             .with(
@@ -60,7 +63,7 @@ export class CPUWriter {
                 },
               },
               ({ left, right }) => {
-                statements.push(
+                s.push(
                   `this.mmu.writeByte(${left.value}, this.mmu.readByte(${right.value}));`
                 );
               }
@@ -77,7 +80,7 @@ export class CPUWriter {
                 },
               },
               ({ left, right }) => {
-                statements.push(
+                s.push(
                   `this.mmu.writeByte(${left.value}, this.mmu.readByte(${right.value}));`
                 );
               }
@@ -95,7 +98,7 @@ export class CPUWriter {
                 },
               },
               ({ left, right }) => {
-                statements.push(
+                s.push(
                   `this.mmu.writeByte(${left.value}, this.${right.value});`
                 );
               }
@@ -112,7 +115,7 @@ export class CPUWriter {
                 },
               },
               ({ left, right }) => {
-                statements.push(
+                s.push(
                   `this.mmu.writeByte(${left.value}, this.${right.value});`
                 );
               }
@@ -131,7 +134,7 @@ export class CPUWriter {
                 },
               },
               ({ left, right }) => {
-                statements.push(
+                s.push(
                   `this.mmu.writeWord(${left.value}, this.mmu.readWord(${right.value}));`
                 );
               }
@@ -148,7 +151,7 @@ export class CPUWriter {
                 },
               },
               ({ left, right }) => {
-                statements.push(
+                s.push(
                   `this.mmu.writeWord(${left.value}, this.mmu.readWord(${right.value}));`
                 );
               }
@@ -166,8 +169,8 @@ export class CPUWriter {
                 },
               },
               ({ left, right }) => {
-                statements.push(`const a16 = this.mmu.readWord(this.pc);`);
-                statements.push(
+                s.push(`const a16 = this.mmu.readWord(this.pc);`);
+                s.push(
                   `this.mmu.writeByte(this.mmu.readWord(a16), this.${right.value});`
                 );
               }
@@ -184,10 +187,8 @@ export class CPUWriter {
                 },
               },
               ({ left, right }) => {
-                statements.push(
-                  `const a16 = this.mmu.readWord(this.${right.value});`
-                );
-                statements.push(
+                s.push(`const a16 = this.mmu.readWord(this.${right.value});`);
+                s.push(
                   `this.mmu.writeWord(${left.value}, this.${right.value});`
                 );
               }
@@ -207,8 +208,8 @@ export class CPUWriter {
                 },
               },
               ({ left, right }) => {
-                statements.push(`const d8 = this.mmu.readByte(this.pc);`);
-                statements.push(`this.${left.value} = d8;`);
+                s.push(`const d8 = this.mmu.readByte(this.pc);`);
+                s.push(`this.${left.value} = d8;`);
               }
             )
             .with(
@@ -223,8 +224,8 @@ export class CPUWriter {
                 },
               },
               ({ left, right }) => {
-                statements.push(`const a16 = this.mmu.readWord(this.pc);`);
-                statements.push(`this.${left.value} = this.mmu.readByte(a16);`);
+                s.push(`const a16 = this.mmu.readWord(this.pc);`);
+                s.push(`this.${left.value} = this.mmu.readByte(a16);`);
               }
             )
 
@@ -240,7 +241,7 @@ export class CPUWriter {
                 },
               },
               ({ left, right }) => {
-                statements.push(`this.${left.value} = this.${right.value};`);
+                s.push(`this.${left.value} = this.${right.value};`);
               }
             )
             .with(
@@ -255,7 +256,7 @@ export class CPUWriter {
                 },
               },
               ({ left, right }) => {
-                statements.push(
+                s.push(
                   `this.${left.value} = this.mmu.readByte(this.${right.value});`
                 );
               }
@@ -274,10 +275,8 @@ export class CPUWriter {
                 },
               },
               ({ left, right }) => {
-                statements.push(`const d8 = this.mmu.readByte(this.pc);`);
-                statements.push(
-                  `this.mmu.writeByte(this.mmu.readWord(this.hl), d8)`
-                );
+                s.push(`const d8 = this.mmu.readByte(this.pc);`);
+                s.push(`this.mmu.writeByte(this.mmu.readWord(this.hl), d8)`);
               }
             )
             .with(
@@ -292,8 +291,8 @@ export class CPUWriter {
                 },
               },
               ({ left, right }) => {
-                statements.push(`const d16 = this.mmu.readWord(this.pc);`);
-                statements.push(`this.${left.value} = d16`);
+                s.push(`const d16 = this.mmu.readWord(this.pc);`);
+                s.push(`this.${left.value} = d16`);
               }
             )
 
@@ -309,7 +308,7 @@ export class CPUWriter {
                 },
               },
               ({ left, right }) => {
-                statements.push(
+                s.push(
                   `this.mmu.writeByte(this.mmu.readWord(this.${left.value}), this.${right.value});`
                 );
               }
@@ -326,30 +325,37 @@ export class CPUWriter {
                 },
               },
               ({ left, right }) => {
-                statements.push(`this.${left.value} = this.${right.value};`);
+                s.push(`this.${left.value} = this.${right.value};`);
               }
             )
             .exhaustive();
 
-          statements.push(body);
-          statements.push(`this.pc[0] += ${length};`);
-          statements.push(`return ${cycles}`);
-          statements.push(`})`);
-
-          return statements.join("\n");
+          return s.join("\n");
         })
         .otherwise(() => {
-          return `
-          .with(0x${opcodeHex}, () => {
-            throw new Error("Instruction '${mnemonic}', '${opcodeHex}' not implemented");
-          })
-        `;
+          return `throw new Error("Instruction '${mnemonic}', '${opcodeHex}' not implemented");`;
         });
 
       if (debugOpcode) {
         console.log(impl);
       }
-      return impl;
+
+      statements.push(`// ${mnemonic}`);
+      statements.push(`.with(0x${opcodeHex}, () => {`);
+      statements.push(impl);
+      // Note: length-1 because we bump pc as soon as we read the instruction
+      statements.push(`this.pc[0] += ${length - 1};`);
+      if (opcode !== 0xcb) {
+        statements.push(`this.prefix_cb = false;`);
+      }
+      statements.push(`return ${cycles}`);
+      statements.push(`})`);
+
+      if (debugOpcode) {
+        console.log(statements.join("\n"));
+      }
+
+      return statements.join("\n");
     });
 
     const code = [
