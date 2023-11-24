@@ -1,32 +1,54 @@
+import { match } from "ts-pattern";
 import { INSTRUCTION_TYPE, InstructionType } from "./Parser";
 
 type TokenType = "Instruction" | "LeftArgument" | "RightArgument";
 
-type Token = {
+type Token = InstructionToken | ArgumentToken;
+
+type InstructionToken = {
   lexeme: string;
-  type: TokenType;
-  addressType?: ArgumentType;
+  type: "Instruction";
 };
 
-const ARGUMENT_TYPE_MAP: Record<string, ArgumentType> = {
-  A: "Register",
-  F: "Register",
-  B: "Register",
-  C: "Register",
-  D: "Register",
-  E: "Register",
-  H: "Register",
-  L: "Register",
+type ArgumentToken = {
+  lexeme: string;
+  type: "LeftArgument" | "RightArgument";
+  is8Bit: boolean;
+  is16Bit: boolean;
+  addressType: ArgumentType;
+};
 
-  BC: "Register",
-  DE: "Register",
-  HL: "Register",
+const ADDRESS_TYPE_MAP: Record<string, ArgumentType> = {
+  a: "Register",
+  f: "Register",
+  b: "Register",
+  c: "Register",
+  d: "Register",
+  e: "Register",
+  h: "Register",
+  l: "Register",
 
-  SP: "Register",
-  PC: "Register",
+  bc: "Register",
+  de: "Register",
+  hl: "Register",
 
-  d8: "DirectAddress",
-  d16: "DirectAddress",
+  sp: "Register",
+  pc: "Register",
+
+  // TODO: this instruction (POP AF, 0xF1) exists, but general docs never say that A, F can be combined
+  af: "Register",
+
+  d8: "DirectAddress", // Note: immediate 8-bit signed data
+  d16: "DirectAddress", // Note: immediate 16-bit signed data
+  a8: "DirectAddress", // Note: 8-bit unsigned data
+  a16: "DirectAddress", // Note: 16-bit address
+  r8: "DirectAddress", // Note: 8-bit signed data, which is added to PC
+
+  "20h": "DirectAddress", // More like, static address 0x20
+  "30h": "DirectAddress", // More like, static address 0x30
+
+  "sp+r8": "DirectAddress", // TODO: not correct, needs to be broken down into expressions
+  spr8: "DirectAddress", // TODO: not correct, needs to be broken down into expressions
 };
 export type ArgumentType =
   | "Register"
@@ -49,6 +71,61 @@ export class Tokenizer {
     return statement.slice(0, statement.length).trim();
   }
 
+  private extractIndirectRegisterOrAddress(arg: string) {
+    let isIndirect = false;
+    if (arg.startsWith("(") && arg.endsWith(")")) {
+      isIndirect = true;
+      arg = arg.slice(1, arg.length - 1);
+    }
+
+    // TODO: handle increment/decrement and + expressions
+    arg = arg.replace("+", "").replace("-", "").toLowerCase();
+    const addressTypePartial = ADDRESS_TYPE_MAP[arg];
+    const addressType = match({ addressType: addressTypePartial, isIndirect })
+      .with(
+        {
+          isIndirect: false,
+        },
+        () => {
+          return addressTypePartial;
+        }
+      )
+      .with(
+        {
+          addressType: "Register",
+          isIndirect: true,
+        },
+        () => "RegisterAddress" as const
+      )
+      .with(
+        {
+          addressType: "DirectAddress",
+          isIndirect: true,
+        },
+        () => "IndirectAddress" as const
+      )
+      .otherwise(() => {
+        throw new Error(
+          "After removing parenthesis, address type must be one of Register or DirectAddress"
+        );
+      });
+
+    const is8Bit = match(addressType)
+      .with("Register", () => arg.length === 1)
+      .with("RegisterAddress", () => arg.length === 1)
+      .with("DirectAddress", () => arg.length === 2)
+      .with("IndirectAddress", () => arg.length === 2)
+      // TODO: handle 20h, etc
+      .exhaustive();
+
+    return {
+      type: addressType,
+      is8Bit,
+      is16Bit: !is8Bit,
+      value: arg,
+    };
+  }
+
   private extractArg(statement: string) {
     let arg = "";
     for (let i = this.position; i < statement.length; i++) {
@@ -60,21 +137,7 @@ export class Tokenizer {
           return null;
         }
 
-        if (arg.startsWith("(") && arg.endsWith(")")) {
-          arg = arg.slice(1, arg.length - 1);
-          return {
-            type:
-              ARGUMENT_TYPE_MAP[arg] === "Register"
-                ? "RegisterAddress"
-                : ("IndirectAddress" as ArgumentType),
-            value: arg,
-          };
-        }
-
-        return {
-          type: ARGUMENT_TYPE_MAP[arg],
-          value: arg,
-        };
+        return this.extractIndirectRegisterOrAddress(arg);
       }
       arg += statement[i];
     }
@@ -85,19 +148,7 @@ export class Tokenizer {
       return null;
     }
 
-    if (arg.startsWith("(") && arg.endsWith(")")) {
-      return {
-        type: (ARGUMENT_TYPE_MAP[arg] === "Register"
-          ? "RegisterAddress"
-          : ("IndirectAddress" as ArgumentType)) as ArgumentType,
-        value: arg.slice(1, arg.length - 1),
-      };
-    }
-
-    return {
-      type: ARGUMENT_TYPE_MAP[arg],
-      value: arg,
-    };
+    return this.extractIndirectRegisterOrAddress(arg);
   }
 
   tokenize(statement: string): Token[] {
@@ -122,6 +173,8 @@ export class Tokenizer {
           lexeme: leftArg.value,
           type: "LeftArgument",
           addressType: leftArg.type,
+          is8Bit: leftArg.is8Bit,
+          is16Bit: leftArg.is16Bit,
         });
       }
 
@@ -131,6 +184,8 @@ export class Tokenizer {
           lexeme: rightArg.value,
           type: "RightArgument",
           addressType: rightArg.type,
+          is8Bit: rightArg.is8Bit,
+          is16Bit: rightArg.is16Bit,
         });
       }
     }

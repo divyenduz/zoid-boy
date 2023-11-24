@@ -10,62 +10,63 @@ export type InstructionType =
   | "control";
 
 export const INSTRUCTION_TYPE: Record<string, InstructionType> = {
-  LD: "transfer",
-  LDH: "transfer",
-  PUSH: "transfer",
-  POP: "transfer",
+  ld: "transfer",
+  ldh: "transfer",
+  push: "transfer",
+  pop: "transfer",
 
-  ADD: "arthimetic",
-  ADC: "arthimetic",
-  SUB: "arthimetic",
-  SBC: "arthimetic",
-  CP: "arthimetic",
-  AND: "arthimetic",
-  OR: "arthimetic",
-  XOR: "arthimetic",
-  INC: "arthimetic",
-  DEC: "arthimetic",
+  add: "arthimetic",
+  adc: "arthimetic",
+  sub: "arthimetic",
+  sbc: "arthimetic",
+  cp: "arthimetic",
+  and: "arthimetic",
+  or: "arthimetic",
+  xor: "arthimetic",
+  inc: "arthimetic",
+  dec: "arthimetic",
 
-  SWAP: "misc",
-  DAA: "misc",
-  CPL: "misc",
-  CCF: "misc",
-  SCF: "misc",
-  NOP: "misc",
-  HALT: "misc",
-  STOP: "misc",
-  DI: "misc",
-  EI: "misc",
+  swap: "misc",
+  daa: "misc",
+  cpl: "misc",
+  ccf: "misc",
+  scf: "misc",
+  nop: "misc",
+  halt: "misc",
+  stop: "misc",
+  di: "misc",
+  ei: "misc",
 
-  RLCA: "rotate-shift",
-  RLA: "rotate-shift",
-  RRCA: "rotate-shift",
-  RRA: "rotate-shift",
-  RLC: "rotate-shift",
-  RL: "rotate-shift",
-  RRC: "rotate-shift",
-  RR: "rotate-shift",
-  SLA: "rotate-shift",
-  SRA: "rotate-shift",
-  SRL: "rotate-shift",
+  rlca: "rotate-shift",
+  rla: "rotate-shift",
+  rrca: "rotate-shift",
+  rra: "rotate-shift",
+  rlc: "rotate-shift",
+  rl: "rotate-shift",
+  rrc: "rotate-shift",
+  rr: "rotate-shift",
+  sla: "rotate-shift",
+  sra: "rotate-shift",
+  srl: "rotate-shift",
 
-  BIT: "bit-operations",
-  SET: "bit-operations",
-  RES: "bit-operations",
+  bit: "bit-operations",
+  set: "bit-operations",
+  res: "bit-operations",
 
-  JP: "control",
-  JR: "control",
+  jp: "control",
+  jr: "control",
 
-  CALL: "control",
-  RST: "control",
-  RET: "control",
-  RETI: "control",
+  call: "control",
+  rst: "control",
+  ret: "control",
+  reti: "control",
 };
 
 type Argument = {
-  type: "register" | "address";
   value: string;
   addressType: ArgumentType;
+  is8Bit: boolean;
+  is16Bit: boolean;
 };
 
 type Statement = {
@@ -84,8 +85,9 @@ export class Parser {
   constructor() {}
 
   parse(statement: string): Statement[] {
+    statement = statement.toLowerCase().trim();
     const instructionData = Object.values(InstructionSet).find(
-      (instruction) => instruction.mnemonic === statement
+      (instruction) => instruction.mnemonic.toLowerCase() === statement
     );
     if (!instructionData) {
       throw new Error(`Instruction "${statement}" not found.`);
@@ -107,23 +109,27 @@ export class Parser {
       if (token.type === "LeftArgument") {
         const addressType = token.addressType;
         if (!addressType) {
+          console.debug({ token, statement });
           throw new Error("Failed to find address type");
         }
         statements[statements.length - 1].left = {
-          type: "register",
           value: token.lexeme,
           addressType,
+          is8Bit: token.is8Bit,
+          is16Bit: token.is16Bit,
         };
       }
       if (token.type === "RightArgument") {
         const addressType = token.addressType;
         if (!addressType) {
+          console.debug({ token, statement });
           throw new Error("Failed to find address type");
         }
         statements[statements.length - 1].right = {
-          type: "register",
           value: token.lexeme,
           addressType,
+          is8Bit: token.is8Bit,
+          is16Bit: token.is16Bit,
         };
       }
     }
