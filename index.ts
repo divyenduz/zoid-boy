@@ -1,5 +1,5 @@
 import "./helpers/TypedArrays";
-import { CPU } from "./CPU/CPU";
+import { CPU } from "./InstructionSet/CPU";
 import { MMU } from "./MMU/MMU";
 import fs from "fs";
 
@@ -18,6 +18,7 @@ async function main() {
 
     if (checkBootLoadSuccess(cpu)) {
       console.log("BOOTROM LOAD SUCCESS");
+      process.exit(0);
     }
   }
 }

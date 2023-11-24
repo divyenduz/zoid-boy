@@ -11,6 +11,7 @@
   "license": "MIT",
   "devDependencies": {
     "@types/node": "^20.9.4",
+    "prettier": "^3.1.0",
     "vite-node": "^0.34.6"
   },
   "dependencies": {
