@@ -167,9 +167,6 @@ export class CPU {
         const a8 = this.mmu.readByte(this.PC);
         this.PC[0] += 1;
         this.mmu.writeByte(new Uint16Array([0xff + a8[0]]), this.A);
-        console.log(a8[0].toString(16));
-        console.log((0xff + a8[0]).toString(16));
-        console.log(`${new Uint16Array([0xff + a8[0]])}`);
         this.M[0] = 2;
         this.T[0] = 12;
       })
