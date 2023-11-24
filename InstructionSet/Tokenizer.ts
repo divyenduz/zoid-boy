@@ -14,11 +14,11 @@ type ArgumentToken = {
   lexeme: string;
   type: "LeftArgument" | "RightArgument";
   is8Bit: boolean;
-  is16Bit: boolean;
-  addressType: ArgumentType;
+  addressType: MemoryType;
+  isIndirect: boolean;
 };
 
-const ADDRESS_TYPE_MAP: Record<string, ArgumentType> = {
+const MEMORY_TYPE_MAP: Record<string, MemoryType> = {
   a: "Register",
   f: "Register",
   b: "Register",
@@ -38,23 +38,20 @@ const ADDRESS_TYPE_MAP: Record<string, ArgumentType> = {
   // TODO: this instruction (POP AF, 0xF1) exists, but general docs never say that A, F can be combined
   af: "Register",
 
-  d8: "DirectAddress", // Note: immediate 8-bit signed data
-  d16: "DirectAddress", // Note: immediate 16-bit signed data
-  a8: "DirectAddress", // Note: 8-bit unsigned data
-  a16: "DirectAddress", // Note: 16-bit address
-  r8: "DirectAddress", // Note: 8-bit signed data, which is added to PC
+  d8: "Address", // Note: immediate 8-bit signed data
+  d16: "Address", // Note: immediate 16-bit signed data
+  a8: "Address", // Note: 8-bit unsigned data
+  a16: "Address", // Note: 16-bit address
+  r8: "Address", // Note: 8-bit signed data, which is added to PC
 
-  "20h": "DirectAddress", // More like, static address 0x20
-  "30h": "DirectAddress", // More like, static address 0x30
+  "20h": "Address", // More like, static address 0x20
+  "30h": "Address", // More like, static address 0x30
 
-  "sp+r8": "DirectAddress", // TODO: not correct, needs to be broken down into expressions
-  spr8: "DirectAddress", // TODO: not correct, needs to be broken down into expressions
+  "sp+r8": "Address", // TODO: not correct, needs to be broken down into expressions
+  spr8: "Address", // TODO: not correct, needs to be broken down into expressions
 };
-export type ArgumentType =
-  | "Register"
-  | "RegisterAddress"
-  | "DirectAddress"
-  | "IndirectAddress";
+
+export type MemoryType = "Register" | "Address";
 
 export class Tokenizer {
   private position: number = 0;
@@ -80,46 +77,18 @@ export class Tokenizer {
 
     // TODO: handle increment/decrement and + expressions
     arg = arg.replace("+", "").replace("-", "").toLowerCase();
-    const addressTypePartial = ADDRESS_TYPE_MAP[arg];
-    const addressType = match({ addressType: addressTypePartial, isIndirect })
-      .with(
-        {
-          isIndirect: false,
-        },
-        () => {
-          return addressTypePartial;
-        }
-      )
-      .with(
-        {
-          addressType: "Register",
-          isIndirect: true,
-        },
-        () => "RegisterAddress" as const
-      )
-      .with(
-        {
-          addressType: "DirectAddress",
-          isIndirect: true,
-        },
-        () => "IndirectAddress" as const
-      )
-      .otherwise(() => {
-        throw new Error(
-          "After removing parenthesis, address type must be one of Register or DirectAddress"
-        );
-      });
+    const memoryType = MEMORY_TYPE_MAP[arg];
 
-    const is8Bit = match(addressType)
+    const is8Bit = match(memoryType)
       .with("Register", () => arg.length === 1)
-      .with("RegisterAddress", () => arg.length === 1)
-      .with("DirectAddress", () => arg.length === 2)
-      .with("IndirectAddress", () => arg.length === 2)
+      .with("Address", () => arg.length === 2)
       // TODO: handle 20h, etc
       .exhaustive();
 
     return {
-      type: addressType,
+      type: memoryType,
+      isDirect: !isIndirect,
+      isIndirect,
       is8Bit,
       is16Bit: !is8Bit,
       value: arg,
@@ -173,8 +142,8 @@ export class Tokenizer {
           lexeme: leftArg.value,
           type: "LeftArgument",
           addressType: leftArg.type,
+          isIndirect: leftArg.isIndirect,
           is8Bit: leftArg.is8Bit,
-          is16Bit: leftArg.is16Bit,
         });
       }
 
@@ -184,8 +153,8 @@ export class Tokenizer {
           lexeme: rightArg.value,
           type: "RightArgument",
           addressType: rightArg.type,
+          isIndirect: rightArg.isIndirect,
           is8Bit: rightArg.is8Bit,
-          is16Bit: rightArg.is16Bit,
         });
       }
     }

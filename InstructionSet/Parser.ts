@@ -1,5 +1,5 @@
 import { InstructionSet } from "./InstructionSet";
-import { ArgumentType, Tokenizer } from "./Tokenizer";
+import { MemoryType, Tokenizer } from "./Tokenizer";
 
 export type InstructionType =
   | "misc"
@@ -64,9 +64,9 @@ export const INSTRUCTION_TYPE: Record<string, InstructionType> = {
 
 type Argument = {
   value: string;
-  addressType: ArgumentType;
+  addressType: MemoryType;
   is8Bit: boolean;
-  is16Bit: boolean;
+  isIndirect: boolean;
 };
 
 type Statement = {
@@ -116,7 +116,7 @@ export class Parser {
           value: token.lexeme,
           addressType,
           is8Bit: token.is8Bit,
-          is16Bit: token.is16Bit,
+          isIndirect: token.isIndirect,
         };
       }
       if (token.type === "RightArgument") {
@@ -129,7 +129,7 @@ export class Parser {
           value: token.lexeme,
           addressType,
           is8Bit: token.is8Bit,
-          is16Bit: token.is16Bit,
+          isIndirect: token.isIndirect,
         };
       }
     }

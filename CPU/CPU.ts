@@ -1,5 +1,6 @@
 import { MMU } from "../MMU/MMU";
 import { match } from "ts-pattern";
+//@ts-expect-error
 import Uint1Array from "uint1array";
 
 /**
