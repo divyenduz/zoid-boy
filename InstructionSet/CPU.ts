@@ -1236,56 +1236,56 @@ export class CPU {
       })
       // XOR B
       .with(0xa8, () => {
-        throw new Error("Instruction 'XOR B', 'a8' not implemented");
+        this.a[0] ^= this.b[0];
         this.pc[0] += 0;
         this.prefix_cb = false;
         return 4;
       })
       // XOR C
       .with(0xa9, () => {
-        throw new Error("Instruction 'XOR C', 'a9' not implemented");
+        this.a[0] ^= this.c[0];
         this.pc[0] += 0;
         this.prefix_cb = false;
         return 4;
       })
       // XOR D
       .with(0xaa, () => {
-        throw new Error("Instruction 'XOR D', 'aa' not implemented");
+        this.a[0] ^= this.d[0];
         this.pc[0] += 0;
         this.prefix_cb = false;
         return 4;
       })
       // XOR E
       .with(0xab, () => {
-        throw new Error("Instruction 'XOR E', 'ab' not implemented");
+        this.a[0] ^= this.e[0];
         this.pc[0] += 0;
         this.prefix_cb = false;
         return 4;
       })
       // XOR H
       .with(0xac, () => {
-        throw new Error("Instruction 'XOR H', 'ac' not implemented");
+        this.a[0] ^= this.h[0];
         this.pc[0] += 0;
         this.prefix_cb = false;
         return 4;
       })
       // XOR L
       .with(0xad, () => {
-        throw new Error("Instruction 'XOR L', 'ad' not implemented");
+        this.a[0] ^= this.l[0];
         this.pc[0] += 0;
         this.prefix_cb = false;
         return 4;
       })
       // XOR (HL)
       .with(0xae, () => {
-        throw new Error("Instruction 'XOR (HL)', 'ae' not implemented");
+        this.a[0] ^= this.hl[0];
         this.pc[0] += 0;
         this.prefix_cb = false;
         return 8;
       })
       // XOR A
       .with(0xaf, () => {
-        throw new Error("Instruction 'XOR A', 'af' not implemented");
+        this.a[0] ^= this.a[0];
         this.pc[0] += 0;
         this.prefix_cb = false;
         return 4;
@@ -1726,7 +1726,8 @@ export class CPU {
       })
       // XOR d8
       .with(0xee, () => {
-        throw new Error("Instruction 'XOR d8', 'ee' not implemented");
+        const a8 = this.mmu.readByte(this.pc);
+        this.a[0] ^= a8[0];
         this.pc[0] += 1;
         this.prefix_cb = false;
         return 8;

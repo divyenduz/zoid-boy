@@ -40,6 +40,40 @@ export class CPUWriter {
         .with("prefix", () => {
           return `this.prefix_cb = true;`;
         })
+        .with("xor", () => {
+          const { left } = parsedInstruction[0];
+          if (!left) {
+            throw new Error(
+              "Failed to find left argument, XOR must have one argument"
+            );
+          }
+
+          let s: string[] = [];
+          const body = match({ left })
+            .with(
+              {
+                left: {
+                  addressType: "Address",
+                },
+              },
+              () => {
+                s.push(`const a8 = this.mmu.readByte(this.pc);`);
+                s.push(`this.a[0] ^= a8[0];`);
+              }
+            )
+            .with(
+              {
+                left: {
+                  addressType: "Register",
+                },
+              },
+              () => {
+                s.push(`this.a[0] ^= this.${left.value}[0];`);
+              }
+            )
+            .exhaustive();
+          return s.join("\n");
+        })
         .with("ld", () => {
           const { left, right } = parsedInstruction[0];
           if (!left || !right) {
