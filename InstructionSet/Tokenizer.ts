@@ -184,6 +184,7 @@ export class Tokenizer {
       tokens.push(token);
       token = this.nextToken();
     }
+    tokens.push(token);
 
     return tokens;
   }

@@ -179,6 +179,10 @@ export class Parser {
         // Skip
       }
 
+      if (token.type === "EOF") {
+        // Skip
+      }
+
       if (token.type === "ARGUMENT") {
         const leftOrRight = isSecondArgument ? "right" : "left";
 
