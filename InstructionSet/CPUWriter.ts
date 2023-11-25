@@ -6,7 +6,6 @@ import { InstructionSetPrefixCB } from "./InstructionSetPrefixCB";
 import { format } from "prettier";
 import { Parser } from "./Parser";
 import { match } from "ts-pattern";
-import { MemoryType } from "./Tokenizer";
 
 export class CPUWriter {
   private readonly template: string;

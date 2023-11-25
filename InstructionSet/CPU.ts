@@ -1798,8 +1798,8 @@ export class CPU {
       })
       // LD HL,SP+r8
       .with(0xf8, () => {
-        const d16 = this.mmu.readWord(this.pc);
-        this.hl = d16;
+        const d8 = this.mmu.readByte(this.pc);
+        this.mmu.writeByte(this.mmu.readWord(this.hl), d8);
         this.pc[0] += 1;
         this.prefix_cb = false;
         return 12;

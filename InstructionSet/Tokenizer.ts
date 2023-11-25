@@ -16,6 +16,8 @@ type Token = {
 };
 
 const TOKENS: Record<string, TokenType> = {
+  prefix: "INSTRUCTION",
+
   ld: "INSTRUCTION",
   ldh: "INSTRUCTION",
   push: "INSTRUCTION",
@@ -62,6 +64,8 @@ const TOKENS: Record<string, TokenType> = {
   rst: "INSTRUCTION",
   ret: "INSTRUCTION",
   reti: "INSTRUCTION",
+
+  invalid: "INSTRUCTION", // TODO: doesn't really exist, but to encode missing ops
 
   "+": "PLUS",
   "-": "MINUS",
