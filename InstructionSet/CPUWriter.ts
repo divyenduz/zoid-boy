@@ -28,7 +28,7 @@ export class CPUWriter {
       const opcodeHex = this.numberToHex(opcode);
 
       const parsedInstruction = parser.parse(mnemonic);
-      const debugOpcode = parsedInstruction[0].opcode === 0xcb;
+      const debugOpcode = parsedInstruction[0].opcode === 0x20;
       if (debugOpcode) {
         console.log(parsedInstruction);
       }
