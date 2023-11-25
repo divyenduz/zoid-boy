@@ -10,7 +10,8 @@ import Uint1Array from "uint1array";
 export class CPU {
   _REGISTER_MEMORY: ArrayBuffer = new ArrayBuffer(8);
 
-  a: Uint8Array = new Uint8Array(this._REGISTER_MEMORY, 0, 1);
+  f: Uint8Array = new Uint8Array(this._REGISTER_MEMORY, 0, 1);
+  a: Uint8Array = new Uint8Array(this._REGISTER_MEMORY, 1, 1);
   // Skip 1 byte
   d: Uint8Array = new Uint8Array(this._REGISTER_MEMORY, 2, 1);
   b: Uint8Array = new Uint8Array(this._REGISTER_MEMORY, 3, 1);
@@ -18,6 +19,7 @@ export class CPU {
   e: Uint8Array = new Uint8Array(this._REGISTER_MEMORY, 5, 1);
   l: Uint8Array = new Uint8Array(this._REGISTER_MEMORY, 6, 1);
   h: Uint8Array = new Uint8Array(this._REGISTER_MEMORY, 7, 1);
+  af: Uint16Array = new Uint16Array(this._REGISTER_MEMORY, 0, 1);
   bc: Uint16Array = new Uint16Array(this._REGISTER_MEMORY, 2, 1);
   de: Uint16Array = new Uint16Array(this._REGISTER_MEMORY, 4, 1);
   hl: Uint16Array = new Uint16Array(this._REGISTER_MEMORY, 6, 1);
@@ -28,14 +30,13 @@ export class CPU {
    * Half-carry (0x20): Set if, in the result of the last operation, the lower half of the byte overflowed past 15;
    * Carry (0x10): Set if the last operation produced a result over 255 (for additions) or under 0 (for subtractions);
    */
-  f: Uint8Array = new Uint1Array(8);
+  z_flag: Uint1Array = new Uint1Array(this._REGISTER_MEMORY, 0, 1); // 8th bit, [0] reversed because endian-ness
+  n_flag: Uint1Array = new Uint1Array(this._REGISTER_MEMORY, 0, 1); // 7th bit, [1] reversed because endian-ness
+  h_flag: Uint1Array = new Uint1Array(this._REGISTER_MEMORY, 0, 1); // 6th bit, [2] reversed because endian-ness
+  c_flag: Uint1Array = new Uint1Array(this._REGISTER_MEMORY, 0, 1); // 5th bit, [3] reversed because endian-ness
 
   pc: Uint16Array = new Uint16Array(1);
   sp: Uint16Array = new Uint16Array(1);
-  m: Uint8Array = new Uint8Array(1);
-  t: Uint8Array = new Uint8Array(1);
-  clock_m: Uint8Array = new Uint8Array(1);
-  clock_t: Uint8Array = new Uint8Array(1);
 
   prefix_cb: boolean = false;
 
@@ -1855,7 +1856,7 @@ export class CPU {
       })
       .otherwise(() => {
         throw new Error(
-          `Instruction "${instruction}" not implemented. Previous instruction: "${this.previousInstruction}"`
+          `Instruction "${instruction}" not implemented. Previous instruction: "${this.previousInstruction}"`,
         );
       });
 
