@@ -1,78 +1,5 @@
 import { match } from "ts-pattern";
-
-type TokenType =
-  | "INSTRUCTION"
-  | "PLUS"
-  | "MINUS"
-  | "COMMA"
-  | "LPAREN"
-  | "RPAREN"
-  | "ARGUMENT"
-  | "EOF";
-
-type Token = {
-  lexeme: string;
-  type: TokenType;
-};
-
-const TOKENS: Record<string, TokenType> = {
-  prefix: "INSTRUCTION",
-
-  ld: "INSTRUCTION",
-  ldh: "INSTRUCTION",
-  push: "INSTRUCTION",
-  pop: "INSTRUCTION",
-
-  add: "INSTRUCTION",
-  adc: "INSTRUCTION",
-  sub: "INSTRUCTION",
-  sbc: "INSTRUCTION",
-  cp: "INSTRUCTION",
-  and: "INSTRUCTION",
-  or: "INSTRUCTION",
-  xor: "INSTRUCTION",
-  inc: "INSTRUCTION",
-  dec: "INSTRUCTION",
-
-  swap: "INSTRUCTION",
-  daa: "INSTRUCTION",
-  cpl: "INSTRUCTION",
-  ccf: "INSTRUCTION",
-  scf: "INSTRUCTION",
-  nop: "INSTRUCTION",
-  halt: "INSTRUCTION",
-  stop: "INSTRUCTION",
-  di: "INSTRUCTION",
-  ei: "INSTRUCTION",
-  rlca: "INSTRUCTION",
-  rla: "INSTRUCTION",
-  rrca: "INSTRUCTION",
-  rra: "INSTRUCTION",
-  rlc: "INSTRUCTION",
-  rl: "INSTRUCTION",
-  rrc: "INSTRUCTION",
-  rr: "INSTRUCTION",
-  sla: "INSTRUCTION",
-  sra: "INSTRUCTION",
-  srl: "INSTRUCTION",
-  bit: "INSTRUCTION",
-  set: "INSTRUCTION",
-  res: "INSTRUCTION",
-  jp: "INSTRUCTION",
-  jr: "INSTRUCTION",
-  call: "INSTRUCTION",
-  rst: "INSTRUCTION",
-  ret: "INSTRUCTION",
-  reti: "INSTRUCTION",
-
-  invalid: "INSTRUCTION", // TODO: doesn't really exist, but to encode missing ops
-
-  "+": "PLUS",
-  "-": "MINUS",
-  ",": "COMMA",
-  "(": "LPAREN",
-  ")": "RPAREN",
-};
+import { TOKENS, Token } from "./Token";
 
 export type MemoryType = "Register" | "Address";
 
@@ -129,47 +56,29 @@ export class Tokenizer {
     const char = this.readChar();
     const token = match(char)
       .with("(", () => {
-        return {
-          lexeme: "(",
-          type: "LPAREN" as const,
-        };
+        return new Token("(", "LPAREN");
       })
       .with(")", () => {
-        return {
-          lexeme: ")",
-          type: "RPAREN" as const,
-        };
+        return new Token(")", "RPAREN");
       })
       .with(",", () => {
-        return {
-          lexeme: ",",
-          type: "COMMA" as const,
-        };
+        return new Token(",", "COMMA");
       })
       .with("+", () => {
-        return {
-          lexeme: "+",
-          type: "PLUS" as const,
-        };
+        return new Token("+", "PLUS");
       })
       .with("-", () => {
-        return {
-          lexeme: "-",
-          type: "MINUS" as const,
-        };
+        return new Token("-", "MINUS");
       })
       .otherwise(() => {
         if (this.isChar(char) || this.isDigit(char)) {
           const identifierOrKeyword = this.readIdentifierOrKeyword();
-          return {
-            lexeme: identifierOrKeyword,
-            type: TOKENS[identifierOrKeyword] || "ARGUMENT",
-          };
+          return new Token(
+            identifierOrKeyword,
+            TOKENS[identifierOrKeyword] || "ARGUMENT"
+          );
         }
-        return {
-          lexeme: "",
-          type: "EOF" as const,
-        };
+        return new Token("", "EOF");
       });
     return token;
   }

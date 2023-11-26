@@ -1,5 +1,5 @@
 Uint16Array.prototype.toString = function () {
-  let str = [];
+  let str: string[] = [];
   this.forEach((byte) => {
     str.push(byte.toString(16).padStart(4, "0"));
   });
@@ -7,7 +7,7 @@ Uint16Array.prototype.toString = function () {
 };
 
 Uint8Array.prototype.toString = function () {
-  let str = [];
+  let str: string[] = [];
   this.forEach((byte) => {
     str.push(byte.toString(16).padStart(2, "0"));
   });
