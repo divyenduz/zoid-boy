@@ -3,6 +3,7 @@ export type Instruction = {
   mnemonic: string;
   length: number;
   cycles: number;
+  cycles_jump?: number;
 
   Z: FlagOpZ;
   N: FlagOpN;
@@ -380,6 +381,7 @@ export const InstructionSet: Record<number, Instruction> = {
     mnemonic: "JR NZ,r8",
     length: 2,
     cycles: 8,
+    cycles_jump: 12,
 
     Z: "-",
     N: "-",
@@ -468,6 +470,7 @@ export const InstructionSet: Record<number, Instruction> = {
     mnemonic: "JR Z,r8",
     length: 2,
     cycles: 8,
+    cycles_jump: 12,
 
     Z: "-",
     N: "-",
@@ -556,6 +559,7 @@ export const InstructionSet: Record<number, Instruction> = {
     mnemonic: "JR NC,r8",
     length: 2,
     cycles: 8,
+    cycles_jump: 12,
 
     Z: "-",
     N: "-",
@@ -644,6 +648,7 @@ export const InstructionSet: Record<number, Instruction> = {
     mnemonic: "JR C,r8",
     length: 2,
     cycles: 8,
+    cycles_jump: 12,
 
     Z: "-",
     N: "-",
@@ -2139,7 +2144,8 @@ export const InstructionSet: Record<number, Instruction> = {
     opcode: 0xc0,
     mnemonic: "RET NZ",
     length: 1,
-    cycles: 20,
+    cycles: 8,
+    cycles_jump: 20,
 
     Z: "Z",
     N: "-",
@@ -2161,7 +2167,8 @@ export const InstructionSet: Record<number, Instruction> = {
     opcode: 0xc2,
     mnemonic: "JP NZ,a16",
     length: 3,
-    cycles: 16,
+    cycles: 12,
+    cycles_jump: 16,
 
     Z: "Z",
     N: "-",
@@ -2183,7 +2190,8 @@ export const InstructionSet: Record<number, Instruction> = {
     opcode: 0xc4,
     mnemonic: "CALL NZ,a16",
     length: 3,
-    cycles: 24,
+    cycles: 12,
+    cycles_jump: 24,
 
     Z: "Z",
     N: "-",
@@ -2227,7 +2235,8 @@ export const InstructionSet: Record<number, Instruction> = {
     opcode: 0xc8,
     mnemonic: "RET Z",
     length: 1,
-    cycles: 20,
+    cycles: 8,
+    cycles_jump: 20,
 
     Z: "Z",
     N: "-",
@@ -2249,7 +2258,8 @@ export const InstructionSet: Record<number, Instruction> = {
     opcode: 0xca,
     mnemonic: "JP Z,a16",
     length: 3,
-    cycles: 16,
+    cycles: 12,
+    cycles_jump: 16,
 
     Z: "Z",
     N: "-",
@@ -2271,7 +2281,8 @@ export const InstructionSet: Record<number, Instruction> = {
     opcode: 0xcc,
     mnemonic: "CALL Z,a16",
     length: 3,
-    cycles: 24,
+    cycles: 12,
+    cycles_jump: 24,
 
     Z: "Z",
     N: "-",
@@ -2315,7 +2326,8 @@ export const InstructionSet: Record<number, Instruction> = {
     opcode: 0xd0,
     mnemonic: "RET NC",
     length: 1,
-    cycles: 20,
+    cycles: 8,
+    cycles_jump: 20,
 
     Z: "-",
     N: "-",
@@ -2337,7 +2349,8 @@ export const InstructionSet: Record<number, Instruction> = {
     opcode: 0xd2,
     mnemonic: "JP NC,a16",
     length: 3,
-    cycles: 16,
+    cycles: 12,
+    cycles_jump: 16,
 
     Z: "-",
     N: "-",
@@ -2359,7 +2372,8 @@ export const InstructionSet: Record<number, Instruction> = {
     opcode: 0xd4,
     mnemonic: "CALL NC,a16",
     length: 3,
-    cycles: 24,
+    cycles: 12,
+    cycles_jump: 24,
 
     Z: "-",
     N: "-",
@@ -2403,7 +2417,8 @@ export const InstructionSet: Record<number, Instruction> = {
     opcode: 0xd8,
     mnemonic: "RET C",
     length: 1,
-    cycles: 20,
+    cycles: 8,
+    cycles_jump: 20,
 
     Z: "-",
     N: "-",
@@ -2425,7 +2440,8 @@ export const InstructionSet: Record<number, Instruction> = {
     opcode: 0xda,
     mnemonic: "JP C,a16",
     length: 3,
-    cycles: 16,
+    cycles: 12,
+    cycles_jump: 16,
 
     Z: "-",
     N: "-",
@@ -2447,7 +2463,8 @@ export const InstructionSet: Record<number, Instruction> = {
     opcode: 0xdc,
     mnemonic: "CALL C,a16",
     length: 3,
-    cycles: 24,
+    cycles: 12,
+    cycles_jump: 24,
 
     Z: "-",
     N: "-",

@@ -1408,7 +1408,7 @@ export class CPU {
         throw new Error("Instruction 'RET NZ', 'c0' not implemented");
         this.pc[0] += 0;
         this.prefix_cb = false;
-        return 20;
+        return 8;
       })
       // POP BC
       .with(0xc1, () => {
@@ -1422,7 +1422,7 @@ export class CPU {
         throw new Error("Instruction 'JP NZ,a16', 'c2' not implemented");
         this.pc[0] += 2;
         this.prefix_cb = false;
-        return 16;
+        return 12;
       })
       // JP a16
       .with(0xc3, () => {
@@ -1436,7 +1436,7 @@ export class CPU {
         throw new Error("Instruction 'CALL NZ,a16', 'c4' not implemented");
         this.pc[0] += 2;
         this.prefix_cb = false;
-        return 24;
+        return 12;
       })
       // PUSH BC
       .with(0xc5, () => {
@@ -1464,7 +1464,7 @@ export class CPU {
         throw new Error("Instruction 'RET Z', 'c8' not implemented");
         this.pc[0] += 0;
         this.prefix_cb = false;
-        return 20;
+        return 8;
       })
       // RET
       .with(0xc9, () => {
@@ -1478,7 +1478,7 @@ export class CPU {
         throw new Error("Instruction 'JP Z,a16', 'ca' not implemented");
         this.pc[0] += 2;
         this.prefix_cb = false;
-        return 16;
+        return 12;
       })
       // PREFIX CB
       .with(0xcb, () => {
@@ -1491,7 +1491,7 @@ export class CPU {
         throw new Error("Instruction 'CALL Z,a16', 'cc' not implemented");
         this.pc[0] += 2;
         this.prefix_cb = false;
-        return 24;
+        return 12;
       })
       // CALL a16
       .with(0xcd, () => {
@@ -1519,7 +1519,7 @@ export class CPU {
         throw new Error("Instruction 'RET NC', 'd0' not implemented");
         this.pc[0] += 0;
         this.prefix_cb = false;
-        return 20;
+        return 8;
       })
       // POP DE
       .with(0xd1, () => {
@@ -1533,7 +1533,7 @@ export class CPU {
         throw new Error("Instruction 'JP NC,a16', 'd2' not implemented");
         this.pc[0] += 2;
         this.prefix_cb = false;
-        return 16;
+        return 12;
       })
       // INVALID
       .with(0xd3, () => {
@@ -1547,7 +1547,7 @@ export class CPU {
         throw new Error("Instruction 'CALL NC,a16', 'd4' not implemented");
         this.pc[0] += 2;
         this.prefix_cb = false;
-        return 24;
+        return 12;
       })
       // PUSH DE
       .with(0xd5, () => {
@@ -1575,7 +1575,7 @@ export class CPU {
         throw new Error("Instruction 'RET C', 'd8' not implemented");
         this.pc[0] += 0;
         this.prefix_cb = false;
-        return 20;
+        return 8;
       })
       // RETI
       .with(0xd9, () => {
@@ -1589,7 +1589,7 @@ export class CPU {
         throw new Error("Instruction 'JP C,a16', 'da' not implemented");
         this.pc[0] += 2;
         this.prefix_cb = false;
-        return 16;
+        return 12;
       })
       // INVALID
       .with(0xdb, () => {
@@ -1603,7 +1603,7 @@ export class CPU {
         throw new Error("Instruction 'CALL C,a16', 'dc' not implemented");
         this.pc[0] += 2;
         this.prefix_cb = false;
-        return 24;
+        return 12;
       })
       // INVALID
       .with(0xdd, () => {
@@ -1855,7 +1855,7 @@ export class CPU {
       })
       .otherwise(() => {
         throw new Error(
-          `Instruction "${instruction}" not implemented. Previous instruction: "${this.previousInstruction}"`
+          `Instruction "${instruction}" not implemented. Previous instruction: "${this.previousInstruction}"`,
         );
       });
 
