@@ -2,54 +2,7 @@ import { match } from "ts-pattern";
 import { InstructionSet } from "./InstructionSet";
 import { MemoryType, Tokenizer } from "./Tokenizer";
 import { Token } from "./Token";
-
-class Program {
-  constructor(public statements: Statement[]) {}
-}
-
-class Statement {
-  constructor(
-    public lexeme: string,
-    public instruction: string,
-    public opcode: number,
-    public type: InstructionType,
-    public left: Expression | null,
-    public right: Expression | null
-  ) {}
-}
-
-class Argument {
-  constructor(
-    public value: string,
-    public addressType: MemoryType,
-    public is8Bit: boolean,
-    public isIndirect: boolean
-  ) {}
-}
-
-type Expression = NullaryExpression | UnaryExpression | BinaryExpression;
-
-// Two arguments and operator
-class BinaryExpression {
-  constructor(
-    public left: Argument,
-    public right: Argument,
-    public operator: "PLUS" | "MINUS"
-  ) {}
-}
-
-// Argument and increment or decrement operator
-class UnaryExpression {
-  constructor(
-    public left: Argument,
-    public operator: "PLUS" | "MINUS"
-  ) {}
-}
-
-// Just argument i.e. register or address
-class NullaryExpression {
-  constructor(public left: Argument) {}
-}
+import { Argument, NullaryExpression, Statement, Program } from "./AST";
 
 export type InstructionType =
   | "misc"
