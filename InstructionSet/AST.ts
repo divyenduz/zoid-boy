@@ -1,4 +1,5 @@
 import { InstructionType } from "./Parser";
+import { MemoryType } from "./Tokenizer";
 
 export class Program {
   constructor(public statements: Statement[]) {}
