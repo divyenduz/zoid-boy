@@ -74,7 +74,7 @@ export class Tokenizer {
         if (this.isChar(char) || this.isDigit(char)) {
           const identifierOrKeyword = this.readIdentifierOrKeyword();
           return new Token(
-            identifierOrKeyword,
+            identifierOrKeyword.toLowerCase(),
             TOKENS[identifierOrKeyword] || "ARGUMENT"
           );
         }

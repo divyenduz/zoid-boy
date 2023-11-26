@@ -1,30 +1,55 @@
 import { match } from "ts-pattern";
 import { InstructionSet } from "./InstructionSet";
 import { MemoryType, Tokenizer } from "./Tokenizer";
+import { Token } from "./Token";
 
-type Argument = {
-  value: string;
-  addressType: MemoryType;
-  is8Bit: boolean;
-  isIndirect: boolean;
-};
+class Program {
+  constructor(public statements: Statement[]) {}
+}
 
-type Expression = {
-  left: Argument;
-  right: Argument;
-  operator: "PLUS" | "MINUS";
-};
+class Statement {
+  constructor(
+    public lexeme: string,
+    public instruction: string,
+    public opcode: number,
+    public type: InstructionType,
+    public left: Expression | null,
+    public right: Expression | null
+  ) {}
+}
 
-type Statement = {
-  lexeme: string;
-  instruction: string;
-  opcode: number;
-  instructionData: (typeof InstructionSet)[keyof typeof InstructionSet];
-  type: InstructionType;
+class Argument {
+  constructor(
+    public value: string,
+    public addressType: MemoryType,
+    public is8Bit: boolean,
+    public isIndirect: boolean
+  ) {}
+}
 
-  left: Argument | null;
-  right: Argument | null;
-};
+type Expression = NullaryExpression | UnaryExpression | BinaryExpression;
+
+// Two arguments and operator
+class BinaryExpression {
+  constructor(
+    public left: Argument,
+    public right: Argument,
+    public operator: "PLUS" | "MINUS"
+  ) {}
+}
+
+// Argument and increment or decrement operator
+class UnaryExpression {
+  constructor(
+    public left: Argument,
+    public operator: "PLUS" | "MINUS"
+  ) {}
+}
+
+// Just argument i.e. register or address
+class NullaryExpression {
+  constructor(public left: Argument) {}
+}
 
 export type InstructionType =
   | "misc"
@@ -134,111 +159,130 @@ const MEMORY_TYPE_MAP: Record<string, MemoryType> = {
 
 export class Parser {
   private tokenizer = new Tokenizer();
+  private tokens: Token[] = [];
+  private position = 0;
+  private statement: string = "";
   constructor() {}
 
-  parse(statement: string): Statement[] {
-    statement = statement.toLowerCase().trim();
+  private currentToken() {
+    return this.tokens[this.position];
+  }
+
+  private peekToken() {
+    return this.tokens[this.position + 1];
+  }
+
+  private parseArgument() {
+    const argumentToken = this.currentToken();
+    const memoryType = MEMORY_TYPE_MAP[argumentToken.lexeme] || "Address";
+    const is8Bit = match(memoryType)
+      .with("Register", () => {
+        return argumentToken.lexeme.length === 1;
+      })
+      .with("Address", () => {
+        return argumentToken.lexeme.length === 2;
+      })
+      .exhaustive();
+    const argument = new Argument(
+      argumentToken.lexeme,
+      MEMORY_TYPE_MAP[argumentToken.lexeme],
+      is8Bit,
+      false
+    );
+    return argument;
+  }
+
+  private parseExpression() {
+    this.position += 1;
+    let isIndirect = false;
+    if (this.currentToken().type === "LPAREN") {
+      isIndirect = true;
+      this.position += 1;
+    }
+    if (this.currentToken().type !== "ARGUMENT") {
+      throw new Error("Expected argument after LPAREN");
+    }
+    const firstArgument = this.parseArgument();
+    if (this.peekToken().type === "PLUS" || this.peekToken().type === "MINUS") {
+      const op = this.peekToken().type;
+      this.position += 1;
+      if (this.peekToken().type === "ARGUMENT") {
+        this.position += 1;
+        const secondArgument = this.parseArgument();
+        // @ts-expect-error PLUS MINUS vs TokenType
+        return new BinaryExpression(firstArgument, secondArgument, op);
+      } else if (this.peekToken().type === "RPAREN") {
+        this.position += 1;
+        // @ts-expect-error PLUS MINUS vs TokenType
+        return new UnaryExpression(firstArgument, op);
+      } else {
+        throw new Error("Expected argument or RPAREN after PLUS");
+      }
+    }
+
+    console.log(this.currentToken());
+    console.log(this.peekToken());
+
+    if (this.peekToken().type === "RPAREN") {
+      this.position += 1;
+    }
+
+    if (this.peekToken().type === "EOF" || this.peekToken().type === "COMMA") {
+      return new NullaryExpression(firstArgument);
+    }
+
+    throw new Error("Expected EOF or COMMA after argument");
+  }
+
+  private parseStatement() {
     const instructionData = Object.values(InstructionSet).find(
-      (instruction) => instruction.mnemonic.toLowerCase() === statement
+      (instruction) => instruction.mnemonic.toLowerCase() === this.statement
     );
     if (!instructionData) {
-      throw new Error(`Instruction "${statement}" not found.`);
+      throw new Error(`Instruction "${this.statement}" not found.`);
     }
-    const tokens = this.tokenizer.tokenize(statement);
-    console.log({ tokens });
+
+    const statement = new Statement(
+      this.statement,
+      this.currentToken().lexeme,
+      instructionData.opcode,
+      INSTRUCTION_TYPE[this.currentToken().lexeme],
+      null,
+      null
+    );
+
+    const peekToken = this.peekToken();
+    if (peekToken.type === "EOF") {
+      return statement;
+    }
+    const firstExpression = this.parseExpression();
+    statement.left = firstExpression;
+
+    if (this.peekToken().type === "COMMA") {
+      this.position += 1;
+      const secondArgument = this.parseExpression();
+      statement.right = secondArgument;
+    }
+
+    return statement;
+  }
+
+  private reset() {
+    this.position = 0;
+    this.statement = "";
+    this.tokens = [];
+  }
+
+  parse(statementStr: string): Program {
+    this.reset();
+    this.statement = statementStr.toLowerCase().trim();
+    console.log({ statementStr: this.statement });
+
+    this.tokens = this.tokenizer.tokenize(statementStr);
+    console.log({ tokens: this.tokens });
     const statements: Statement[] = [];
-    let isSecondArgument = false;
-    let isFirstArgumentIndirect = false;
-    let isSecondArgumentIndirect = false;
-    for (const token of tokens) {
-      if (token.type === "INSTRUCTION") {
-        statements.push({
-          lexeme: statement,
-          instruction: token.lexeme,
-          opcode: instructionData.opcode,
-          instructionData,
-          type: INSTRUCTION_TYPE[token.lexeme],
-          left: null,
-          right: null,
-        });
-      }
-
-      if (token.type === "COMMA") {
-        isSecondArgument = true;
-      }
-
-      if (token.type === "LPAREN") {
-        if (isSecondArgument) {
-          isSecondArgumentIndirect = true;
-        } else {
-          isFirstArgumentIndirect = true;
-        }
-      }
-
-      if (token.type === "RPAREN") {
-        // Skip
-      }
-
-      if (token.type === "EOF") {
-        // Skip
-      }
-
-      if (token.type === "ARGUMENT") {
-        const leftOrRight = isSecondArgument ? "right" : "left";
-
-        const addressType = MEMORY_TYPE_MAP[token.lexeme];
-        if (!addressType) {
-          throw new Error(
-            `Address type not found for "${token.lexeme}" in "${statement}"`
-          );
-        }
-        const is8Bit = match(addressType)
-          .with("Register", () => {
-            return token.lexeme.length === 1;
-          })
-          .with("Address", () => {
-            return token.lexeme.length === 2;
-          })
-          .exhaustive();
-
-        const isIndirect = isSecondArgument
-          ? isSecondArgumentIndirect
-          : isFirstArgumentIndirect;
-
-        statements[statements.length - 1][leftOrRight] = {
-          value: token.lexeme,
-          addressType,
-          is8Bit,
-          isIndirect,
-        };
-      }
-    }
-    return statements;
+    const statement = this.parseStatement();
+    statements.push(statement);
+    return new Program(statements);
   }
 }
-
-async function main() {
-  const input = `
-// LD BC,d16
-// LD (BC),A
-// LD (HL+),A
-// LD A,(HL+)
-// LD (HL-),A
-LD HL,SP+r8
-// PREFIX CB
-  `
-    .trim()
-    .split("\n")
-    .filter((line) => !line.startsWith("//"))
-    .map((line) => line.trim())
-    .filter((line) => line.length > 0);
-
-  const parser = new Parser();
-  for (const line of input) {
-    const statements = parser.parse(line);
-    // @ts-expect-error
-    delete statements[0].instructionData;
-    console.log(line, statements);
-  }
-}
-main();
