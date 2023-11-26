@@ -26,63 +26,82 @@ export class CPUWriter {
       const { opcode, mnemonic, length, cycles, Z, N, H, C } = instruction;
       const opcodeHex = this.numberToHex(opcode);
 
-      const parsedInstruction = parser.parse(mnemonic);
-      const debugOpcode = parsedInstruction[0].opcode === 0x20;
+      const program = parser.parse(mnemonic);
+      const parsedInstruction = program.statements[0];
+      const debugOpcode = parsedInstruction.opcode === 0x20;
       if (debugOpcode) {
         console.log(parsedInstruction);
       }
 
       let statements: string[] = [];
 
-      const impl = match(parsedInstruction[0].instruction)
+      const impl = match(parsedInstruction.instruction)
         // TODO: this should be parsed as a single instruction called "prefix cb"
         .with("prefix", () => {
           return `this.prefix_cb = true;`;
         })
         .with("xor", () => {
-          const { left } = parsedInstruction[0];
+          const { left, right } = parsedInstruction;
           if (!left) {
             throw new Error(
               "Failed to find left argument, XOR must have one argument"
             );
           }
+          if (right) {
+            throw new Error(
+              "Found right argument, XOR must have only one argument"
+            );
+          }
+
+          const argument = left.left;
 
           let s: string[] = [];
-          const body = match({ left })
+          const body = match(argument)
             .with(
               {
-                left: {
-                  addressType: "Address",
-                },
+                addressType: "Address",
               },
-              () => {
-                s.push(`const a8 = this.mmu.readByte(this.pc);`);
-                s.push(`this.a[0] ^= a8[0];`);
+              (argument) => {
+                s.push(`const d8 = this.mmu.readByte(this.pc);`);
+                s.push(`this.a[0] ^= d8[0];`);
               }
             )
             .with(
               {
-                left: {
-                  addressType: "Register",
-                },
+                addressType: "Register",
+                isIndirect: true,
               },
-              () => {
-                s.push(`this.a[0] ^= this.${left.value}[0];`);
+              (argument) => {
+                s.push(
+                  `this.a[0] ^= this.mmu.readByte(this.${argument.value})[0];`
+                );
               }
             )
+            .with(
+              {
+                addressType: "Register",
+              },
+              (argument) => {
+                s.push(`this.a[0] ^= this.${argument.value}[0];`);
+              }
+            )
+
             .exhaustive();
           return s.join("\n");
         })
         .with("ld", () => {
-          const { left, right } = parsedInstruction[0];
+          const { left, right } = parsedInstruction;
           if (!left || !right) {
             throw new Error(
               "Failed to find left or right argument, LD must have both"
             );
           }
 
+          const firstArgument = left.left;
+          const secondArgument = right.left;
+
           let s: string[] = [];
-          const body = match({ left, right })
+          const body = match({ left: firstArgument, right: secondArgument })
             // Left address - 8 bit
             .with(
               {

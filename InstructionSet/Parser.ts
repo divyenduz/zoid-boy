@@ -2,7 +2,15 @@ import { match } from "ts-pattern";
 import { InstructionSet } from "./InstructionSet";
 import { MemoryType, Tokenizer } from "./Tokenizer";
 import { Token } from "./Token";
-import { Argument, NullaryExpression, Statement, Program } from "./AST";
+import {
+  Argument,
+  NullaryExpression,
+  Statement,
+  Program,
+  BinaryExpression,
+  UnaryExpression,
+} from "./AST";
+import { parse } from "path";
 
 export type InstructionType =
   | "misc"
@@ -126,6 +134,11 @@ export class Parser {
   }
 
   private parseArgument() {
+    let isIndirect = false;
+    if (this.currentToken().type === "LPAREN") {
+      isIndirect = true;
+      this.position += 1;
+    }
     const argumentToken = this.currentToken();
     const memoryType = MEMORY_TYPE_MAP[argumentToken.lexeme] || "Address";
     const is8Bit = match(memoryType)
@@ -140,21 +153,13 @@ export class Parser {
       argumentToken.lexeme,
       MEMORY_TYPE_MAP[argumentToken.lexeme],
       is8Bit,
-      false
+      isIndirect
     );
     return argument;
   }
 
   private parseExpression() {
     this.position += 1;
-    let isIndirect = false;
-    if (this.currentToken().type === "LPAREN") {
-      isIndirect = true;
-      this.position += 1;
-    }
-    if (this.currentToken().type !== "ARGUMENT") {
-      throw new Error("Expected argument after LPAREN");
-    }
     const firstArgument = this.parseArgument();
     if (this.peekToken().type === "PLUS" || this.peekToken().type === "MINUS") {
       const op = this.peekToken().type;
@@ -162,12 +167,14 @@ export class Parser {
       if (this.peekToken().type === "ARGUMENT") {
         this.position += 1;
         const secondArgument = this.parseArgument();
-        // @ts-expect-error PLUS MINUS vs TokenType
-        return new BinaryExpression(firstArgument, secondArgument, op);
+        return new BinaryExpression(
+          firstArgument,
+          secondArgument,
+          op as "PLUS" | "MINUS"
+        );
       } else if (this.peekToken().type === "RPAREN") {
         this.position += 1;
-        // @ts-expect-error PLUS MINUS vs TokenType
-        return new UnaryExpression(firstArgument, op);
+        return new UnaryExpression(firstArgument, op as "PLUS" | "MINUS");
       } else {
         throw new Error("Expected argument or RPAREN after PLUS");
       }
@@ -239,3 +246,7 @@ export class Parser {
     return new Program(statements);
   }
 }
+
+// const parser = new Parser();
+// const program = parser.parse("XOR (HL)");
+// console.log(program.statements[0]);

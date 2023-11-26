@@ -1279,7 +1279,7 @@ export class CPU {
       })
       // XOR (HL)
       .with(0xae, () => {
-        this.a[0] ^= this.hl[0];
+        this.a[0] ^= this.mmu.readByte(this.hl)[0];
         this.pc[0] += 0;
         this.prefix_cb = false;
         return 8;
@@ -1727,8 +1727,8 @@ export class CPU {
       })
       // XOR d8
       .with(0xee, () => {
-        const a8 = this.mmu.readByte(this.pc);
-        this.a[0] ^= a8[0];
+        const d8 = this.mmu.readByte(this.pc);
+        this.a[0] ^= d8[0];
         this.pc[0] += 1;
         this.prefix_cb = false;
         return 8;
@@ -1798,8 +1798,7 @@ export class CPU {
       })
       // LD HL,SP+r8
       .with(0xf8, () => {
-        const d8 = this.mmu.readByte(this.pc);
-        this.mmu.writeByte(this.mmu.readWord(this.hl), d8);
+        this.hl = this.sp;
         this.pc[0] += 1;
         this.prefix_cb = false;
         return 12;
@@ -1856,7 +1855,7 @@ export class CPU {
       })
       .otherwise(() => {
         throw new Error(
-          `Instruction "${instruction}" not implemented. Previous instruction: "${this.previousInstruction}"`,
+          `Instruction "${instruction}" not implemented. Previous instruction: "${this.previousInstruction}"`
         );
       });
 
