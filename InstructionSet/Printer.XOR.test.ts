@@ -10,7 +10,7 @@ describe("Printer - XOR tests", () => {
       Printer.trimString(`"// XOR C
       .with(0xa9, ()=>{
         const v = this.c
-        this.a ^= v
+        this.a[0] ^= v[0]
       })"`)
     );
   });
@@ -22,7 +22,7 @@ describe("Printer - XOR tests", () => {
       Printer.trimString(`"// XOR (HL)
       .with(0xae, ()=>{
         const v = this.mmu.readByte(this.hl)
-        this.a ^= v
+        this.a[0] ^= v[0]
       })"`)
     );
   });
@@ -34,7 +34,7 @@ describe("Printer - XOR tests", () => {
       Printer.trimString(`"// XOR d8
       .with(0xee, ()=>{
         const v /*d8*/ = this.mmu.readByte(this.pc);
-        this.a ^= v
+        this.a[0] ^= v[0]
       })"`)
     );
   });

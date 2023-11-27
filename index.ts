@@ -1,6 +1,7 @@
 import "./helpers/TypedArrays";
 import { CPU } from "./InstructionSet/CPU";
 import { InstructionSet } from "./InstructionSet/InstructionSet";
+import { InstructionSetPrefixCB } from "./InstructionSet/InstructionSetPrefixCB";
 import { MMU } from "./MMU/MMU";
 import fs from "fs";
 
@@ -24,13 +25,19 @@ async function main() {
       process.exit(1);
     }
     const instruction = mmu.readByte(cpu.pc);
-    const instructionData = Object.values(InstructionSet).find(
+    const instructionData = Object.values(
+      cpu.prefix_cb ? InstructionSetPrefixCB : InstructionSet
+    ).find(
       (instructionFromSet) => instructionFromSet.opcode === instruction[0]
     );
     if (!instructionData) {
       throw new Error(`Instruction "${instruction}" not found.`);
     }
-    console.log(`${cpu.pc}: ${instructionData.mnemonic} (${instruction})`);
+    console.log(
+      `${cpu.pc}: ${instructionData.mnemonic} (${instruction}${
+        cpu.prefix_cb ? "_CB" : ""
+      })`
+    );
     cpu.pc[0] += 1;
     if (cpu.prefix_cb) {
       cpu.executeCB(instruction);

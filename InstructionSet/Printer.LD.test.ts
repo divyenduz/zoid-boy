@@ -134,10 +134,12 @@ describe("Printer - LD tests", () => {
   test("LD A,(C)", () => {
     const printer = new Printer();
     const impl = printer.printInstruction("LD A,(C)", false);
+    // TODO: readByte needs c to be a 16 bit address i.e. 0xff00 + c
     expect(impl).toMatchInlineSnapshot(
       Printer.trimString(`"// LD A,(C)
       .with(0xf2, ()=>{
-        const v = this.mmu.readByte(this.c)
+        const addr = new Uint16Array(0xFF00 + this.c[0])
+        const v = this.mmu.readByte(addr)
         this.a = v
       })"`)
     );

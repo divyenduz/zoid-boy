@@ -65,7 +65,14 @@ export class Printer {
 
           if (argument.addressType === "Register") {
             if (argument.isIndirect) {
-              return `const v = this.mmu.readByte(this.${argument.value})`;
+              if (argument.is8Bit) {
+                return `
+                const addr = new Uint16Array(0xFF00 + this.${argument.value}[0])
+                const v = this.mmu.readByte(addr)
+                `;
+              } else {
+                return `const v = this.mmu.readByte(this.${argument.value})`;
+              }
             } else {
               return `const v = this.${argument.value}`;
             }
@@ -150,7 +157,7 @@ export class Printer {
   printXORInstruction(parsedInstruction: Statement) {
     const code = Printer.trimString(`
     ${this.printReader(parsedInstruction.left)}
-    this.a ^= v
+    this.a[0] ^= v[0]
     `);
     return code;
   }
@@ -212,8 +219,11 @@ export class Printer {
       .with("invalid", () => {
         return `throw new Error("Invalid instruction, should never be called");`;
       })
-      .with("invalid", () => {
-        return `throw new Error("Invalid instruction, should never be called");`;
+      .with("nop", () => {
+        return ``;
+      })
+      .with("prefix", () => {
+        return `this.prefix_cb = true;`;
       })
       .with("ld", () => {
         return this.printLDInstruction(parsedInstruction);

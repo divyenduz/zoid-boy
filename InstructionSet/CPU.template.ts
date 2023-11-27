@@ -30,10 +30,10 @@ export class CPU {
    * Half-carry (0x20): Set if, in the result of the last operation, the lower half of the byte overflowed past 15;
    * Carry (0x10): Set if the last operation produced a result over 255 (for additions) or under 0 (for subtractions);
    */
-  z_flag: Uint1Array = new Uint1Array(this._REGISTER_MEMORY, 0, 1); // 8th bit, [0] reversed because endian-ness
-  n_flag: Uint1Array = new Uint1Array(this._REGISTER_MEMORY, 0, 1); // 7th bit, [1] reversed because endian-ness
-  h_flag: Uint1Array = new Uint1Array(this._REGISTER_MEMORY, 0, 1); // 6th bit, [2] reversed because endian-ness
-  c_flag: Uint1Array = new Uint1Array(this._REGISTER_MEMORY, 0, 1); // 5th bit, [3] reversed because endian-ness
+  flag_z: Uint1Array = new Uint1Array(this._REGISTER_MEMORY, 0, 1); // 8th bit, [0] reversed because endian-ness
+  flag_n: Uint1Array = new Uint1Array(this._REGISTER_MEMORY, 0, 1); // 7th bit, [1] reversed because endian-ness
+  flag_h: Uint1Array = new Uint1Array(this._REGISTER_MEMORY, 0, 1); // 6th bit, [2] reversed because endian-ness
+  flag_c: Uint1Array = new Uint1Array(this._REGISTER_MEMORY, 0, 1); // 5th bit, [3] reversed because endian-ness
 
   pc: Uint16Array = new Uint16Array(1);
   sp: Uint16Array = new Uint16Array(1);
