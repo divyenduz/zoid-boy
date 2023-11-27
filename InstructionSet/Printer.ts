@@ -29,13 +29,10 @@ export class Printer {
       .trim();
   }
 
-  private getInstructionData(instruction: string, prefixCB: boolean) {
+  private getInstructionData(opcode: number, prefixCB: boolean) {
     return Object.values(
       prefixCB ? InstructionSetPrefixCB : InstructionSet
-    ).find(
-      (instructionFromSet) =>
-        instructionFromSet.mnemonic.toLowerCase() === instruction.toLowerCase()
-    );
+    ).find((instructionFromSet) => instructionFromSet.opcode === opcode);
   }
 
   private numberToHex(n: number) {
@@ -75,6 +72,11 @@ export class Printer {
           } else {
             return `
             const v /*${argument.value}*/ = this.mmu.${readerFn}(this.pc);
+            ${
+              argument.value === "r8"
+                ? `v[0] = ${this.inlineUnsigned("v[0]")}`
+                : ""
+            }
             `.trim();
           }
         }
@@ -153,10 +155,55 @@ export class Printer {
     return code;
   }
 
+  printJRInstruction(parsedInstruction: Statement) {
+    if (parsedInstruction.left && parsedInstruction.right) {
+      // JR with jump
+
+      const instructionData = this.getInstructionData(
+        parsedInstruction.opcode,
+        false
+      );
+      if (!instructionData) {
+        throw new Error(
+          `Instruction "${parsedInstruction.instruction}" not found.`
+        );
+      }
+
+      const flagMap: Record<string, string> = {
+        z: "this.flag_z[0]",
+        nz: "!(this.flag_z[0])",
+        c: "this.flag_c[3]",
+        nc: "!(this.flag_c[3])",
+      };
+
+      const code = Printer.trimString(`
+        let cycles = 0
+        if (${flagMap[parsedInstruction.left.left.value]}) {
+            ${this.printReader(parsedInstruction.right)}
+            this.pc[0] += v[0]
+            cycles = ${instructionData?.cycles_jump}
+        } else {
+            cycles = ${instructionData?.cycles}
+        }
+        `);
+      return code;
+    } else {
+      // JR with no jump
+      const code = Printer.trimString(`
+        ${this.printReader(parsedInstruction.left)}
+        this.pc[0] += v[0]
+        `);
+      return code;
+    }
+  }
+
   printInstruction(instruction: string, prefixCB: boolean) {
     const program = this.parser.parse(instruction);
     const parsedInstruction = program.statements[0];
-    const instructionData = this.getInstructionData(instruction, prefixCB);
+    const instructionData = this.getInstructionData(
+      parsedInstruction.opcode,
+      prefixCB
+    );
     if (!instructionData) {
       throw new Error(`Instruction "${instruction}" not found.`);
     }
@@ -173,6 +220,9 @@ export class Printer {
       })
       .with("xor", () => {
         return this.printXORInstruction(parsedInstruction);
+      })
+      .with("jr", () => {
+        return this.printJRInstruction(parsedInstruction);
       })
       .otherwise(() => {
         return `throw new Error("Instruction '${instruction}', '${opcodeHex}' not implemented");`;

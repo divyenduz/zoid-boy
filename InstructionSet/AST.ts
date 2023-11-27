@@ -25,7 +25,7 @@ export class Argument {
   ) {}
 }
 
-type Expression = NullaryExpression | UnaryExpression | BinaryExpression;
+export type Expression = NullaryExpression | UnaryExpression | BinaryExpression;
 
 // Two arguments and operator
 export class BinaryExpression {

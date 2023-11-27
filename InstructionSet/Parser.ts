@@ -10,7 +10,6 @@ import {
   BinaryExpression,
   UnaryExpression,
 } from "./AST";
-import { parse } from "path";
 import { InstructionSetPrefixCB } from "./InstructionSetPrefixCB";
 
 export type InstructionType =

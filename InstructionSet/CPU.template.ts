@@ -45,6 +45,11 @@ export class CPU {
   constructor(private mmu: MMU) {}
 
   execute(instruction: Uint8Array) {
+    if (this.prefix_cb) {
+      throw new Error(
+        "Normal instruction should not be called with prefix_cb set"
+      );
+    }
     // {{ADD_EXECUTE_MATCH}}
 
     this.previousInstruction[0] = instruction[0];
