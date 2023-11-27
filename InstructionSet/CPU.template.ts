@@ -49,4 +49,10 @@ export class CPU {
 
     this.previousInstruction[0] = instruction[0];
   }
+
+  executeCB(instruction: Uint8Array) {
+    // {{ADD_EXECUTE_CB_MATCH}}
+
+    this.previousInstruction[0] = instruction[0];
+  }
 }

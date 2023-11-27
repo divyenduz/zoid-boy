@@ -14,7 +14,7 @@ async function main() {
   let cycles = 0;
   while (true) {
     cycles += 1;
-    if (cycles > 1000) {
+    if (cycles > 200) {
       console.error("BOOTROM LOAD FAILURE");
       console.log({ cycles });
       process.exit(1);
@@ -32,7 +32,11 @@ async function main() {
     }
     console.log(`${cpu.pc}: ${instructionData.mnemonic} (${instruction})`);
     cpu.pc[0] += 1;
-    cpu.execute(instruction);
+    if (cpu.prefix_cb) {
+      cpu.executeCB(instruction);
+    } else {
+      cpu.execute(instruction);
+    }
 
     if (checkBootLoadSuccess(cpu)) {
       console.log("BOOTROM LOAD SUCCESS");

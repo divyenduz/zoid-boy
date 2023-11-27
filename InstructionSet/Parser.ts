@@ -11,6 +11,7 @@ import {
   UnaryExpression,
 } from "./AST";
 import { parse } from "path";
+import { InstructionSetPrefixCB } from "./InstructionSetPrefixCB";
 
 export type InstructionType =
   | "misc"
@@ -180,9 +181,6 @@ export class Parser {
       }
     }
 
-    console.log(this.currentToken());
-    console.log(this.peekToken());
-
     if (this.peekToken().type === "RPAREN") {
       this.position += 1;
     }
@@ -195,9 +193,14 @@ export class Parser {
   }
 
   private parseStatement() {
-    const instructionData = Object.values(InstructionSet).find(
+    let instructionData = Object.values(InstructionSet).find(
       (instruction) => instruction.mnemonic.toLowerCase() === this.statement
     );
+    if (!instructionData) {
+      instructionData = Object.values(InstructionSetPrefixCB).find(
+        (instruction) => instruction.mnemonic.toLowerCase() === this.statement
+      );
+    }
     if (!instructionData) {
       throw new Error(`Instruction "${this.statement}" not found.`);
     }
@@ -236,10 +239,8 @@ export class Parser {
   parse(statementStr: string): Program {
     this.reset();
     this.statement = statementStr.toLowerCase().trim();
-    console.log({ statementStr: this.statement });
 
     this.tokens = this.tokenizer.tokenize(statementStr);
-    console.log({ tokens: this.tokens });
     const statements: Statement[] = [];
     const statement = this.parseStatement();
     statements.push(statement);
