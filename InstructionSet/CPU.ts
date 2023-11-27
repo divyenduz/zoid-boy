@@ -57,12 +57,15 @@ export class CPU {
       .with(0x01, () => {
         const v /*d16*/ = this.mmu.readWord(this.pc);
         this.bc = v;
+        this.pc[0] += 2;
+        return 12;
       })
       // LD (BC),A
       .with(0x02, () => {
         const v = this.a;
         const addr = this.mmu.readWord(this.bc);
         this.mmu.writeByte(addr, v);
+        return 8;
       })
       // INC BC
       .with(0x03, () => {
@@ -80,6 +83,8 @@ export class CPU {
       .with(0x06, () => {
         const v /*d8*/ = this.mmu.readByte(this.pc);
         this.b = v;
+        this.pc[0] += 1;
+        return 8;
       })
       // RLCA
       .with(0x07, () => {
@@ -90,6 +95,8 @@ export class CPU {
         const v = this.sp;
         const addr /*a16*/ = this.mmu.readWord(this.pc);
         this.mmu.writeWord(addr, v);
+        this.pc[0] += 2;
+        return 20;
       })
       // ADD HL,BC
       .with(0x09, () => {
@@ -99,6 +106,7 @@ export class CPU {
       .with(0x0a, () => {
         const v = this.mmu.readByte(this.bc);
         this.a = v;
+        return 8;
       })
       // DEC BC
       .with(0x0b, () => {
@@ -116,6 +124,8 @@ export class CPU {
       .with(0x0e, () => {
         const v /*d8*/ = this.mmu.readByte(this.pc);
         this.c = v;
+        this.pc[0] += 1;
+        return 8;
       })
       // RRCA
       .with(0x0f, () => {
@@ -129,12 +139,15 @@ export class CPU {
       .with(0x11, () => {
         const v /*d16*/ = this.mmu.readWord(this.pc);
         this.de = v;
+        this.pc[0] += 2;
+        return 12;
       })
       // LD (DE),A
       .with(0x12, () => {
         const v = this.a;
         const addr = this.mmu.readWord(this.de);
         this.mmu.writeByte(addr, v);
+        return 8;
       })
       // INC DE
       .with(0x13, () => {
@@ -152,6 +165,8 @@ export class CPU {
       .with(0x16, () => {
         const v /*d8*/ = this.mmu.readByte(this.pc);
         this.d = v;
+        this.pc[0] += 1;
+        return 8;
       })
       // RLA
       .with(0x17, () => {
@@ -171,6 +186,7 @@ export class CPU {
       .with(0x1a, () => {
         const v = this.mmu.readByte(this.de);
         this.a = v;
+        return 8;
       })
       // DEC DE
       .with(0x1b, () => {
@@ -188,6 +204,8 @@ export class CPU {
       .with(0x1e, () => {
         const v /*d8*/ = this.mmu.readByte(this.pc);
         this.e = v;
+        this.pc[0] += 1;
+        return 8;
       })
       // RRA
       .with(0x1f, () => {
@@ -195,20 +213,22 @@ export class CPU {
       })
       // JR NZ,r8
       .with(0x20, () => {
-        let cycles = 0;
         if (!this.flag_z[0]) {
           const v /*r8*/ = this.mmu.readByte(this.pc);
           v[0] = (0x80 ^ v[0]) - 0x80;
           this.pc[0] += v[0];
-          cycles = 12;
+          return 12;
         } else {
-          cycles = 8;
+          this.pc[0] += 1;
+          return 8;
         }
       })
       // LD HL,d16
       .with(0x21, () => {
         const v /*d16*/ = this.mmu.readWord(this.pc);
         this.hl = v;
+        this.pc[0] += 2;
+        return 12;
       })
       // LD (HL+),A
       .with(0x22, () => {
@@ -216,6 +236,7 @@ export class CPU {
         const addr = this.mmu.readWord(this.hl);
         this.mmu.writeByte(addr, v);
         this.hl[0] += 1;
+        return 8;
       })
       // INC HL
       .with(0x23, () => {
@@ -233,6 +254,8 @@ export class CPU {
       .with(0x26, () => {
         const v /*d8*/ = this.mmu.readByte(this.pc);
         this.h = v;
+        this.pc[0] += 1;
+        return 8;
       })
       // DAA
       .with(0x27, () => {
@@ -240,14 +263,14 @@ export class CPU {
       })
       // JR Z,r8
       .with(0x28, () => {
-        let cycles = 0;
         if (this.flag_z[0]) {
           const v /*r8*/ = this.mmu.readByte(this.pc);
           v[0] = (0x80 ^ v[0]) - 0x80;
           this.pc[0] += v[0];
-          cycles = 12;
+          return 12;
         } else {
-          cycles = 8;
+          this.pc[0] += 1;
+          return 8;
         }
       })
       // ADD HL,HL
@@ -259,6 +282,7 @@ export class CPU {
         const v = this.mmu.readByte(this.hl);
         this.a = v;
         this.hl[0] += 1;
+        return 8;
       })
       // DEC HL
       .with(0x2b, () => {
@@ -276,6 +300,8 @@ export class CPU {
       .with(0x2e, () => {
         const v /*d8*/ = this.mmu.readByte(this.pc);
         this.l = v;
+        this.pc[0] += 1;
+        return 8;
       })
       // CPL
       .with(0x2f, () => {
@@ -283,20 +309,22 @@ export class CPU {
       })
       // JR NC,r8
       .with(0x30, () => {
-        let cycles = 0;
         if (!this.flag_c[3]) {
           const v /*r8*/ = this.mmu.readByte(this.pc);
           v[0] = (0x80 ^ v[0]) - 0x80;
           this.pc[0] += v[0];
-          cycles = 12;
+          return 12;
         } else {
-          cycles = 8;
+          this.pc[0] += 1;
+          return 8;
         }
       })
       // LD SP,d16
       .with(0x31, () => {
         const v /*d16*/ = this.mmu.readWord(this.pc);
         this.sp = v;
+        this.pc[0] += 2;
+        return 12;
       })
       // LD (HL-),A
       .with(0x32, () => {
@@ -304,6 +332,7 @@ export class CPU {
         const addr = this.mmu.readWord(this.hl);
         this.mmu.writeByte(addr, v);
         this.hl[0] -= 1;
+        return 8;
       })
       // INC SP
       .with(0x33, () => {
@@ -322,6 +351,8 @@ export class CPU {
         const v /*d8*/ = this.mmu.readByte(this.pc);
         const addr = this.mmu.readWord(this.hl);
         this.mmu.writeByte(addr, v);
+        this.pc[0] += 1;
+        return 12;
       })
       // SCF
       .with(0x37, () => {
@@ -329,14 +360,14 @@ export class CPU {
       })
       // JR C,r8
       .with(0x38, () => {
-        let cycles = 0;
         if (this.flag_c[3]) {
           const v /*r8*/ = this.mmu.readByte(this.pc);
           v[0] = (0x80 ^ v[0]) - 0x80;
           this.pc[0] += v[0];
-          cycles = 12;
+          return 12;
         } else {
-          cycles = 8;
+          this.pc[0] += 1;
+          return 8;
         }
       })
       // ADD HL,SP
@@ -348,6 +379,7 @@ export class CPU {
         const v = this.mmu.readByte(this.hl);
         this.a = v;
         this.hl[0] -= 1;
+        return 8;
       })
       // DEC SP
       .with(0x3b, () => {
@@ -365,6 +397,8 @@ export class CPU {
       .with(0x3e, () => {
         const v /*d8*/ = this.mmu.readByte(this.pc);
         this.a = v;
+        this.pc[0] += 1;
+        return 8;
       })
       // CCF
       .with(0x3f, () => {
@@ -374,277 +408,331 @@ export class CPU {
       .with(0x40, () => {
         const v = this.b;
         this.b = v;
+        return 4;
       })
       // LD B,C
       .with(0x41, () => {
         const v = this.c;
         this.b = v;
+        return 4;
       })
       // LD B,D
       .with(0x42, () => {
         const v = this.d;
         this.b = v;
+        return 4;
       })
       // LD B,E
       .with(0x43, () => {
         const v = this.e;
         this.b = v;
+        return 4;
       })
       // LD B,H
       .with(0x44, () => {
         const v = this.h;
         this.b = v;
+        return 4;
       })
       // LD B,L
       .with(0x45, () => {
         const v = this.l;
         this.b = v;
+        return 4;
       })
       // LD B,(HL)
       .with(0x46, () => {
         const v = this.mmu.readByte(this.hl);
         this.b = v;
+        return 8;
       })
       // LD B,A
       .with(0x47, () => {
         const v = this.a;
         this.b = v;
+        return 4;
       })
       // LD C,B
       .with(0x48, () => {
         const v = this.b;
         this.c = v;
+        return 4;
       })
       // LD C,C
       .with(0x49, () => {
         const v = this.c;
         this.c = v;
+        return 4;
       })
       // LD C,D
       .with(0x4a, () => {
         const v = this.d;
         this.c = v;
+        return 4;
       })
       // LD C,E
       .with(0x4b, () => {
         const v = this.e;
         this.c = v;
+        return 4;
       })
       // LD C,H
       .with(0x4c, () => {
         const v = this.h;
         this.c = v;
+        return 4;
       })
       // LD C,L
       .with(0x4d, () => {
         const v = this.l;
         this.c = v;
+        return 4;
       })
       // LD C,(HL)
       .with(0x4e, () => {
         const v = this.mmu.readByte(this.hl);
         this.c = v;
+        return 8;
       })
       // LD C,A
       .with(0x4f, () => {
         const v = this.a;
         this.c = v;
+        return 4;
       })
       // LD D,B
       .with(0x50, () => {
         const v = this.b;
         this.d = v;
+        return 4;
       })
       // LD D,C
       .with(0x51, () => {
         const v = this.c;
         this.d = v;
+        return 4;
       })
       // LD D,D
       .with(0x52, () => {
         const v = this.d;
         this.d = v;
+        return 4;
       })
       // LD D,E
       .with(0x53, () => {
         const v = this.e;
         this.d = v;
+        return 4;
       })
       // LD D,H
       .with(0x54, () => {
         const v = this.h;
         this.d = v;
+        return 4;
       })
       // LD D,L
       .with(0x55, () => {
         const v = this.l;
         this.d = v;
+        return 4;
       })
       // LD D,(HL)
       .with(0x56, () => {
         const v = this.mmu.readByte(this.hl);
         this.d = v;
+        return 8;
       })
       // LD D,A
       .with(0x57, () => {
         const v = this.a;
         this.d = v;
+        return 4;
       })
       // LD E,B
       .with(0x58, () => {
         const v = this.b;
         this.e = v;
+        return 4;
       })
       // LD E,C
       .with(0x59, () => {
         const v = this.c;
         this.e = v;
+        return 4;
       })
       // LD E,D
       .with(0x5a, () => {
         const v = this.d;
         this.e = v;
+        return 4;
       })
       // LD E,E
       .with(0x5b, () => {
         const v = this.e;
         this.e = v;
+        return 4;
       })
       // LD E,H
       .with(0x5c, () => {
         const v = this.h;
         this.e = v;
+        return 4;
       })
       // LD E,L
       .with(0x5d, () => {
         const v = this.l;
         this.e = v;
+        return 4;
       })
       // LD E,(HL)
       .with(0x5e, () => {
         const v = this.mmu.readByte(this.hl);
         this.e = v;
+        return 8;
       })
       // LD E,A
       .with(0x5f, () => {
         const v = this.a;
         this.e = v;
+        return 4;
       })
       // LD H,B
       .with(0x60, () => {
         const v = this.b;
         this.h = v;
+        return 4;
       })
       // LD H,C
       .with(0x61, () => {
         const v = this.c;
         this.h = v;
+        return 4;
       })
       // LD H,D
       .with(0x62, () => {
         const v = this.d;
         this.h = v;
+        return 4;
       })
       // LD H,E
       .with(0x63, () => {
         const v = this.e;
         this.h = v;
+        return 4;
       })
       // LD H,H
       .with(0x64, () => {
         const v = this.h;
         this.h = v;
+        return 4;
       })
       // LD H,L
       .with(0x65, () => {
         const v = this.l;
         this.h = v;
+        return 4;
       })
       // LD H,(HL)
       .with(0x66, () => {
         const v = this.mmu.readByte(this.hl);
         this.h = v;
+        return 8;
       })
       // LD H,A
       .with(0x67, () => {
         const v = this.a;
         this.h = v;
+        return 4;
       })
       // LD L,B
       .with(0x68, () => {
         const v = this.b;
         this.l = v;
+        return 4;
       })
       // LD L,C
       .with(0x69, () => {
         const v = this.c;
         this.l = v;
+        return 4;
       })
       // LD L,D
       .with(0x6a, () => {
         const v = this.d;
         this.l = v;
+        return 4;
       })
       // LD L,E
       .with(0x6b, () => {
         const v = this.e;
         this.l = v;
+        return 4;
       })
       // LD L,H
       .with(0x6c, () => {
         const v = this.h;
         this.l = v;
+        return 4;
       })
       // LD L,L
       .with(0x6d, () => {
         const v = this.l;
         this.l = v;
+        return 4;
       })
       // LD L,(HL)
       .with(0x6e, () => {
         const v = this.mmu.readByte(this.hl);
         this.l = v;
+        return 8;
       })
       // LD L,A
       .with(0x6f, () => {
         const v = this.a;
         this.l = v;
+        return 4;
       })
       // LD (HL),B
       .with(0x70, () => {
         const v = this.b;
         const addr = this.mmu.readWord(this.hl);
         this.mmu.writeByte(addr, v);
+        return 8;
       })
       // LD (HL),C
       .with(0x71, () => {
         const v = this.c;
         const addr = this.mmu.readWord(this.hl);
         this.mmu.writeByte(addr, v);
+        return 8;
       })
       // LD (HL),D
       .with(0x72, () => {
         const v = this.d;
         const addr = this.mmu.readWord(this.hl);
         this.mmu.writeByte(addr, v);
+        return 8;
       })
       // LD (HL),E
       .with(0x73, () => {
         const v = this.e;
         const addr = this.mmu.readWord(this.hl);
         this.mmu.writeByte(addr, v);
+        return 8;
       })
       // LD (HL),H
       .with(0x74, () => {
         const v = this.h;
         const addr = this.mmu.readWord(this.hl);
         this.mmu.writeByte(addr, v);
+        return 8;
       })
       // LD (HL),L
       .with(0x75, () => {
         const v = this.l;
         const addr = this.mmu.readWord(this.hl);
         this.mmu.writeByte(addr, v);
+        return 8;
       })
       // HALT
       .with(0x76, () => {
@@ -655,46 +743,55 @@ export class CPU {
         const v = this.a;
         const addr = this.mmu.readWord(this.hl);
         this.mmu.writeByte(addr, v);
+        return 8;
       })
       // LD A,B
       .with(0x78, () => {
         const v = this.b;
         this.a = v;
+        return 4;
       })
       // LD A,C
       .with(0x79, () => {
         const v = this.c;
         this.a = v;
+        return 4;
       })
       // LD A,D
       .with(0x7a, () => {
         const v = this.d;
         this.a = v;
+        return 4;
       })
       // LD A,E
       .with(0x7b, () => {
         const v = this.e;
         this.a = v;
+        return 4;
       })
       // LD A,H
       .with(0x7c, () => {
         const v = this.h;
         this.a = v;
+        return 4;
       })
       // LD A,L
       .with(0x7d, () => {
         const v = this.l;
         this.a = v;
+        return 4;
       })
       // LD A,(HL)
       .with(0x7e, () => {
         const v = this.mmu.readByte(this.hl);
         this.a = v;
+        return 8;
       })
       // LD A,A
       .with(0x7f, () => {
         const v = this.a;
         this.a = v;
+        return 4;
       })
       // ADD A,B
       .with(0x80, () => {
@@ -860,41 +957,49 @@ export class CPU {
       .with(0xa8, () => {
         const v = this.b;
         this.a[0] ^= v[0];
+        return 4;
       })
       // XOR C
       .with(0xa9, () => {
         const v = this.c;
         this.a[0] ^= v[0];
+        return 4;
       })
       // XOR D
       .with(0xaa, () => {
         const v = this.d;
         this.a[0] ^= v[0];
+        return 4;
       })
       // XOR E
       .with(0xab, () => {
         const v = this.e;
         this.a[0] ^= v[0];
+        return 4;
       })
       // XOR H
       .with(0xac, () => {
         const v = this.h;
         this.a[0] ^= v[0];
+        return 4;
       })
       // XOR L
       .with(0xad, () => {
         const v = this.l;
         this.a[0] ^= v[0];
+        return 4;
       })
       // XOR (HL)
       .with(0xae, () => {
         const v = this.mmu.readByte(this.hl);
         this.a[0] ^= v[0];
+        return 8;
       })
       // XOR A
       .with(0xaf, () => {
         const v = this.a;
         this.a[0] ^= v[0];
+        return 4;
       })
       // OR B
       .with(0xb0, () => {
@@ -1101,6 +1206,7 @@ export class CPU {
         const v = this.a;
         const addr = new Uint16Array(0xff00 + this.c[0]);
         this.mmu.writeByte(addr, v);
+        return 8;
       })
       // INVALID
       .with(0xd3, () => {
@@ -1135,6 +1241,8 @@ export class CPU {
         const v = this.a;
         const addr /*a16*/ = this.mmu.readWord(this.pc);
         this.mmu.writeByte(addr, v);
+        this.pc[0] += 2;
+        return 16;
       })
       // INVALID
       .with(0xd3, () => {
@@ -1152,6 +1260,8 @@ export class CPU {
       .with(0xee, () => {
         const v /*d8*/ = this.mmu.readByte(this.pc);
         this.a[0] ^= v[0];
+        this.pc[0] += 1;
+        return 8;
       })
       // RST 28H
       .with(0xef, () => {
@@ -1170,6 +1280,7 @@ export class CPU {
         const addr = new Uint16Array(0xff00 + this.c[0]);
         const v = this.mmu.readByte(addr);
         this.a = v;
+        return 8;
       })
       // DI
       .with(0xf3, () => {
@@ -1196,16 +1307,21 @@ export class CPU {
         const r8 = this.mmu.readByte(this.pc);
         const v = new Uint16Array(this.sp[0] + ((0x80 ^ r8[0]) - 0x80));
         this.hl = v;
+        this.pc[0] += 1;
+        return 12;
       })
       // LD SP,HL
       .with(0xf9, () => {
         const v = this.hl;
         this.sp = v;
+        return 8;
       })
       // LD A,(a16)
       .with(0xfa, () => {
         const v /*a16*/ = this.mmu.readByte(this.pc);
         this.a = v;
+        this.pc[0] += 2;
+        return 16;
       })
       // EI
       .with(0xfb, () => {

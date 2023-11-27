@@ -11,6 +11,7 @@ describe("Printer - XOR tests", () => {
       .with(0xa9, ()=>{
         const v = this.c
         this.a[0] ^= v[0]
+        return 4
       })"`)
     );
   });
@@ -23,6 +24,7 @@ describe("Printer - XOR tests", () => {
       .with(0xae, ()=>{
         const v = this.mmu.readByte(this.hl)
         this.a[0] ^= v[0]
+        return 8
       })"`)
     );
   });
@@ -35,6 +37,8 @@ describe("Printer - XOR tests", () => {
       .with(0xee, ()=>{
         const v /*d8*/ = this.mmu.readByte(this.pc);
         this.a[0] ^= v[0]
+        this.pc[0] += 1;
+        return 8
       })"`)
     );
   });

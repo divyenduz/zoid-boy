@@ -30,9 +30,17 @@ export class Printer {
   }
 
   private getInstructionData(opcode: number, prefixCB: boolean) {
-    return Object.values(
+    const instructionData = Object.values(
       prefixCB ? InstructionSetPrefixCB : InstructionSet
     ).find((instructionFromSet) => instructionFromSet.opcode === opcode);
+    if (!instructionData) {
+      throw new Error(
+        `Instruction "${opcode}" not found in ${
+          prefixCB ? "InstructionSetPrefixCB" : "InstructionSet"
+        }.`
+      );
+    }
+    return instructionData;
   }
 
   private numberToHex(n: number) {
@@ -154,6 +162,10 @@ export class Printer {
   }
 
   printLDInstruction(parsedInstruction: Statement) {
+    const instructionData = this.getInstructionData(
+      parsedInstruction.opcode,
+      false
+    );
     const code = Printer.trimString(`
     ${this.printReader(
       parsedInstruction.right,
@@ -165,14 +177,31 @@ export class Printer {
     )}
     ${this.printUnary(parsedInstruction.left)}
     ${this.printUnary(parsedInstruction.right)}
+    ${
+      instructionData.length > 1
+        ? `this.pc[0] += ${instructionData.length - 1};`
+        : ``
+    }
+    return ${instructionData.cycles}
     `);
     return code;
   }
 
   printXORInstruction(parsedInstruction: Statement) {
+    const instructionData = this.getInstructionData(
+      parsedInstruction.opcode,
+      false
+    );
+
     const code = Printer.trimString(`
     ${this.printReader(parsedInstruction.left)}
     this.a[0] ^= v[0]
+    ${
+      instructionData.length > 1
+        ? `this.pc[0] += ${instructionData.length - 1};`
+        : ``
+    }
+    return ${instructionData.cycles}
     `);
     return code;
   }
@@ -185,11 +214,6 @@ export class Printer {
         parsedInstruction.opcode,
         false
       );
-      if (!instructionData) {
-        throw new Error(
-          `Instruction "${parsedInstruction.instruction}" not found.`
-        );
-      }
 
       const flagMap: Record<string, string> = {
         z: "this.flag_z[0]",
@@ -199,13 +223,17 @@ export class Printer {
       };
 
       const code = Printer.trimString(`
-        let cycles = 0
         if (${flagMap[parsedInstruction.left.left.value]}) {
             ${this.printReader(parsedInstruction.right)}
             this.pc[0] += v[0]
-            cycles = ${instructionData?.cycles_jump}
+            return ${instructionData?.cycles_jump}
         } else {
-            cycles = ${instructionData?.cycles}
+            ${
+              instructionData.length > 1
+                ? `this.pc[0] += ${instructionData.length - 1};`
+                : ``
+            }
+            return ${instructionData?.cycles}
         }
         `);
       return code;
@@ -226,9 +254,6 @@ export class Printer {
       parsedInstruction.opcode,
       prefixCB
     );
-    if (!instructionData) {
-      throw new Error(`Instruction "${instruction}" not found.`);
-    }
     const opcodeHex = this.numberToHex(instructionData.opcode);
     const instructionCode = match(parsedInstruction.instruction)
       .with("invalid", () => {

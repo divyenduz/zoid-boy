@@ -22,14 +22,14 @@ describe("Printer - JR tests", () => {
     expect(impl).toMatchInlineSnapshot(
       Printer.trimString(`"// JR NZ,r8
       .with(0x20, ()=>{
-        let cycles = 0
         if (!(this.flag_z[0])) {
           const v /*r8*/ = this.mmu.readByte(this.pc);
           v[0] = ((0x80 ^ v[0]) - 0x80)
           this.pc[0] += v[0]
-          cycles = 12
+          return 12
         } else {
-          cycles = 8
+          this.pc[0] += 1;
+          return 8
         }
       })"`)
     );
@@ -41,14 +41,14 @@ describe("Printer - JR tests", () => {
     expect(impl).toMatchInlineSnapshot(
       Printer.trimString(`"// JR C,r8
       .with(0x38, ()=>{
-        let cycles = 0
         if (this.flag_c[3]) {
           const v /*r8*/ = this.mmu.readByte(this.pc);
           v[0] = ((0x80 ^ v[0]) - 0x80)
           this.pc[0] += v[0]
-          cycles = 12
+          return 12
         } else {
-          cycles = 8
+          this.pc[0] += 1;
+          return 8
         }
       })"`)
     );
