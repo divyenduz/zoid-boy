@@ -48,7 +48,6 @@ export class CPU {
     match(instruction[0])
       // NOP
       .with(0x00, () => {
-        throw new Error("Instruction 'NOP', '00' not implemented");
         this.pc[0] += 0;
         this.prefix_cb = false;
         return 4;
@@ -222,7 +221,8 @@ export class CPU {
       })
       // JR r8
       .with(0x18, () => {
-        throw new Error("Instruction 'JR r8', '18' not implemented");
+        const r8 = this.mmu.readByte(this.pc);
+        this.pc[0] += r8[0];
         this.pc[0] += 1;
         this.prefix_cb = false;
         return 12;
@@ -279,7 +279,15 @@ export class CPU {
       })
       // JR NZ,r8
       .with(0x20, () => {
-        throw new Error("Instruction 'JR NZ,r8', '20' not implemented");
+        console.log({ flag: !this.z_flag[0] });
+        if (!this.z_flag[0]) {
+          const r8 = this.mmu.readByte(this.pc);
+          const d8 = (0x80 ^ r8[0]) - 0x80;
+          console.log("jumping by", d8);
+          this.pc[0] += d8;
+        } else {
+          this.pc[0] += 1;
+        }
         this.pc[0] += 1;
         this.prefix_cb = false;
         return 8;
@@ -295,6 +303,7 @@ export class CPU {
       // LD (HL+),A
       .with(0x22, () => {
         this.mmu.writeByte(this.mmu.readWord(this.hl), this.a);
+        this.hl[0] += 1;
         this.pc[0] += 0;
         this.prefix_cb = false;
         return 8;
@@ -337,7 +346,15 @@ export class CPU {
       })
       // JR Z,r8
       .with(0x28, () => {
-        throw new Error("Instruction 'JR Z,r8', '28' not implemented");
+        console.log({ flag: this.z_flag[0] });
+        if (this.z_flag[0]) {
+          const r8 = this.mmu.readByte(this.pc);
+          const d8 = (0x80 ^ r8[0]) - 0x80;
+          console.log("jumping by", d8);
+          this.pc[0] += d8;
+        } else {
+          this.pc[0] += 1;
+        }
         this.pc[0] += 1;
         this.prefix_cb = false;
         return 8;
@@ -394,7 +411,15 @@ export class CPU {
       })
       // JR NC,r8
       .with(0x30, () => {
-        throw new Error("Instruction 'JR NC,r8', '30' not implemented");
+        console.log({ flag: !this.c_flag[3] });
+        if (!this.c_flag[3]) {
+          const r8 = this.mmu.readByte(this.pc);
+          const d8 = (0x80 ^ r8[0]) - 0x80;
+          console.log("jumping by", d8);
+          this.pc[0] += d8;
+        } else {
+          this.pc[0] += 1;
+        }
         this.pc[0] += 1;
         this.prefix_cb = false;
         return 8;
@@ -410,6 +435,7 @@ export class CPU {
       // LD (HL-),A
       .with(0x32, () => {
         this.mmu.writeByte(this.mmu.readWord(this.hl), this.a);
+        this.hl[0] -= 1;
         this.pc[0] += 0;
         this.prefix_cb = false;
         return 8;
@@ -452,7 +478,15 @@ export class CPU {
       })
       // JR C,r8
       .with(0x38, () => {
-        throw new Error("Instruction 'JR C,r8', '38' not implemented");
+        console.log({ flag: this.c_flag[3] });
+        if (this.c_flag[3]) {
+          const r8 = this.mmu.readByte(this.pc);
+          const d8 = (0x80 ^ r8[0]) - 0x80;
+          console.log("jumping by", d8);
+          this.pc[0] += d8;
+        } else {
+          this.pc[0] += 1;
+        }
         this.pc[0] += 1;
         this.prefix_cb = false;
         return 8;
@@ -1855,7 +1889,7 @@ export class CPU {
       })
       .otherwise(() => {
         throw new Error(
-          `Instruction "${instruction}" not implemented. Previous instruction: "${this.previousInstruction}"`,
+          `Instruction "${instruction}" not implemented. Previous instruction: "${this.previousInstruction}"`
         );
       });
 

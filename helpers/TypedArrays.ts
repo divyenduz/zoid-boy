@@ -1,15 +1,15 @@
 Uint16Array.prototype.toString = function () {
-  let str: string[] = [];
-  this.forEach((byte) => {
-    str.push(byte.toString(16).padStart(4, "0"));
+  const strs = Array.from(this).map((byte) => {
+    const str = byte.toString(16).padStart(2, "0");
+    return str;
   });
-  return str.join("\n");
+  return strs.reverse().join("");
 };
 
 Uint8Array.prototype.toString = function () {
-  let str: string[] = [];
-  this.forEach((byte) => {
-    str.push(byte.toString(16).padStart(2, "0"));
+  const strs = Array.from(this).map((byte) => {
+    const str = byte.toString(16).padStart(2, "0");
+    return str;
   });
-  return str.join("\n");
+  return strs.join("");
 };

@@ -5,7 +5,8 @@ import { InstructionSetPrefixCB } from "./InstructionSetPrefixCB";
 
 import { format } from "prettier";
 import { Parser } from "./Parser";
-import { match } from "ts-pattern";
+import { match, P } from "ts-pattern";
+import { BinaryExpression, UnaryExpression } from "./AST";
 
 export class CPUWriter {
   private readonly template: string;
@@ -37,8 +38,50 @@ export class CPUWriter {
 
       const impl = match(parsedInstruction.instruction)
         // TODO: this should be parsed as a single instruction called "prefix cb"
+        .with("nop", () => {
+          return ``;
+        })
         .with("prefix", () => {
           return `this.prefix_cb = true;`;
+        })
+        .with("jr", () => {
+          const { left, right } = parsedInstruction;
+          const s: string[] = [];
+          if (!left) {
+            throw new Error(
+              "Failed to find left argument, JR must have at least one argument"
+            );
+          }
+          if (right) {
+            const flagMap: Record<string, string> = {
+              z: "this.z_flag[0]",
+              nz: "!this.z_flag[0]",
+              c: "this.c_flag[3]",
+              nc: "!this.c_flag[3]",
+            };
+
+            const firstArgument = left.left;
+            const secondArgument = right.left;
+
+            // this is a conditional jump
+            s.push(`console.log({flag: ${flagMap[firstArgument.value]}})`);
+            s.push(`if (${flagMap[firstArgument.value]}) {`);
+            s.push(
+              `const ${secondArgument.value} = this.mmu.readByte(this.pc);`
+            );
+            if (secondArgument.value === "r8") {
+              s.push(`const d8 = (0x80 ^ r8[0]) - 0x80`);
+            }
+            s.push(`console.log("jumping by", d8);`);
+            s.push(`this.pc[0] += d8;`);
+            s.push(`} else {`);
+            s.push(`this.pc[0] += 1;`);
+            s.push(`}`);
+          } else {
+            s.push(`const r8 = this.mmu.readByte(this.pc);`);
+            s.push(`this.pc[0] += r8[0];`);
+          }
+          return s.join("\n");
         })
         .with("xor", () => {
           const { left, right } = parsedInstruction;
@@ -395,6 +438,21 @@ export class CPUWriter {
       statements.push(`// ${mnemonic}`);
       statements.push(`.with(0x${opcodeHex}, () => {`);
       statements.push(impl);
+
+      // Note: handle unary operations like INC and DEC
+      match(parsedInstruction.left)
+        .with(P.instanceOf(UnaryExpression), (expression) => {
+          const operator = match(expression.operator)
+            .with("PLUS", () => "+")
+            .with("MINUS", () => "-")
+            .otherwise(() => {
+              throw new Error(`Unknown operator ${expression.operator}`);
+            });
+
+          statements.push(`this.${expression.left.value}[0] ${operator}= 1`);
+        })
+        .otherwise(() => {});
+
       // Note: length-1 because we bump pc as soon as we read the instruction
       statements.push(`this.pc[0] += ${length - 1};`);
       if (opcode !== 0xcb) {
