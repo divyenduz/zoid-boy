@@ -89,7 +89,7 @@ export class CPU {
       .with(0x08, () => {
         const v = this.sp;
         const addr /*a16*/ = this.mmu.readWord(this.pc);
-        this.mmu.writeByte(addr, v);
+        this.mmu.writeWord(addr, v);
       })
       // ADD HL,BC
       .with(0x09, () => {
@@ -1099,7 +1099,7 @@ export class CPU {
       // LD (C),A
       .with(0xe2, () => {
         const v = this.a;
-        const addr = this.mmu.readWord(this.c);
+        const addr = new Uint16Array(0xff00 + this.c[0]);
         this.mmu.writeByte(addr, v);
       })
       // INVALID
@@ -1193,7 +1193,8 @@ export class CPU {
       })
       // LD HL,SP+r8
       .with(0xf8, () => {
-        const v = this.sp[0] + ((0x80 ^ r8) - 0x80);
+        const r8 = this.mmu.readByte(this.pc);
+        const v = new Uint16Array(this.sp[0] + ((0x80 ^ r8[0]) - 0x80));
         this.hl = v;
       })
       // LD SP,HL
@@ -1203,7 +1204,7 @@ export class CPU {
       })
       // LD A,(a16)
       .with(0xfa, () => {
-        const v /*a16*/ = this.mmu.readWord(this.pc);
+        const v /*a16*/ = this.mmu.readByte(this.pc);
         this.a = v;
       })
       // EI

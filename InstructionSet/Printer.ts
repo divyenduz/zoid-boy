@@ -43,7 +43,7 @@ export class Printer {
     return `((0x80 ^ ${addr}) - 0x80)`;
   }
 
-  private printReader(expression: Expression | null) {
+  private printReader(expression: Expression | null, is8Bit: boolean = true) {
     if (!expression) {
       return ``;
     }
@@ -51,17 +51,16 @@ export class Printer {
       .with(P.instanceOf(BinaryExpression), (expression) => {
         // Note: only one case of binary expression is LD HL,SP+r8
         return `
-        const v = this.${expression.left.value}[0] + ${this.inlineUnsigned(
-          expression.right.value
-        )}
-        `;
+        const r8 = this.mmu.readByte(this.pc);
+        const v = new Uint16Array(this.${
+          expression.left.value
+        }[0] + ${this.inlineUnsigned(expression.right.value + "[0]")});`;
       })
       .with(
         P.instanceOf(NullaryExpression),
         P.instanceOf(UnaryExpression),
         (expression) => {
           const argument = expression.left;
-          const readerFn = argument.is8Bit ? "readByte" : "readWord";
 
           if (argument.addressType === "Register") {
             if (argument.isIndirect) {
@@ -77,6 +76,8 @@ export class Printer {
               return `const v = this.${argument.value}`;
             }
           } else {
+            const readerFn =
+              is8Bit || argument.value === "d8" ? "readByte" : "readWord";
             return `
             const v /*${argument.value}*/ = this.mmu.${readerFn}(this.pc);
             ${
@@ -91,7 +92,7 @@ export class Printer {
       .exhaustive();
   }
 
-  private printWriter(expression: Expression | null) {
+  private printWriter(expression: Expression | null, is8Bit: boolean = true) {
     if (!expression) {
       return ``;
     }
@@ -116,10 +117,18 @@ export class Printer {
                 ? ` /*${argument.value}*/`
                 : "";
 
-            return `
-            const addr${label} = this.mmu.readWord(${fromAddr})
-            this.mmu.writeByte(addr, v)
-            `.trim();
+            const writerFn = is8Bit ? "writeByte" : "writeWord";
+            if (argument.is8Bit) {
+              return `
+              const addr = new Uint16Array(0xFF00 + ${fromAddr}[0])
+              this.mmu.${writerFn}(addr, v)
+              `;
+            } else {
+              return `
+                    const addr${label} = this.mmu.readWord(${fromAddr})
+                    this.mmu.${writerFn}(addr, v)
+                    `.trim();
+            }
           } else {
             return `
             this.${argument.value} = v
@@ -146,8 +155,14 @@ export class Printer {
 
   printLDInstruction(parsedInstruction: Statement) {
     const code = Printer.trimString(`
-    ${this.printReader(parsedInstruction.right)}
-    ${this.printWriter(parsedInstruction.left)}
+    ${this.printReader(
+      parsedInstruction.right,
+      parsedInstruction.left?.left.is8Bit
+    )}
+    ${this.printWriter(
+      parsedInstruction.left,
+      parsedInstruction.right?.left.is8Bit
+    )}
     ${this.printUnary(parsedInstruction.left)}
     ${this.printUnary(parsedInstruction.right)}
     `);

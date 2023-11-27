@@ -43,13 +43,12 @@ describe("Printer - LD tests", () => {
   test("LD (a16),SP", () => {
     const printer = new Printer();
     const impl = printer.printInstruction("LD (a16),SP", false);
-    // TODO: this should be writeWord eventually
     expect(impl).toMatchInlineSnapshot(
       Printer.trimString(`"// LD (a16),SP
       .with(0x08, ()=>{
         const v = this.sp
         const addr /*a16*/ = this.mmu.readWord(this.pc)
-        this.mmu.writeByte(addr, v)
+        this.mmu.writeWord(addr, v)
       })"`)
     );
   });
@@ -93,6 +92,19 @@ describe("Printer - LD tests", () => {
     );
   });
 
+  test("LD (HL),d8", () => {
+    const printer = new Printer();
+    const impl = printer.printInstruction("LD (HL),d8", false);
+    expect(impl).toMatchInlineSnapshot(
+      Printer.trimString(`"// LD (HL),d8
+      .with(0x36, ()=>{
+        const v /*d8*/ = this.mmu.readByte(this.pc);
+        const addr = this.mmu.readWord(this.hl)
+        this.mmu.writeByte(addr, v)
+      })"`)
+    );
+  });
+
   test("LD B,H", () => {
     const printer = new Printer();
     const impl = printer.printInstruction("LD B,H", false);
@@ -112,7 +124,7 @@ describe("Printer - LD tests", () => {
       Printer.trimString(`"// LD (C),A
       .with(0xe2, ()=>{
         const v = this.a
-        const addr = this.mmu.readWord(this.c)
+        const addr = new Uint16Array(0xFF00 + this.c[0])
         this.mmu.writeByte(addr, v)
       })"`)
     );
@@ -134,7 +146,6 @@ describe("Printer - LD tests", () => {
   test("LD A,(C)", () => {
     const printer = new Printer();
     const impl = printer.printInstruction("LD A,(C)", false);
-    // TODO: readByte needs c to be a 16 bit address i.e. 0xff00 + c
     expect(impl).toMatchInlineSnapshot(
       Printer.trimString(`"// LD A,(C)
       .with(0xf2, ()=>{
@@ -148,11 +159,11 @@ describe("Printer - LD tests", () => {
   test("LD HL,SP+r8", () => {
     const printer = new Printer();
     const impl = printer.printInstruction("LD HL,SP+r8", false);
-    // TODO: not 100% correct yet, don't think V can be written to HL, and SP[0] + part might be incorrect too
     expect(impl).toMatchInlineSnapshot(
       Printer.trimString(`"// LD HL,SP+r8
       .with(0xf8, ()=>{
-        const v = this.sp[0] + ((0x80 ^ r8) - 0x80)
+        const r8 = this.mmu.readByte(this.pc);
+        const v = new Uint16Array(this.sp[0] + ((0x80 ^ r8[0]) - 0x80));
         this.hl = v
       })"`)
     );
@@ -173,11 +184,10 @@ describe("Printer - LD tests", () => {
   test("LD A,(a16)", () => {
     const printer = new Printer();
     const impl = printer.printInstruction("LD A,(a16)", false);
-    // TODO: this should be readByte
     expect(impl).toMatchInlineSnapshot(
       Printer.trimString(`"// LD A,(a16)
       .with(0xfa, ()=>{
-        const v /*a16*/ = this.mmu.readWord(this.pc);
+        const v /*a16*/ = this.mmu.readByte(this.pc);
         this.a = v
       })"`)
     );
