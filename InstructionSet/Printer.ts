@@ -332,6 +332,7 @@ export class Printer {
     return `
     ${this.printReader(parsedInstruction.right)}
     const res = v[0] & (1 << ${parsedInstruction.left.left.value})
+    this.prefix_cb = false;
     ${this.printInstructionCommon(instructionData, "res")}
     `;
   }

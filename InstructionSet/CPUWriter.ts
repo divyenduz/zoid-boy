@@ -38,7 +38,6 @@ export class CPUWriter {
   }
 
   write() {
-    const parser = new Parser();
     const executeFns = Object.values(InstructionSet).map((instruction) => {
       const { mnemonic } = instruction;
       const printer = new Printer();

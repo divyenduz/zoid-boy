@@ -1672,6 +1672,7 @@ export class CPU {
       .with(0x40, () => {
         const v = this.b;
         const res = v[0] & (1 << 0);
+        this.prefix_cb = false;
         this.pc[0] += 1;
         if (res === 0) {
           this.flag_z[0] = 1;
@@ -1684,6 +1685,7 @@ export class CPU {
       .with(0x41, () => {
         const v = this.c;
         const res = v[0] & (1 << 0);
+        this.prefix_cb = false;
         this.pc[0] += 1;
         if (res === 0) {
           this.flag_z[0] = 1;
@@ -1696,6 +1698,7 @@ export class CPU {
       .with(0x42, () => {
         const v = this.d;
         const res = v[0] & (1 << 0);
+        this.prefix_cb = false;
         this.pc[0] += 1;
         if (res === 0) {
           this.flag_z[0] = 1;
@@ -1708,6 +1711,7 @@ export class CPU {
       .with(0x43, () => {
         const v = this.e;
         const res = v[0] & (1 << 0);
+        this.prefix_cb = false;
         this.pc[0] += 1;
         if (res === 0) {
           this.flag_z[0] = 1;
@@ -1720,6 +1724,7 @@ export class CPU {
       .with(0x44, () => {
         const v = this.h;
         const res = v[0] & (1 << 0);
+        this.prefix_cb = false;
         this.pc[0] += 1;
         if (res === 0) {
           this.flag_z[0] = 1;
@@ -1732,6 +1737,7 @@ export class CPU {
       .with(0x45, () => {
         const v = this.l;
         const res = v[0] & (1 << 0);
+        this.prefix_cb = false;
         this.pc[0] += 1;
         if (res === 0) {
           this.flag_z[0] = 1;
@@ -1744,6 +1750,7 @@ export class CPU {
       .with(0x46, () => {
         const v = this.mmu.readByte(this.hl);
         const res = v[0] & (1 << 0);
+        this.prefix_cb = false;
         this.pc[0] += 1;
         if (res === 0) {
           this.flag_z[0] = 1;
@@ -1756,6 +1763,7 @@ export class CPU {
       .with(0x47, () => {
         const v = this.a;
         const res = v[0] & (1 << 0);
+        this.prefix_cb = false;
         this.pc[0] += 1;
         if (res === 0) {
           this.flag_z[0] = 1;
@@ -1768,6 +1776,7 @@ export class CPU {
       .with(0x48, () => {
         const v = this.b;
         const res = v[0] & (1 << 1);
+        this.prefix_cb = false;
         this.pc[0] += 1;
         if (res === 0) {
           this.flag_z[0] = 1;
@@ -1780,6 +1789,7 @@ export class CPU {
       .with(0x49, () => {
         const v = this.c;
         const res = v[0] & (1 << 1);
+        this.prefix_cb = false;
         this.pc[0] += 1;
         if (res === 0) {
           this.flag_z[0] = 1;
@@ -1792,6 +1802,7 @@ export class CPU {
       .with(0x4a, () => {
         const v = this.d;
         const res = v[0] & (1 << 1);
+        this.prefix_cb = false;
         this.pc[0] += 1;
         if (res === 0) {
           this.flag_z[0] = 1;
@@ -1804,6 +1815,7 @@ export class CPU {
       .with(0x4b, () => {
         const v = this.e;
         const res = v[0] & (1 << 1);
+        this.prefix_cb = false;
         this.pc[0] += 1;
         if (res === 0) {
           this.flag_z[0] = 1;
@@ -1816,6 +1828,7 @@ export class CPU {
       .with(0x4c, () => {
         const v = this.h;
         const res = v[0] & (1 << 1);
+        this.prefix_cb = false;
         this.pc[0] += 1;
         if (res === 0) {
           this.flag_z[0] = 1;
@@ -1828,6 +1841,7 @@ export class CPU {
       .with(0x4d, () => {
         const v = this.l;
         const res = v[0] & (1 << 1);
+        this.prefix_cb = false;
         this.pc[0] += 1;
         if (res === 0) {
           this.flag_z[0] = 1;
@@ -1840,6 +1854,7 @@ export class CPU {
       .with(0x4e, () => {
         const v = this.mmu.readByte(this.hl);
         const res = v[0] & (1 << 1);
+        this.prefix_cb = false;
         this.pc[0] += 1;
         if (res === 0) {
           this.flag_z[0] = 1;
@@ -1852,6 +1867,7 @@ export class CPU {
       .with(0x4f, () => {
         const v = this.a;
         const res = v[0] & (1 << 1);
+        this.prefix_cb = false;
         this.pc[0] += 1;
         if (res === 0) {
           this.flag_z[0] = 1;
@@ -1864,6 +1880,7 @@ export class CPU {
       .with(0x50, () => {
         const v = this.b;
         const res = v[0] & (1 << 2);
+        this.prefix_cb = false;
         this.pc[0] += 1;
         if (res === 0) {
           this.flag_z[0] = 1;
@@ -1876,6 +1893,7 @@ export class CPU {
       .with(0x51, () => {
         const v = this.c;
         const res = v[0] & (1 << 2);
+        this.prefix_cb = false;
         this.pc[0] += 1;
         if (res === 0) {
           this.flag_z[0] = 1;
@@ -1888,6 +1906,7 @@ export class CPU {
       .with(0x52, () => {
         const v = this.d;
         const res = v[0] & (1 << 2);
+        this.prefix_cb = false;
         this.pc[0] += 1;
         if (res === 0) {
           this.flag_z[0] = 1;
@@ -1900,6 +1919,7 @@ export class CPU {
       .with(0x53, () => {
         const v = this.e;
         const res = v[0] & (1 << 2);
+        this.prefix_cb = false;
         this.pc[0] += 1;
         if (res === 0) {
           this.flag_z[0] = 1;
@@ -1912,6 +1932,7 @@ export class CPU {
       .with(0x54, () => {
         const v = this.h;
         const res = v[0] & (1 << 2);
+        this.prefix_cb = false;
         this.pc[0] += 1;
         if (res === 0) {
           this.flag_z[0] = 1;
@@ -1924,6 +1945,7 @@ export class CPU {
       .with(0x55, () => {
         const v = this.l;
         const res = v[0] & (1 << 2);
+        this.prefix_cb = false;
         this.pc[0] += 1;
         if (res === 0) {
           this.flag_z[0] = 1;
@@ -1936,6 +1958,7 @@ export class CPU {
       .with(0x56, () => {
         const v = this.mmu.readByte(this.hl);
         const res = v[0] & (1 << 2);
+        this.prefix_cb = false;
         this.pc[0] += 1;
         if (res === 0) {
           this.flag_z[0] = 1;
@@ -1948,6 +1971,7 @@ export class CPU {
       .with(0x57, () => {
         const v = this.a;
         const res = v[0] & (1 << 2);
+        this.prefix_cb = false;
         this.pc[0] += 1;
         if (res === 0) {
           this.flag_z[0] = 1;
@@ -1960,6 +1984,7 @@ export class CPU {
       .with(0x58, () => {
         const v = this.b;
         const res = v[0] & (1 << 3);
+        this.prefix_cb = false;
         this.pc[0] += 1;
         if (res === 0) {
           this.flag_z[0] = 1;
@@ -1972,6 +1997,7 @@ export class CPU {
       .with(0x59, () => {
         const v = this.c;
         const res = v[0] & (1 << 3);
+        this.prefix_cb = false;
         this.pc[0] += 1;
         if (res === 0) {
           this.flag_z[0] = 1;
@@ -1984,6 +2010,7 @@ export class CPU {
       .with(0x5a, () => {
         const v = this.d;
         const res = v[0] & (1 << 3);
+        this.prefix_cb = false;
         this.pc[0] += 1;
         if (res === 0) {
           this.flag_z[0] = 1;
@@ -1996,6 +2023,7 @@ export class CPU {
       .with(0x5b, () => {
         const v = this.e;
         const res = v[0] & (1 << 3);
+        this.prefix_cb = false;
         this.pc[0] += 1;
         if (res === 0) {
           this.flag_z[0] = 1;
@@ -2008,6 +2036,7 @@ export class CPU {
       .with(0x5c, () => {
         const v = this.h;
         const res = v[0] & (1 << 3);
+        this.prefix_cb = false;
         this.pc[0] += 1;
         if (res === 0) {
           this.flag_z[0] = 1;
@@ -2020,6 +2049,7 @@ export class CPU {
       .with(0x5d, () => {
         const v = this.l;
         const res = v[0] & (1 << 3);
+        this.prefix_cb = false;
         this.pc[0] += 1;
         if (res === 0) {
           this.flag_z[0] = 1;
@@ -2032,6 +2062,7 @@ export class CPU {
       .with(0x5e, () => {
         const v = this.mmu.readByte(this.hl);
         const res = v[0] & (1 << 3);
+        this.prefix_cb = false;
         this.pc[0] += 1;
         if (res === 0) {
           this.flag_z[0] = 1;
@@ -2044,6 +2075,7 @@ export class CPU {
       .with(0x5f, () => {
         const v = this.a;
         const res = v[0] & (1 << 3);
+        this.prefix_cb = false;
         this.pc[0] += 1;
         if (res === 0) {
           this.flag_z[0] = 1;
@@ -2056,6 +2088,7 @@ export class CPU {
       .with(0x60, () => {
         const v = this.b;
         const res = v[0] & (1 << 4);
+        this.prefix_cb = false;
         this.pc[0] += 1;
         if (res === 0) {
           this.flag_z[0] = 1;
@@ -2068,6 +2101,7 @@ export class CPU {
       .with(0x61, () => {
         const v = this.c;
         const res = v[0] & (1 << 4);
+        this.prefix_cb = false;
         this.pc[0] += 1;
         if (res === 0) {
           this.flag_z[0] = 1;
@@ -2080,6 +2114,7 @@ export class CPU {
       .with(0x62, () => {
         const v = this.d;
         const res = v[0] & (1 << 4);
+        this.prefix_cb = false;
         this.pc[0] += 1;
         if (res === 0) {
           this.flag_z[0] = 1;
@@ -2092,6 +2127,7 @@ export class CPU {
       .with(0x63, () => {
         const v = this.e;
         const res = v[0] & (1 << 4);
+        this.prefix_cb = false;
         this.pc[0] += 1;
         if (res === 0) {
           this.flag_z[0] = 1;
@@ -2104,6 +2140,7 @@ export class CPU {
       .with(0x64, () => {
         const v = this.h;
         const res = v[0] & (1 << 4);
+        this.prefix_cb = false;
         this.pc[0] += 1;
         if (res === 0) {
           this.flag_z[0] = 1;
@@ -2116,6 +2153,7 @@ export class CPU {
       .with(0x65, () => {
         const v = this.l;
         const res = v[0] & (1 << 4);
+        this.prefix_cb = false;
         this.pc[0] += 1;
         if (res === 0) {
           this.flag_z[0] = 1;
@@ -2128,6 +2166,7 @@ export class CPU {
       .with(0x66, () => {
         const v = this.mmu.readByte(this.hl);
         const res = v[0] & (1 << 4);
+        this.prefix_cb = false;
         this.pc[0] += 1;
         if (res === 0) {
           this.flag_z[0] = 1;
@@ -2140,6 +2179,7 @@ export class CPU {
       .with(0x67, () => {
         const v = this.a;
         const res = v[0] & (1 << 4);
+        this.prefix_cb = false;
         this.pc[0] += 1;
         if (res === 0) {
           this.flag_z[0] = 1;
@@ -2152,6 +2192,7 @@ export class CPU {
       .with(0x68, () => {
         const v = this.b;
         const res = v[0] & (1 << 5);
+        this.prefix_cb = false;
         this.pc[0] += 1;
         if (res === 0) {
           this.flag_z[0] = 1;
@@ -2164,6 +2205,7 @@ export class CPU {
       .with(0x69, () => {
         const v = this.c;
         const res = v[0] & (1 << 5);
+        this.prefix_cb = false;
         this.pc[0] += 1;
         if (res === 0) {
           this.flag_z[0] = 1;
@@ -2176,6 +2218,7 @@ export class CPU {
       .with(0x6a, () => {
         const v = this.d;
         const res = v[0] & (1 << 5);
+        this.prefix_cb = false;
         this.pc[0] += 1;
         if (res === 0) {
           this.flag_z[0] = 1;
@@ -2188,6 +2231,7 @@ export class CPU {
       .with(0x6b, () => {
         const v = this.e;
         const res = v[0] & (1 << 5);
+        this.prefix_cb = false;
         this.pc[0] += 1;
         if (res === 0) {
           this.flag_z[0] = 1;
@@ -2200,6 +2244,7 @@ export class CPU {
       .with(0x6c, () => {
         const v = this.h;
         const res = v[0] & (1 << 5);
+        this.prefix_cb = false;
         this.pc[0] += 1;
         if (res === 0) {
           this.flag_z[0] = 1;
@@ -2212,6 +2257,7 @@ export class CPU {
       .with(0x6d, () => {
         const v = this.l;
         const res = v[0] & (1 << 5);
+        this.prefix_cb = false;
         this.pc[0] += 1;
         if (res === 0) {
           this.flag_z[0] = 1;
@@ -2224,6 +2270,7 @@ export class CPU {
       .with(0x6e, () => {
         const v = this.mmu.readByte(this.hl);
         const res = v[0] & (1 << 5);
+        this.prefix_cb = false;
         this.pc[0] += 1;
         if (res === 0) {
           this.flag_z[0] = 1;
@@ -2236,6 +2283,7 @@ export class CPU {
       .with(0x6f, () => {
         const v = this.a;
         const res = v[0] & (1 << 5);
+        this.prefix_cb = false;
         this.pc[0] += 1;
         if (res === 0) {
           this.flag_z[0] = 1;
@@ -2248,6 +2296,7 @@ export class CPU {
       .with(0x70, () => {
         const v = this.b;
         const res = v[0] & (1 << 6);
+        this.prefix_cb = false;
         this.pc[0] += 1;
         if (res === 0) {
           this.flag_z[0] = 1;
@@ -2260,6 +2309,7 @@ export class CPU {
       .with(0x71, () => {
         const v = this.c;
         const res = v[0] & (1 << 6);
+        this.prefix_cb = false;
         this.pc[0] += 1;
         if (res === 0) {
           this.flag_z[0] = 1;
@@ -2272,6 +2322,7 @@ export class CPU {
       .with(0x72, () => {
         const v = this.d;
         const res = v[0] & (1 << 6);
+        this.prefix_cb = false;
         this.pc[0] += 1;
         if (res === 0) {
           this.flag_z[0] = 1;
@@ -2284,6 +2335,7 @@ export class CPU {
       .with(0x73, () => {
         const v = this.e;
         const res = v[0] & (1 << 6);
+        this.prefix_cb = false;
         this.pc[0] += 1;
         if (res === 0) {
           this.flag_z[0] = 1;
@@ -2296,6 +2348,7 @@ export class CPU {
       .with(0x74, () => {
         const v = this.h;
         const res = v[0] & (1 << 6);
+        this.prefix_cb = false;
         this.pc[0] += 1;
         if (res === 0) {
           this.flag_z[0] = 1;
@@ -2308,6 +2361,7 @@ export class CPU {
       .with(0x75, () => {
         const v = this.l;
         const res = v[0] & (1 << 6);
+        this.prefix_cb = false;
         this.pc[0] += 1;
         if (res === 0) {
           this.flag_z[0] = 1;
@@ -2320,6 +2374,7 @@ export class CPU {
       .with(0x76, () => {
         const v = this.mmu.readByte(this.hl);
         const res = v[0] & (1 << 6);
+        this.prefix_cb = false;
         this.pc[0] += 1;
         if (res === 0) {
           this.flag_z[0] = 1;
@@ -2332,6 +2387,7 @@ export class CPU {
       .with(0x77, () => {
         const v = this.a;
         const res = v[0] & (1 << 6);
+        this.prefix_cb = false;
         this.pc[0] += 1;
         if (res === 0) {
           this.flag_z[0] = 1;
@@ -2344,6 +2400,7 @@ export class CPU {
       .with(0x78, () => {
         const v = this.b;
         const res = v[0] & (1 << 7);
+        this.prefix_cb = false;
         this.pc[0] += 1;
         if (res === 0) {
           this.flag_z[0] = 1;
@@ -2356,6 +2413,7 @@ export class CPU {
       .with(0x79, () => {
         const v = this.c;
         const res = v[0] & (1 << 7);
+        this.prefix_cb = false;
         this.pc[0] += 1;
         if (res === 0) {
           this.flag_z[0] = 1;
@@ -2368,6 +2426,7 @@ export class CPU {
       .with(0x7a, () => {
         const v = this.d;
         const res = v[0] & (1 << 7);
+        this.prefix_cb = false;
         this.pc[0] += 1;
         if (res === 0) {
           this.flag_z[0] = 1;
@@ -2380,6 +2439,7 @@ export class CPU {
       .with(0x7b, () => {
         const v = this.e;
         const res = v[0] & (1 << 7);
+        this.prefix_cb = false;
         this.pc[0] += 1;
         if (res === 0) {
           this.flag_z[0] = 1;
@@ -2392,6 +2452,7 @@ export class CPU {
       .with(0x7c, () => {
         const v = this.h;
         const res = v[0] & (1 << 7);
+        this.prefix_cb = false;
         this.pc[0] += 1;
         if (res === 0) {
           this.flag_z[0] = 1;
@@ -2404,6 +2465,7 @@ export class CPU {
       .with(0x7d, () => {
         const v = this.l;
         const res = v[0] & (1 << 7);
+        this.prefix_cb = false;
         this.pc[0] += 1;
         if (res === 0) {
           this.flag_z[0] = 1;
@@ -2416,6 +2478,7 @@ export class CPU {
       .with(0x7e, () => {
         const v = this.mmu.readByte(this.hl);
         const res = v[0] & (1 << 7);
+        this.prefix_cb = false;
         this.pc[0] += 1;
         if (res === 0) {
           this.flag_z[0] = 1;
@@ -2428,6 +2491,7 @@ export class CPU {
       .with(0x7f, () => {
         const v = this.a;
         const res = v[0] & (1 << 7);
+        this.prefix_cb = false;
         this.pc[0] += 1;
         if (res === 0) {
           this.flag_z[0] = 1;
