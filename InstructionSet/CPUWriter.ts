@@ -40,9 +40,7 @@ export class CPUWriter {
   write() {
     const parser = new Parser();
     const executeFns = Object.values(InstructionSet).map((instruction) => {
-      const { opcode, mnemonic, length, cycles, Z, N, H, C } = instruction;
-      const opcodeHex = this.numberToHex(opcode);
-
+      const { mnemonic } = instruction;
       const printer = new Printer();
       return printer.printInstruction(mnemonic, false);
     });
@@ -55,32 +53,9 @@ export class CPUWriter {
 
     const executeCBFns = Object.values(InstructionSetPrefixCB).map(
       (instruction) => {
-        const { opcode, mnemonic, length, cycles, Z, N, H, C } = instruction;
-        const opcodeHex = this.numberToHex(opcode);
-
-        const program = parser.parse(mnemonic);
-        const parsedInstruction = program.statements[0];
-        const debugOpcode = parsedInstruction.opcode === 0x20;
-
-        let statements: string[] = [];
-
-        const impl = match(parsedInstruction.instruction)
-          // TODO: this should be parsed as a single instruction called "prefix cb"
-          .otherwise(() => {
-            return `throw new Error("Prefix CB Instruction '${mnemonic}', '${opcodeHex}' not implemented");`;
-          });
-
-        statements.push(`// ${mnemonic}`);
-        statements.push(`.with(0x${opcodeHex}, () => {`);
-        statements.push(impl);
-        statements.push(`this.prefix_cb = false;`);
-
-        // Note: length-1 because we bump pc as soon as we read the instruction
-        statements.push(`this.pc[0] += ${length - 1};`);
-        statements.push(`return ${cycles}`);
-        statements.push(`})`);
-
-        return statements.join("\n");
+        const { mnemonic } = instruction;
+        const printer = new Printer();
+        return printer.printInstruction(mnemonic, true);
       }
     );
 
