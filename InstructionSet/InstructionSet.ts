@@ -1,4 +1,4 @@
-export type Instruction = {
+export type InstructionData = {
   opcode: number;
   mnemonic: string;
   length: number;
@@ -23,7 +23,7 @@ type FlagOpN = FlagOpValues | "N";
 type FlagOpH = FlagOpValues | "H";
 type FlagOpC = FlagOpValues | "C";
 
-export const InstructionSet: Record<number, Instruction> = {
+export const InstructionSet: Record<number, InstructionData> = {
   0x00: {
     opcode: 0x00,
     mnemonic: "NOP",

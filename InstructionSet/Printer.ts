@@ -1,6 +1,6 @@
 import fs from "fs";
 import { InstructionSetPrefixCB } from "./InstructionSetPrefixCB";
-import { InstructionSet } from "./InstructionSet";
+import { InstructionData, InstructionSet } from "./InstructionSet";
 import { Parser } from "./Parser";
 import {
   BinaryExpression,
@@ -161,7 +161,96 @@ export class Printer {
     }
   }
 
-  printLDInstruction(parsedInstruction: Statement) {
+  private printFlagHandling(
+    instructionData: InstructionData,
+    result: string | null = null
+  ) {
+    const zFlagCode = match(instructionData.Z)
+      .with("Z", () => {
+        if (!result) {
+          return ``;
+        }
+        return `
+        if (${result} === 0) {
+            this.flag_z[0] = 1
+        }
+        `;
+      })
+      .with("1", () => {
+        return `this.flag_z[0] = 1`;
+      })
+      .with("0", () => {
+        return `this.flag_z[0] = 0;`;
+      })
+      .with("-", () => {
+        return ``;
+      })
+      .exhaustive();
+
+    const nFlagCode = match(instructionData.N)
+      .with("N", () => {
+        return `console.log('Implement N flag')`;
+      })
+      .with("1", () => {
+        return `this.flag_n[0] = 1`;
+      })
+      .with("0", () => {
+        return `this.flag_n[0] = 0;`;
+      })
+      .with("-", () => {
+        return ``;
+      })
+      .exhaustive();
+
+    const hFlagCode = match(instructionData.H)
+      .with("H", () => {
+        return `console.log('Implement H flag')`;
+      })
+      .with("1", () => {
+        return `this.flag_h[0] = 1`;
+      })
+      .with("0", () => {
+        return `this.flag_h[0] = 0;`;
+      })
+      .with("-", () => {
+        return ``;
+      })
+      .exhaustive();
+
+    const cFlagCode = match(instructionData.C)
+      .with("C", () => {
+        return `console.log('Implement C flag')`;
+      })
+      .with("1", () => {
+        return `this.flag_c[0] = `;
+      })
+      .with("0", () => {
+        return `this.flag_c[0] = 0;`;
+      })
+      .with("-", () => {
+        return ``;
+      })
+      .exhaustive();
+
+    return Printer.trimString(
+      [zFlagCode, nFlagCode, hFlagCode, cFlagCode].join("\n")
+    );
+  }
+
+  private printInstructionCommon(
+    instructionData: InstructionData,
+    result: string | null = null
+  ) {
+    return Printer.trimString(`${
+      instructionData.length > 1
+        ? `this.pc[0] += ${instructionData.length - 1};`
+        : ``
+    }
+    ${this.printFlagHandling(instructionData, result)}
+    return ${instructionData.cycles}`);
+  }
+
+  private printLDInstruction(parsedInstruction: Statement) {
     const instructionData = this.getInstructionData(
       parsedInstruction.opcode,
       false
@@ -177,12 +266,7 @@ export class Printer {
     )}
     ${this.printUnary(parsedInstruction.left)}
     ${this.printUnary(parsedInstruction.right)}
-    ${
-      instructionData.length > 1
-        ? `this.pc[0] += ${instructionData.length - 1};`
-        : ``
-    }
-    return ${instructionData.cycles}
+    ${this.printInstructionCommon(instructionData)}
     `);
     return code;
   }
@@ -196,12 +280,7 @@ export class Printer {
     const code = Printer.trimString(`
     ${this.printReader(parsedInstruction.left)}
     this.a[0] ^= v[0]
-    ${
-      instructionData.length > 1
-        ? `this.pc[0] += ${instructionData.length - 1};`
-        : ``
-    }
-    return ${instructionData.cycles}
+    ${this.printInstructionCommon(instructionData, "this.a[0]")}
     `);
     return code;
   }
@@ -228,12 +307,7 @@ export class Printer {
             this.pc[0] += v[0]
             return ${instructionData?.cycles_jump}
         } else {
-            ${
-              instructionData.length > 1
-                ? `this.pc[0] += ${instructionData.length - 1};`
-                : ``
-            }
-            return ${instructionData?.cycles}
+            ${this.printInstructionCommon(instructionData)}
         }
         `);
       return code;

@@ -957,48 +957,96 @@ export class CPU {
       .with(0xa8, () => {
         const v = this.b;
         this.a[0] ^= v[0];
+        if (this.a[0] === 0) {
+          this.flag_z[0] = 1;
+        }
+        this.flag_n[0] = 0;
+        this.flag_h[0] = 0;
+        this.flag_c[0] = 0;
         return 4;
       })
       // XOR C
       .with(0xa9, () => {
         const v = this.c;
         this.a[0] ^= v[0];
+        if (this.a[0] === 0) {
+          this.flag_z[0] = 1;
+        }
+        this.flag_n[0] = 0;
+        this.flag_h[0] = 0;
+        this.flag_c[0] = 0;
         return 4;
       })
       // XOR D
       .with(0xaa, () => {
         const v = this.d;
         this.a[0] ^= v[0];
+        if (this.a[0] === 0) {
+          this.flag_z[0] = 1;
+        }
+        this.flag_n[0] = 0;
+        this.flag_h[0] = 0;
+        this.flag_c[0] = 0;
         return 4;
       })
       // XOR E
       .with(0xab, () => {
         const v = this.e;
         this.a[0] ^= v[0];
+        if (this.a[0] === 0) {
+          this.flag_z[0] = 1;
+        }
+        this.flag_n[0] = 0;
+        this.flag_h[0] = 0;
+        this.flag_c[0] = 0;
         return 4;
       })
       // XOR H
       .with(0xac, () => {
         const v = this.h;
         this.a[0] ^= v[0];
+        if (this.a[0] === 0) {
+          this.flag_z[0] = 1;
+        }
+        this.flag_n[0] = 0;
+        this.flag_h[0] = 0;
+        this.flag_c[0] = 0;
         return 4;
       })
       // XOR L
       .with(0xad, () => {
         const v = this.l;
         this.a[0] ^= v[0];
+        if (this.a[0] === 0) {
+          this.flag_z[0] = 1;
+        }
+        this.flag_n[0] = 0;
+        this.flag_h[0] = 0;
+        this.flag_c[0] = 0;
         return 4;
       })
       // XOR (HL)
       .with(0xae, () => {
         const v = this.mmu.readByte(this.hl);
         this.a[0] ^= v[0];
+        if (this.a[0] === 0) {
+          this.flag_z[0] = 1;
+        }
+        this.flag_n[0] = 0;
+        this.flag_h[0] = 0;
+        this.flag_c[0] = 0;
         return 8;
       })
       // XOR A
       .with(0xaf, () => {
         const v = this.a;
         this.a[0] ^= v[0];
+        if (this.a[0] === 0) {
+          this.flag_z[0] = 1;
+        }
+        this.flag_n[0] = 0;
+        this.flag_h[0] = 0;
+        this.flag_c[0] = 0;
         return 4;
       })
       // OR B
@@ -1261,6 +1309,12 @@ export class CPU {
         const v /*d8*/ = this.mmu.readByte(this.pc);
         this.a[0] ^= v[0];
         this.pc[0] += 1;
+        if (this.a[0] === 0) {
+          this.flag_z[0] = 1;
+        }
+        this.flag_n[0] = 0;
+        this.flag_h[0] = 0;
+        this.flag_c[0] = 0;
         return 8;
       })
       // RST 28H
@@ -1308,6 +1362,10 @@ export class CPU {
         const v = new Uint16Array(this.sp[0] + ((0x80 ^ r8[0]) - 0x80));
         this.hl = v;
         this.pc[0] += 1;
+        this.flag_z[0] = 0;
+        this.flag_n[0] = 0;
+        console.log("Implement H flag");
+        console.log("Implement C flag");
         return 12;
       })
       // LD SP,HL

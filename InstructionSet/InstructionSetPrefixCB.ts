@@ -1,6 +1,6 @@
-import { Instruction } from "./InstructionSet";
+import { InstructionData } from "./InstructionSet";
 
-export const InstructionSetPrefixCB: Record<number, Instruction> = {
+export const InstructionSetPrefixCB: Record<number, InstructionData> = {
   0x00: {
     opcode: 0x00,
     mnemonic: "RLC B",

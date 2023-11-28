@@ -176,6 +176,7 @@ describe("Printer - LD tests", () => {
   test("LD HL,SP+r8", () => {
     const printer = new Printer();
     const impl = printer.printInstruction("LD HL,SP+r8", false);
+    // TODO: H, C flag omitted for now
     expect(impl).toMatchInlineSnapshot(
       Printer.trimString(`"// LD HL,SP+r8
       .with(0xf8, ()=>{
@@ -183,6 +184,10 @@ describe("Printer - LD tests", () => {
         const v = new Uint16Array(this.sp[0] + ((0x80 ^ r8[0]) - 0x80));
         this.hl = v
         this.pc[0] += 1;
+        this.flag_z[0] = 0;
+        this.flag_n[0] = 0;
+        console.log('Implement H flag')
+        console.log('Implement C flag')
         return 12
       })"`)
     );
