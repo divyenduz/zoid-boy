@@ -237,17 +237,25 @@ export class Printer {
     );
   }
 
+  private printPCIncrement(instructionData: InstructionData) {
+    return instructionData.length > 1
+      ? `this.pc[0] += ${instructionData.length - 1};`
+      : ``;
+  }
+
+  // Note: don't use for JR instruction where cycles are different depending on jump
+  private printReturnCycles(instructionData: InstructionData) {
+    return `return ${instructionData.cycles}`;
+  }
+
   private printInstructionCommon(
     instructionData: InstructionData,
     result: string | null = null
   ) {
-    return Printer.trimString(`${
-      instructionData.length > 1
-        ? `this.pc[0] += ${instructionData.length - 1};`
-        : ``
-    }
+    return Printer.trimString(`
+    ${this.printPCIncrement(instructionData)}
     ${this.printFlagHandling(instructionData, result)}
-    return ${instructionData.cycles}`);
+    ${this.printReturnCycles(instructionData)}`);
   }
 
   private printLDInstruction(parsedInstruction: Statement) {
@@ -333,7 +341,19 @@ export class Printer {
     ${this.printReader(parsedInstruction.right)}
     const res = v[0] & (1 << ${parsedInstruction.left.left.value})
     this.prefix_cb = false;
+    this.pc[0] -= 1; // Compensate for CB call
     ${this.printInstructionCommon(instructionData, "res")}
+    `;
+  }
+
+  private printPrefixCBInstruction(parsedInstruction: Statement) {
+    const instructionData = this.getInstructionData(
+      parsedInstruction.opcode,
+      true
+    );
+    return `
+    this.prefix_cb = true;
+    ${this.printReturnCycles(instructionData)}
     `;
   }
 
@@ -353,7 +373,7 @@ export class Printer {
         return ``;
       })
       .with("prefix", () => {
-        return `this.prefix_cb = true;`;
+        return this.printPrefixCBInstruction(parsedInstruction);
       })
       .with("ld", () => {
         return this.printLDInstruction(parsedInstruction);

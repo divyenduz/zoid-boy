@@ -18,25 +18,6 @@ export class CPUWriter {
     );
   }
 
-  private numberToHex(n: number) {
-    return n.toString(16).padStart(2, "0");
-  }
-
-  private renderUnaryExpression(expression: Expression | null) {
-    if (!(expression instanceof UnaryExpression)) {
-      return ``;
-    }
-    // Note: handle unary operations like INC and DEC
-    const operator = match(expression.operator)
-      .with("PLUS", () => "+")
-      .with("MINUS", () => "-")
-      .otherwise(() => {
-        throw new Error(`Unknown operator ${expression.operator}`);
-      });
-
-    return `this.${expression.left.value}[0] ${operator}= 1`;
-  }
-
   write() {
     const executeFns = Object.values(InstructionSet).map((instruction) => {
       const { mnemonic } = instruction;

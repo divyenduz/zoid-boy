@@ -12,6 +12,7 @@ describe("Printer CB - BIT tests", () => {
         const v = this.mmu.readByte(this.hl)
         const res = v[0] & (1 << 0)
         this.prefix_cb = false;
+        this.pc[0] -= 1; // Compensate for CB call
         this.pc[0] += 1;
         if (res === 0) {
           this.flag_z[0] = 1
@@ -32,6 +33,7 @@ describe("Printer CB - BIT tests", () => {
         const v = this.h
         const res = v[0] & (1 << 7)
         this.prefix_cb = false;
+        this.pc[0] -= 1; // Compensate for CB call
         this.pc[0] += 1;
         if (res === 0) {
           this.flag_z[0] = 1

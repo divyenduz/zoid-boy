@@ -1160,6 +1160,7 @@ export class CPU {
       // PREFIX CB
       .with(0xcb, () => {
         this.prefix_cb = true;
+        return 8;
       })
       // CALL Z,a16
       .with(0xcc, () => {
@@ -1673,6 +1674,7 @@ export class CPU {
         const v = this.b;
         const res = v[0] & (1 << 0);
         this.prefix_cb = false;
+        this.pc[0] -= 1; // Compensate for CB call
         this.pc[0] += 1;
         if (res === 0) {
           this.flag_z[0] = 1;
@@ -1686,6 +1688,7 @@ export class CPU {
         const v = this.c;
         const res = v[0] & (1 << 0);
         this.prefix_cb = false;
+        this.pc[0] -= 1; // Compensate for CB call
         this.pc[0] += 1;
         if (res === 0) {
           this.flag_z[0] = 1;
@@ -1699,6 +1702,7 @@ export class CPU {
         const v = this.d;
         const res = v[0] & (1 << 0);
         this.prefix_cb = false;
+        this.pc[0] -= 1; // Compensate for CB call
         this.pc[0] += 1;
         if (res === 0) {
           this.flag_z[0] = 1;
@@ -1712,6 +1716,7 @@ export class CPU {
         const v = this.e;
         const res = v[0] & (1 << 0);
         this.prefix_cb = false;
+        this.pc[0] -= 1; // Compensate for CB call
         this.pc[0] += 1;
         if (res === 0) {
           this.flag_z[0] = 1;
@@ -1725,6 +1730,7 @@ export class CPU {
         const v = this.h;
         const res = v[0] & (1 << 0);
         this.prefix_cb = false;
+        this.pc[0] -= 1; // Compensate for CB call
         this.pc[0] += 1;
         if (res === 0) {
           this.flag_z[0] = 1;
@@ -1738,6 +1744,7 @@ export class CPU {
         const v = this.l;
         const res = v[0] & (1 << 0);
         this.prefix_cb = false;
+        this.pc[0] -= 1; // Compensate for CB call
         this.pc[0] += 1;
         if (res === 0) {
           this.flag_z[0] = 1;
@@ -1751,6 +1758,7 @@ export class CPU {
         const v = this.mmu.readByte(this.hl);
         const res = v[0] & (1 << 0);
         this.prefix_cb = false;
+        this.pc[0] -= 1; // Compensate for CB call
         this.pc[0] += 1;
         if (res === 0) {
           this.flag_z[0] = 1;
@@ -1764,6 +1772,7 @@ export class CPU {
         const v = this.a;
         const res = v[0] & (1 << 0);
         this.prefix_cb = false;
+        this.pc[0] -= 1; // Compensate for CB call
         this.pc[0] += 1;
         if (res === 0) {
           this.flag_z[0] = 1;
@@ -1777,6 +1786,7 @@ export class CPU {
         const v = this.b;
         const res = v[0] & (1 << 1);
         this.prefix_cb = false;
+        this.pc[0] -= 1; // Compensate for CB call
         this.pc[0] += 1;
         if (res === 0) {
           this.flag_z[0] = 1;
@@ -1790,6 +1800,7 @@ export class CPU {
         const v = this.c;
         const res = v[0] & (1 << 1);
         this.prefix_cb = false;
+        this.pc[0] -= 1; // Compensate for CB call
         this.pc[0] += 1;
         if (res === 0) {
           this.flag_z[0] = 1;
@@ -1803,6 +1814,7 @@ export class CPU {
         const v = this.d;
         const res = v[0] & (1 << 1);
         this.prefix_cb = false;
+        this.pc[0] -= 1; // Compensate for CB call
         this.pc[0] += 1;
         if (res === 0) {
           this.flag_z[0] = 1;
@@ -1816,6 +1828,7 @@ export class CPU {
         const v = this.e;
         const res = v[0] & (1 << 1);
         this.prefix_cb = false;
+        this.pc[0] -= 1; // Compensate for CB call
         this.pc[0] += 1;
         if (res === 0) {
           this.flag_z[0] = 1;
@@ -1829,6 +1842,7 @@ export class CPU {
         const v = this.h;
         const res = v[0] & (1 << 1);
         this.prefix_cb = false;
+        this.pc[0] -= 1; // Compensate for CB call
         this.pc[0] += 1;
         if (res === 0) {
           this.flag_z[0] = 1;
@@ -1842,6 +1856,7 @@ export class CPU {
         const v = this.l;
         const res = v[0] & (1 << 1);
         this.prefix_cb = false;
+        this.pc[0] -= 1; // Compensate for CB call
         this.pc[0] += 1;
         if (res === 0) {
           this.flag_z[0] = 1;
@@ -1855,6 +1870,7 @@ export class CPU {
         const v = this.mmu.readByte(this.hl);
         const res = v[0] & (1 << 1);
         this.prefix_cb = false;
+        this.pc[0] -= 1; // Compensate for CB call
         this.pc[0] += 1;
         if (res === 0) {
           this.flag_z[0] = 1;
@@ -1868,6 +1884,7 @@ export class CPU {
         const v = this.a;
         const res = v[0] & (1 << 1);
         this.prefix_cb = false;
+        this.pc[0] -= 1; // Compensate for CB call
         this.pc[0] += 1;
         if (res === 0) {
           this.flag_z[0] = 1;
@@ -1881,6 +1898,7 @@ export class CPU {
         const v = this.b;
         const res = v[0] & (1 << 2);
         this.prefix_cb = false;
+        this.pc[0] -= 1; // Compensate for CB call
         this.pc[0] += 1;
         if (res === 0) {
           this.flag_z[0] = 1;
@@ -1894,6 +1912,7 @@ export class CPU {
         const v = this.c;
         const res = v[0] & (1 << 2);
         this.prefix_cb = false;
+        this.pc[0] -= 1; // Compensate for CB call
         this.pc[0] += 1;
         if (res === 0) {
           this.flag_z[0] = 1;
@@ -1907,6 +1926,7 @@ export class CPU {
         const v = this.d;
         const res = v[0] & (1 << 2);
         this.prefix_cb = false;
+        this.pc[0] -= 1; // Compensate for CB call
         this.pc[0] += 1;
         if (res === 0) {
           this.flag_z[0] = 1;
@@ -1920,6 +1940,7 @@ export class CPU {
         const v = this.e;
         const res = v[0] & (1 << 2);
         this.prefix_cb = false;
+        this.pc[0] -= 1; // Compensate for CB call
         this.pc[0] += 1;
         if (res === 0) {
           this.flag_z[0] = 1;
@@ -1933,6 +1954,7 @@ export class CPU {
         const v = this.h;
         const res = v[0] & (1 << 2);
         this.prefix_cb = false;
+        this.pc[0] -= 1; // Compensate for CB call
         this.pc[0] += 1;
         if (res === 0) {
           this.flag_z[0] = 1;
@@ -1946,6 +1968,7 @@ export class CPU {
         const v = this.l;
         const res = v[0] & (1 << 2);
         this.prefix_cb = false;
+        this.pc[0] -= 1; // Compensate for CB call
         this.pc[0] += 1;
         if (res === 0) {
           this.flag_z[0] = 1;
@@ -1959,6 +1982,7 @@ export class CPU {
         const v = this.mmu.readByte(this.hl);
         const res = v[0] & (1 << 2);
         this.prefix_cb = false;
+        this.pc[0] -= 1; // Compensate for CB call
         this.pc[0] += 1;
         if (res === 0) {
           this.flag_z[0] = 1;
@@ -1972,6 +1996,7 @@ export class CPU {
         const v = this.a;
         const res = v[0] & (1 << 2);
         this.prefix_cb = false;
+        this.pc[0] -= 1; // Compensate for CB call
         this.pc[0] += 1;
         if (res === 0) {
           this.flag_z[0] = 1;
@@ -1985,6 +2010,7 @@ export class CPU {
         const v = this.b;
         const res = v[0] & (1 << 3);
         this.prefix_cb = false;
+        this.pc[0] -= 1; // Compensate for CB call
         this.pc[0] += 1;
         if (res === 0) {
           this.flag_z[0] = 1;
@@ -1998,6 +2024,7 @@ export class CPU {
         const v = this.c;
         const res = v[0] & (1 << 3);
         this.prefix_cb = false;
+        this.pc[0] -= 1; // Compensate for CB call
         this.pc[0] += 1;
         if (res === 0) {
           this.flag_z[0] = 1;
@@ -2011,6 +2038,7 @@ export class CPU {
         const v = this.d;
         const res = v[0] & (1 << 3);
         this.prefix_cb = false;
+        this.pc[0] -= 1; // Compensate for CB call
         this.pc[0] += 1;
         if (res === 0) {
           this.flag_z[0] = 1;
@@ -2024,6 +2052,7 @@ export class CPU {
         const v = this.e;
         const res = v[0] & (1 << 3);
         this.prefix_cb = false;
+        this.pc[0] -= 1; // Compensate for CB call
         this.pc[0] += 1;
         if (res === 0) {
           this.flag_z[0] = 1;
@@ -2037,6 +2066,7 @@ export class CPU {
         const v = this.h;
         const res = v[0] & (1 << 3);
         this.prefix_cb = false;
+        this.pc[0] -= 1; // Compensate for CB call
         this.pc[0] += 1;
         if (res === 0) {
           this.flag_z[0] = 1;
@@ -2050,6 +2080,7 @@ export class CPU {
         const v = this.l;
         const res = v[0] & (1 << 3);
         this.prefix_cb = false;
+        this.pc[0] -= 1; // Compensate for CB call
         this.pc[0] += 1;
         if (res === 0) {
           this.flag_z[0] = 1;
@@ -2063,6 +2094,7 @@ export class CPU {
         const v = this.mmu.readByte(this.hl);
         const res = v[0] & (1 << 3);
         this.prefix_cb = false;
+        this.pc[0] -= 1; // Compensate for CB call
         this.pc[0] += 1;
         if (res === 0) {
           this.flag_z[0] = 1;
@@ -2076,6 +2108,7 @@ export class CPU {
         const v = this.a;
         const res = v[0] & (1 << 3);
         this.prefix_cb = false;
+        this.pc[0] -= 1; // Compensate for CB call
         this.pc[0] += 1;
         if (res === 0) {
           this.flag_z[0] = 1;
@@ -2089,6 +2122,7 @@ export class CPU {
         const v = this.b;
         const res = v[0] & (1 << 4);
         this.prefix_cb = false;
+        this.pc[0] -= 1; // Compensate for CB call
         this.pc[0] += 1;
         if (res === 0) {
           this.flag_z[0] = 1;
@@ -2102,6 +2136,7 @@ export class CPU {
         const v = this.c;
         const res = v[0] & (1 << 4);
         this.prefix_cb = false;
+        this.pc[0] -= 1; // Compensate for CB call
         this.pc[0] += 1;
         if (res === 0) {
           this.flag_z[0] = 1;
@@ -2115,6 +2150,7 @@ export class CPU {
         const v = this.d;
         const res = v[0] & (1 << 4);
         this.prefix_cb = false;
+        this.pc[0] -= 1; // Compensate for CB call
         this.pc[0] += 1;
         if (res === 0) {
           this.flag_z[0] = 1;
@@ -2128,6 +2164,7 @@ export class CPU {
         const v = this.e;
         const res = v[0] & (1 << 4);
         this.prefix_cb = false;
+        this.pc[0] -= 1; // Compensate for CB call
         this.pc[0] += 1;
         if (res === 0) {
           this.flag_z[0] = 1;
@@ -2141,6 +2178,7 @@ export class CPU {
         const v = this.h;
         const res = v[0] & (1 << 4);
         this.prefix_cb = false;
+        this.pc[0] -= 1; // Compensate for CB call
         this.pc[0] += 1;
         if (res === 0) {
           this.flag_z[0] = 1;
@@ -2154,6 +2192,7 @@ export class CPU {
         const v = this.l;
         const res = v[0] & (1 << 4);
         this.prefix_cb = false;
+        this.pc[0] -= 1; // Compensate for CB call
         this.pc[0] += 1;
         if (res === 0) {
           this.flag_z[0] = 1;
@@ -2167,6 +2206,7 @@ export class CPU {
         const v = this.mmu.readByte(this.hl);
         const res = v[0] & (1 << 4);
         this.prefix_cb = false;
+        this.pc[0] -= 1; // Compensate for CB call
         this.pc[0] += 1;
         if (res === 0) {
           this.flag_z[0] = 1;
@@ -2180,6 +2220,7 @@ export class CPU {
         const v = this.a;
         const res = v[0] & (1 << 4);
         this.prefix_cb = false;
+        this.pc[0] -= 1; // Compensate for CB call
         this.pc[0] += 1;
         if (res === 0) {
           this.flag_z[0] = 1;
@@ -2193,6 +2234,7 @@ export class CPU {
         const v = this.b;
         const res = v[0] & (1 << 5);
         this.prefix_cb = false;
+        this.pc[0] -= 1; // Compensate for CB call
         this.pc[0] += 1;
         if (res === 0) {
           this.flag_z[0] = 1;
@@ -2206,6 +2248,7 @@ export class CPU {
         const v = this.c;
         const res = v[0] & (1 << 5);
         this.prefix_cb = false;
+        this.pc[0] -= 1; // Compensate for CB call
         this.pc[0] += 1;
         if (res === 0) {
           this.flag_z[0] = 1;
@@ -2219,6 +2262,7 @@ export class CPU {
         const v = this.d;
         const res = v[0] & (1 << 5);
         this.prefix_cb = false;
+        this.pc[0] -= 1; // Compensate for CB call
         this.pc[0] += 1;
         if (res === 0) {
           this.flag_z[0] = 1;
@@ -2232,6 +2276,7 @@ export class CPU {
         const v = this.e;
         const res = v[0] & (1 << 5);
         this.prefix_cb = false;
+        this.pc[0] -= 1; // Compensate for CB call
         this.pc[0] += 1;
         if (res === 0) {
           this.flag_z[0] = 1;
@@ -2245,6 +2290,7 @@ export class CPU {
         const v = this.h;
         const res = v[0] & (1 << 5);
         this.prefix_cb = false;
+        this.pc[0] -= 1; // Compensate for CB call
         this.pc[0] += 1;
         if (res === 0) {
           this.flag_z[0] = 1;
@@ -2258,6 +2304,7 @@ export class CPU {
         const v = this.l;
         const res = v[0] & (1 << 5);
         this.prefix_cb = false;
+        this.pc[0] -= 1; // Compensate for CB call
         this.pc[0] += 1;
         if (res === 0) {
           this.flag_z[0] = 1;
@@ -2271,6 +2318,7 @@ export class CPU {
         const v = this.mmu.readByte(this.hl);
         const res = v[0] & (1 << 5);
         this.prefix_cb = false;
+        this.pc[0] -= 1; // Compensate for CB call
         this.pc[0] += 1;
         if (res === 0) {
           this.flag_z[0] = 1;
@@ -2284,6 +2332,7 @@ export class CPU {
         const v = this.a;
         const res = v[0] & (1 << 5);
         this.prefix_cb = false;
+        this.pc[0] -= 1; // Compensate for CB call
         this.pc[0] += 1;
         if (res === 0) {
           this.flag_z[0] = 1;
@@ -2297,6 +2346,7 @@ export class CPU {
         const v = this.b;
         const res = v[0] & (1 << 6);
         this.prefix_cb = false;
+        this.pc[0] -= 1; // Compensate for CB call
         this.pc[0] += 1;
         if (res === 0) {
           this.flag_z[0] = 1;
@@ -2310,6 +2360,7 @@ export class CPU {
         const v = this.c;
         const res = v[0] & (1 << 6);
         this.prefix_cb = false;
+        this.pc[0] -= 1; // Compensate for CB call
         this.pc[0] += 1;
         if (res === 0) {
           this.flag_z[0] = 1;
@@ -2323,6 +2374,7 @@ export class CPU {
         const v = this.d;
         const res = v[0] & (1 << 6);
         this.prefix_cb = false;
+        this.pc[0] -= 1; // Compensate for CB call
         this.pc[0] += 1;
         if (res === 0) {
           this.flag_z[0] = 1;
@@ -2336,6 +2388,7 @@ export class CPU {
         const v = this.e;
         const res = v[0] & (1 << 6);
         this.prefix_cb = false;
+        this.pc[0] -= 1; // Compensate for CB call
         this.pc[0] += 1;
         if (res === 0) {
           this.flag_z[0] = 1;
@@ -2349,6 +2402,7 @@ export class CPU {
         const v = this.h;
         const res = v[0] & (1 << 6);
         this.prefix_cb = false;
+        this.pc[0] -= 1; // Compensate for CB call
         this.pc[0] += 1;
         if (res === 0) {
           this.flag_z[0] = 1;
@@ -2362,6 +2416,7 @@ export class CPU {
         const v = this.l;
         const res = v[0] & (1 << 6);
         this.prefix_cb = false;
+        this.pc[0] -= 1; // Compensate for CB call
         this.pc[0] += 1;
         if (res === 0) {
           this.flag_z[0] = 1;
@@ -2375,6 +2430,7 @@ export class CPU {
         const v = this.mmu.readByte(this.hl);
         const res = v[0] & (1 << 6);
         this.prefix_cb = false;
+        this.pc[0] -= 1; // Compensate for CB call
         this.pc[0] += 1;
         if (res === 0) {
           this.flag_z[0] = 1;
@@ -2388,6 +2444,7 @@ export class CPU {
         const v = this.a;
         const res = v[0] & (1 << 6);
         this.prefix_cb = false;
+        this.pc[0] -= 1; // Compensate for CB call
         this.pc[0] += 1;
         if (res === 0) {
           this.flag_z[0] = 1;
@@ -2401,6 +2458,7 @@ export class CPU {
         const v = this.b;
         const res = v[0] & (1 << 7);
         this.prefix_cb = false;
+        this.pc[0] -= 1; // Compensate for CB call
         this.pc[0] += 1;
         if (res === 0) {
           this.flag_z[0] = 1;
@@ -2414,6 +2472,7 @@ export class CPU {
         const v = this.c;
         const res = v[0] & (1 << 7);
         this.prefix_cb = false;
+        this.pc[0] -= 1; // Compensate for CB call
         this.pc[0] += 1;
         if (res === 0) {
           this.flag_z[0] = 1;
@@ -2427,6 +2486,7 @@ export class CPU {
         const v = this.d;
         const res = v[0] & (1 << 7);
         this.prefix_cb = false;
+        this.pc[0] -= 1; // Compensate for CB call
         this.pc[0] += 1;
         if (res === 0) {
           this.flag_z[0] = 1;
@@ -2440,6 +2500,7 @@ export class CPU {
         const v = this.e;
         const res = v[0] & (1 << 7);
         this.prefix_cb = false;
+        this.pc[0] -= 1; // Compensate for CB call
         this.pc[0] += 1;
         if (res === 0) {
           this.flag_z[0] = 1;
@@ -2453,6 +2514,7 @@ export class CPU {
         const v = this.h;
         const res = v[0] & (1 << 7);
         this.prefix_cb = false;
+        this.pc[0] -= 1; // Compensate for CB call
         this.pc[0] += 1;
         if (res === 0) {
           this.flag_z[0] = 1;
@@ -2466,6 +2528,7 @@ export class CPU {
         const v = this.l;
         const res = v[0] & (1 << 7);
         this.prefix_cb = false;
+        this.pc[0] -= 1; // Compensate for CB call
         this.pc[0] += 1;
         if (res === 0) {
           this.flag_z[0] = 1;
@@ -2479,6 +2542,7 @@ export class CPU {
         const v = this.mmu.readByte(this.hl);
         const res = v[0] & (1 << 7);
         this.prefix_cb = false;
+        this.pc[0] -= 1; // Compensate for CB call
         this.pc[0] += 1;
         if (res === 0) {
           this.flag_z[0] = 1;
@@ -2492,6 +2556,7 @@ export class CPU {
         const v = this.a;
         const res = v[0] & (1 << 7);
         this.prefix_cb = false;
+        this.pc[0] -= 1; // Compensate for CB call
         this.pc[0] += 1;
         if (res === 0) {
           this.flag_z[0] = 1;
