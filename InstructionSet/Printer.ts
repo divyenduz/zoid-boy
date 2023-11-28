@@ -293,6 +293,20 @@ export class Printer {
     return code;
   }
 
+  private printINCInstruction(parsedInstruction: Statement) {
+    const instructionData = this.getInstructionData(
+      parsedInstruction.opcode,
+      false
+    );
+
+    const code = Printer.trimString(`
+    ${this.printReader(parsedInstruction.left)}
+    v[0] += 1
+    ${this.printInstructionCommon(instructionData, "v[0]")}
+    `);
+    return code;
+  }
+
   private printJRInstruction(parsedInstruction: Statement) {
     if (parsedInstruction.left && parsedInstruction.right) {
       // JR with jump
@@ -329,7 +343,7 @@ export class Printer {
     }
   }
 
-  private printBitInstruction(parsedInstruction: Statement) {
+  private printCBBitInstruction(parsedInstruction: Statement) {
     if (!parsedInstruction.left || !parsedInstruction.right) {
       throw new Error("Invalid BIT instruction");
     }
@@ -381,12 +395,15 @@ export class Printer {
       .with("xor", () => {
         return this.printXORInstruction(parsedInstruction);
       })
+      .with("inc", () => {
+        return this.printINCInstruction(parsedInstruction);
+      })
       .with("jr", () => {
         return this.printJRInstruction(parsedInstruction);
       })
       // CB instructions
       .with("bit", () => {
-        return this.printBitInstruction(parsedInstruction);
+        return this.printCBBitInstruction(parsedInstruction);
       })
       .otherwise(() => {
         return `throw new Error("Instruction '${instruction}', '${opcodeHex}' not implemented");`;

@@ -69,11 +69,20 @@ export class CPU {
       })
       // INC BC
       .with(0x03, () => {
-        throw new Error("Instruction 'INC BC', '03' not implemented");
+        const v = this.bc;
+        v[0] += 1;
+        return 8;
       })
       // INC B
       .with(0x04, () => {
-        throw new Error("Instruction 'INC B', '04' not implemented");
+        const v = this.b;
+        v[0] += 1;
+        if (v[0] === 0) {
+          this.flag_z[0] = 1;
+        }
+        this.flag_n[1] = 0;
+        console.log("Implement H flag");
+        return 4;
       })
       // DEC B
       .with(0x05, () => {
@@ -114,7 +123,14 @@ export class CPU {
       })
       // INC C
       .with(0x0c, () => {
-        throw new Error("Instruction 'INC C', '0c' not implemented");
+        const v = this.c;
+        v[0] += 1;
+        if (v[0] === 0) {
+          this.flag_z[0] = 1;
+        }
+        this.flag_n[1] = 0;
+        console.log("Implement H flag");
+        return 4;
       })
       // DEC C
       .with(0x0d, () => {
@@ -151,11 +167,20 @@ export class CPU {
       })
       // INC DE
       .with(0x13, () => {
-        throw new Error("Instruction 'INC DE', '13' not implemented");
+        const v = this.de;
+        v[0] += 1;
+        return 8;
       })
       // INC D
       .with(0x14, () => {
-        throw new Error("Instruction 'INC D', '14' not implemented");
+        const v = this.d;
+        v[0] += 1;
+        if (v[0] === 0) {
+          this.flag_z[0] = 1;
+        }
+        this.flag_n[1] = 0;
+        console.log("Implement H flag");
+        return 4;
       })
       // DEC D
       .with(0x15, () => {
@@ -194,7 +219,14 @@ export class CPU {
       })
       // INC E
       .with(0x1c, () => {
-        throw new Error("Instruction 'INC E', '1c' not implemented");
+        const v = this.e;
+        v[0] += 1;
+        if (v[0] === 0) {
+          this.flag_z[0] = 1;
+        }
+        this.flag_n[1] = 0;
+        console.log("Implement H flag");
+        return 4;
       })
       // DEC E
       .with(0x1d, () => {
@@ -240,11 +272,20 @@ export class CPU {
       })
       // INC HL
       .with(0x23, () => {
-        throw new Error("Instruction 'INC HL', '23' not implemented");
+        const v = this.hl;
+        v[0] += 1;
+        return 8;
       })
       // INC H
       .with(0x24, () => {
-        throw new Error("Instruction 'INC H', '24' not implemented");
+        const v = this.h;
+        v[0] += 1;
+        if (v[0] === 0) {
+          this.flag_z[0] = 1;
+        }
+        this.flag_n[1] = 0;
+        console.log("Implement H flag");
+        return 4;
       })
       // DEC H
       .with(0x25, () => {
@@ -290,7 +331,14 @@ export class CPU {
       })
       // INC L
       .with(0x2c, () => {
-        throw new Error("Instruction 'INC L', '2c' not implemented");
+        const v = this.l;
+        v[0] += 1;
+        if (v[0] === 0) {
+          this.flag_z[0] = 1;
+        }
+        this.flag_n[1] = 0;
+        console.log("Implement H flag");
+        return 4;
       })
       // DEC L
       .with(0x2d, () => {
@@ -336,11 +384,20 @@ export class CPU {
       })
       // INC SP
       .with(0x33, () => {
-        throw new Error("Instruction 'INC SP', '33' not implemented");
+        const v = this.sp;
+        v[0] += 1;
+        return 8;
       })
       // INC (HL)
       .with(0x34, () => {
-        throw new Error("Instruction 'INC (HL)', '34' not implemented");
+        const v = this.mmu.readByte(this.hl);
+        v[0] += 1;
+        if (v[0] === 0) {
+          this.flag_z[0] = 1;
+        }
+        this.flag_n[1] = 0;
+        console.log("Implement H flag");
+        return 12;
       })
       // DEC (HL)
       .with(0x35, () => {
@@ -387,7 +444,14 @@ export class CPU {
       })
       // INC A
       .with(0x3c, () => {
-        throw new Error("Instruction 'INC A', '3c' not implemented");
+        const v = this.a;
+        v[0] += 1;
+        if (v[0] === 0) {
+          this.flag_z[0] = 1;
+        }
+        this.flag_n[1] = 0;
+        console.log("Implement H flag");
+        return 4;
       })
       // DEC A
       .with(0x3d, () => {
