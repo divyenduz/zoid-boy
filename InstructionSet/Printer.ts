@@ -192,10 +192,10 @@ export class Printer {
         return `console.log('Implement N flag')`;
       })
       .with("1", () => {
-        return `this.flag_n[0] = 1`;
+        return `this.flag_n[1] = 1`;
       })
       .with("0", () => {
-        return `this.flag_n[0] = 0;`;
+        return `this.flag_n[1] = 0;`;
       })
       .with("-", () => {
         return ``;
@@ -207,10 +207,10 @@ export class Printer {
         return `console.log('Implement H flag')`;
       })
       .with("1", () => {
-        return `this.flag_h[0] = 1`;
+        return `this.flag_h[2] = 1`;
       })
       .with("0", () => {
-        return `this.flag_h[0] = 0;`;
+        return `this.flag_h[2] = 0;`;
       })
       .with("-", () => {
         return ``;
@@ -222,10 +222,10 @@ export class Printer {
         return `console.log('Implement C flag')`;
       })
       .with("1", () => {
-        return `this.flag_c[0] = `;
+        return `this.flag_c[3] = `;
       })
       .with("0", () => {
-        return `this.flag_c[0] = 0;`;
+        return `this.flag_c[3] = 0;`;
       })
       .with("-", () => {
         return ``;

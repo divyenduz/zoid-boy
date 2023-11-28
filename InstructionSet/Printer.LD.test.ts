@@ -185,7 +185,7 @@ describe("Printer - LD tests", () => {
         this.hl = v
         this.pc[0] += 1;
         this.flag_z[0] = 0;
-        this.flag_n[0] = 0;
+        this.flag_n[1] = 0;
         console.log('Implement H flag')
         console.log('Implement C flag')
         return 12

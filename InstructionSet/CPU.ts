@@ -960,9 +960,9 @@ export class CPU {
         if (this.a[0] === 0) {
           this.flag_z[0] = 1;
         }
-        this.flag_n[0] = 0;
-        this.flag_h[0] = 0;
-        this.flag_c[0] = 0;
+        this.flag_n[1] = 0;
+        this.flag_h[2] = 0;
+        this.flag_c[3] = 0;
         return 4;
       })
       // XOR C
@@ -972,9 +972,9 @@ export class CPU {
         if (this.a[0] === 0) {
           this.flag_z[0] = 1;
         }
-        this.flag_n[0] = 0;
-        this.flag_h[0] = 0;
-        this.flag_c[0] = 0;
+        this.flag_n[1] = 0;
+        this.flag_h[2] = 0;
+        this.flag_c[3] = 0;
         return 4;
       })
       // XOR D
@@ -984,9 +984,9 @@ export class CPU {
         if (this.a[0] === 0) {
           this.flag_z[0] = 1;
         }
-        this.flag_n[0] = 0;
-        this.flag_h[0] = 0;
-        this.flag_c[0] = 0;
+        this.flag_n[1] = 0;
+        this.flag_h[2] = 0;
+        this.flag_c[3] = 0;
         return 4;
       })
       // XOR E
@@ -996,9 +996,9 @@ export class CPU {
         if (this.a[0] === 0) {
           this.flag_z[0] = 1;
         }
-        this.flag_n[0] = 0;
-        this.flag_h[0] = 0;
-        this.flag_c[0] = 0;
+        this.flag_n[1] = 0;
+        this.flag_h[2] = 0;
+        this.flag_c[3] = 0;
         return 4;
       })
       // XOR H
@@ -1008,9 +1008,9 @@ export class CPU {
         if (this.a[0] === 0) {
           this.flag_z[0] = 1;
         }
-        this.flag_n[0] = 0;
-        this.flag_h[0] = 0;
-        this.flag_c[0] = 0;
+        this.flag_n[1] = 0;
+        this.flag_h[2] = 0;
+        this.flag_c[3] = 0;
         return 4;
       })
       // XOR L
@@ -1020,9 +1020,9 @@ export class CPU {
         if (this.a[0] === 0) {
           this.flag_z[0] = 1;
         }
-        this.flag_n[0] = 0;
-        this.flag_h[0] = 0;
-        this.flag_c[0] = 0;
+        this.flag_n[1] = 0;
+        this.flag_h[2] = 0;
+        this.flag_c[3] = 0;
         return 4;
       })
       // XOR (HL)
@@ -1032,9 +1032,9 @@ export class CPU {
         if (this.a[0] === 0) {
           this.flag_z[0] = 1;
         }
-        this.flag_n[0] = 0;
-        this.flag_h[0] = 0;
-        this.flag_c[0] = 0;
+        this.flag_n[1] = 0;
+        this.flag_h[2] = 0;
+        this.flag_c[3] = 0;
         return 8;
       })
       // XOR A
@@ -1044,9 +1044,9 @@ export class CPU {
         if (this.a[0] === 0) {
           this.flag_z[0] = 1;
         }
-        this.flag_n[0] = 0;
-        this.flag_h[0] = 0;
-        this.flag_c[0] = 0;
+        this.flag_n[1] = 0;
+        this.flag_h[2] = 0;
+        this.flag_c[3] = 0;
         return 4;
       })
       // OR B
@@ -1312,9 +1312,9 @@ export class CPU {
         if (this.a[0] === 0) {
           this.flag_z[0] = 1;
         }
-        this.flag_n[0] = 0;
-        this.flag_h[0] = 0;
-        this.flag_c[0] = 0;
+        this.flag_n[1] = 0;
+        this.flag_h[2] = 0;
+        this.flag_c[3] = 0;
         return 8;
       })
       // RST 28H
@@ -1363,7 +1363,7 @@ export class CPU {
         this.hl = v;
         this.pc[0] += 1;
         this.flag_z[0] = 0;
-        this.flag_n[0] = 0;
+        this.flag_n[1] = 0;
         console.log("Implement H flag");
         console.log("Implement C flag");
         return 12;
@@ -1677,8 +1677,8 @@ export class CPU {
         if (res === 0) {
           this.flag_z[0] = 1;
         }
-        this.flag_n[0] = 0;
-        this.flag_h[0] = 1;
+        this.flag_n[1] = 0;
+        this.flag_h[2] = 1;
         return 8;
       })
       // BIT 0,C
@@ -1690,8 +1690,8 @@ export class CPU {
         if (res === 0) {
           this.flag_z[0] = 1;
         }
-        this.flag_n[0] = 0;
-        this.flag_h[0] = 1;
+        this.flag_n[1] = 0;
+        this.flag_h[2] = 1;
         return 8;
       })
       // BIT 0,D
@@ -1703,8 +1703,8 @@ export class CPU {
         if (res === 0) {
           this.flag_z[0] = 1;
         }
-        this.flag_n[0] = 0;
-        this.flag_h[0] = 1;
+        this.flag_n[1] = 0;
+        this.flag_h[2] = 1;
         return 8;
       })
       // BIT 0,E
@@ -1716,8 +1716,8 @@ export class CPU {
         if (res === 0) {
           this.flag_z[0] = 1;
         }
-        this.flag_n[0] = 0;
-        this.flag_h[0] = 1;
+        this.flag_n[1] = 0;
+        this.flag_h[2] = 1;
         return 8;
       })
       // BIT 0,H
@@ -1729,8 +1729,8 @@ export class CPU {
         if (res === 0) {
           this.flag_z[0] = 1;
         }
-        this.flag_n[0] = 0;
-        this.flag_h[0] = 1;
+        this.flag_n[1] = 0;
+        this.flag_h[2] = 1;
         return 8;
       })
       // BIT 0,L
@@ -1742,8 +1742,8 @@ export class CPU {
         if (res === 0) {
           this.flag_z[0] = 1;
         }
-        this.flag_n[0] = 0;
-        this.flag_h[0] = 1;
+        this.flag_n[1] = 0;
+        this.flag_h[2] = 1;
         return 8;
       })
       // BIT 0,(HL)
@@ -1755,8 +1755,8 @@ export class CPU {
         if (res === 0) {
           this.flag_z[0] = 1;
         }
-        this.flag_n[0] = 0;
-        this.flag_h[0] = 1;
+        this.flag_n[1] = 0;
+        this.flag_h[2] = 1;
         return 16;
       })
       // BIT 0,A
@@ -1768,8 +1768,8 @@ export class CPU {
         if (res === 0) {
           this.flag_z[0] = 1;
         }
-        this.flag_n[0] = 0;
-        this.flag_h[0] = 1;
+        this.flag_n[1] = 0;
+        this.flag_h[2] = 1;
         return 8;
       })
       // BIT 1,B
@@ -1781,8 +1781,8 @@ export class CPU {
         if (res === 0) {
           this.flag_z[0] = 1;
         }
-        this.flag_n[0] = 0;
-        this.flag_h[0] = 1;
+        this.flag_n[1] = 0;
+        this.flag_h[2] = 1;
         return 8;
       })
       // BIT 1,C
@@ -1794,8 +1794,8 @@ export class CPU {
         if (res === 0) {
           this.flag_z[0] = 1;
         }
-        this.flag_n[0] = 0;
-        this.flag_h[0] = 1;
+        this.flag_n[1] = 0;
+        this.flag_h[2] = 1;
         return 8;
       })
       // BIT 1,D
@@ -1807,8 +1807,8 @@ export class CPU {
         if (res === 0) {
           this.flag_z[0] = 1;
         }
-        this.flag_n[0] = 0;
-        this.flag_h[0] = 1;
+        this.flag_n[1] = 0;
+        this.flag_h[2] = 1;
         return 8;
       })
       // BIT 1,E
@@ -1820,8 +1820,8 @@ export class CPU {
         if (res === 0) {
           this.flag_z[0] = 1;
         }
-        this.flag_n[0] = 0;
-        this.flag_h[0] = 1;
+        this.flag_n[1] = 0;
+        this.flag_h[2] = 1;
         return 8;
       })
       // BIT 1,H
@@ -1833,8 +1833,8 @@ export class CPU {
         if (res === 0) {
           this.flag_z[0] = 1;
         }
-        this.flag_n[0] = 0;
-        this.flag_h[0] = 1;
+        this.flag_n[1] = 0;
+        this.flag_h[2] = 1;
         return 8;
       })
       // BIT 1,L
@@ -1846,8 +1846,8 @@ export class CPU {
         if (res === 0) {
           this.flag_z[0] = 1;
         }
-        this.flag_n[0] = 0;
-        this.flag_h[0] = 1;
+        this.flag_n[1] = 0;
+        this.flag_h[2] = 1;
         return 8;
       })
       // BIT 1,(HL)
@@ -1859,8 +1859,8 @@ export class CPU {
         if (res === 0) {
           this.flag_z[0] = 1;
         }
-        this.flag_n[0] = 0;
-        this.flag_h[0] = 1;
+        this.flag_n[1] = 0;
+        this.flag_h[2] = 1;
         return 16;
       })
       // BIT 1,A
@@ -1872,8 +1872,8 @@ export class CPU {
         if (res === 0) {
           this.flag_z[0] = 1;
         }
-        this.flag_n[0] = 0;
-        this.flag_h[0] = 1;
+        this.flag_n[1] = 0;
+        this.flag_h[2] = 1;
         return 8;
       })
       // BIT 2,B
@@ -1885,8 +1885,8 @@ export class CPU {
         if (res === 0) {
           this.flag_z[0] = 1;
         }
-        this.flag_n[0] = 0;
-        this.flag_h[0] = 1;
+        this.flag_n[1] = 0;
+        this.flag_h[2] = 1;
         return 8;
       })
       // BIT 2,C
@@ -1898,8 +1898,8 @@ export class CPU {
         if (res === 0) {
           this.flag_z[0] = 1;
         }
-        this.flag_n[0] = 0;
-        this.flag_h[0] = 1;
+        this.flag_n[1] = 0;
+        this.flag_h[2] = 1;
         return 8;
       })
       // BIT 2,D
@@ -1911,8 +1911,8 @@ export class CPU {
         if (res === 0) {
           this.flag_z[0] = 1;
         }
-        this.flag_n[0] = 0;
-        this.flag_h[0] = 1;
+        this.flag_n[1] = 0;
+        this.flag_h[2] = 1;
         return 8;
       })
       // BIT 2,E
@@ -1924,8 +1924,8 @@ export class CPU {
         if (res === 0) {
           this.flag_z[0] = 1;
         }
-        this.flag_n[0] = 0;
-        this.flag_h[0] = 1;
+        this.flag_n[1] = 0;
+        this.flag_h[2] = 1;
         return 8;
       })
       // BIT 2,H
@@ -1937,8 +1937,8 @@ export class CPU {
         if (res === 0) {
           this.flag_z[0] = 1;
         }
-        this.flag_n[0] = 0;
-        this.flag_h[0] = 1;
+        this.flag_n[1] = 0;
+        this.flag_h[2] = 1;
         return 8;
       })
       // BIT 2,L
@@ -1950,8 +1950,8 @@ export class CPU {
         if (res === 0) {
           this.flag_z[0] = 1;
         }
-        this.flag_n[0] = 0;
-        this.flag_h[0] = 1;
+        this.flag_n[1] = 0;
+        this.flag_h[2] = 1;
         return 8;
       })
       // BIT 2,(HL)
@@ -1963,8 +1963,8 @@ export class CPU {
         if (res === 0) {
           this.flag_z[0] = 1;
         }
-        this.flag_n[0] = 0;
-        this.flag_h[0] = 1;
+        this.flag_n[1] = 0;
+        this.flag_h[2] = 1;
         return 16;
       })
       // BIT 2,A
@@ -1976,8 +1976,8 @@ export class CPU {
         if (res === 0) {
           this.flag_z[0] = 1;
         }
-        this.flag_n[0] = 0;
-        this.flag_h[0] = 1;
+        this.flag_n[1] = 0;
+        this.flag_h[2] = 1;
         return 8;
       })
       // BIT 3,B
@@ -1989,8 +1989,8 @@ export class CPU {
         if (res === 0) {
           this.flag_z[0] = 1;
         }
-        this.flag_n[0] = 0;
-        this.flag_h[0] = 1;
+        this.flag_n[1] = 0;
+        this.flag_h[2] = 1;
         return 8;
       })
       // BIT 3,C
@@ -2002,8 +2002,8 @@ export class CPU {
         if (res === 0) {
           this.flag_z[0] = 1;
         }
-        this.flag_n[0] = 0;
-        this.flag_h[0] = 1;
+        this.flag_n[1] = 0;
+        this.flag_h[2] = 1;
         return 8;
       })
       // BIT 3,D
@@ -2015,8 +2015,8 @@ export class CPU {
         if (res === 0) {
           this.flag_z[0] = 1;
         }
-        this.flag_n[0] = 0;
-        this.flag_h[0] = 1;
+        this.flag_n[1] = 0;
+        this.flag_h[2] = 1;
         return 8;
       })
       // BIT 3,E
@@ -2028,8 +2028,8 @@ export class CPU {
         if (res === 0) {
           this.flag_z[0] = 1;
         }
-        this.flag_n[0] = 0;
-        this.flag_h[0] = 1;
+        this.flag_n[1] = 0;
+        this.flag_h[2] = 1;
         return 8;
       })
       // BIT 3,H
@@ -2041,8 +2041,8 @@ export class CPU {
         if (res === 0) {
           this.flag_z[0] = 1;
         }
-        this.flag_n[0] = 0;
-        this.flag_h[0] = 1;
+        this.flag_n[1] = 0;
+        this.flag_h[2] = 1;
         return 8;
       })
       // BIT 3,L
@@ -2054,8 +2054,8 @@ export class CPU {
         if (res === 0) {
           this.flag_z[0] = 1;
         }
-        this.flag_n[0] = 0;
-        this.flag_h[0] = 1;
+        this.flag_n[1] = 0;
+        this.flag_h[2] = 1;
         return 8;
       })
       // BIT 3,(HL)
@@ -2067,8 +2067,8 @@ export class CPU {
         if (res === 0) {
           this.flag_z[0] = 1;
         }
-        this.flag_n[0] = 0;
-        this.flag_h[0] = 1;
+        this.flag_n[1] = 0;
+        this.flag_h[2] = 1;
         return 16;
       })
       // BIT 3,A
@@ -2080,8 +2080,8 @@ export class CPU {
         if (res === 0) {
           this.flag_z[0] = 1;
         }
-        this.flag_n[0] = 0;
-        this.flag_h[0] = 1;
+        this.flag_n[1] = 0;
+        this.flag_h[2] = 1;
         return 8;
       })
       // BIT 4,B
@@ -2093,8 +2093,8 @@ export class CPU {
         if (res === 0) {
           this.flag_z[0] = 1;
         }
-        this.flag_n[0] = 0;
-        this.flag_h[0] = 1;
+        this.flag_n[1] = 0;
+        this.flag_h[2] = 1;
         return 8;
       })
       // BIT 4,C
@@ -2106,8 +2106,8 @@ export class CPU {
         if (res === 0) {
           this.flag_z[0] = 1;
         }
-        this.flag_n[0] = 0;
-        this.flag_h[0] = 1;
+        this.flag_n[1] = 0;
+        this.flag_h[2] = 1;
         return 8;
       })
       // BIT 4,D
@@ -2119,8 +2119,8 @@ export class CPU {
         if (res === 0) {
           this.flag_z[0] = 1;
         }
-        this.flag_n[0] = 0;
-        this.flag_h[0] = 1;
+        this.flag_n[1] = 0;
+        this.flag_h[2] = 1;
         return 8;
       })
       // BIT 4,E
@@ -2132,8 +2132,8 @@ export class CPU {
         if (res === 0) {
           this.flag_z[0] = 1;
         }
-        this.flag_n[0] = 0;
-        this.flag_h[0] = 1;
+        this.flag_n[1] = 0;
+        this.flag_h[2] = 1;
         return 8;
       })
       // BIT 4,H
@@ -2145,8 +2145,8 @@ export class CPU {
         if (res === 0) {
           this.flag_z[0] = 1;
         }
-        this.flag_n[0] = 0;
-        this.flag_h[0] = 1;
+        this.flag_n[1] = 0;
+        this.flag_h[2] = 1;
         return 8;
       })
       // BIT 4,L
@@ -2158,8 +2158,8 @@ export class CPU {
         if (res === 0) {
           this.flag_z[0] = 1;
         }
-        this.flag_n[0] = 0;
-        this.flag_h[0] = 1;
+        this.flag_n[1] = 0;
+        this.flag_h[2] = 1;
         return 8;
       })
       // BIT 4,(HL)
@@ -2171,8 +2171,8 @@ export class CPU {
         if (res === 0) {
           this.flag_z[0] = 1;
         }
-        this.flag_n[0] = 0;
-        this.flag_h[0] = 1;
+        this.flag_n[1] = 0;
+        this.flag_h[2] = 1;
         return 16;
       })
       // BIT 4,A
@@ -2184,8 +2184,8 @@ export class CPU {
         if (res === 0) {
           this.flag_z[0] = 1;
         }
-        this.flag_n[0] = 0;
-        this.flag_h[0] = 1;
+        this.flag_n[1] = 0;
+        this.flag_h[2] = 1;
         return 8;
       })
       // BIT 5,B
@@ -2197,8 +2197,8 @@ export class CPU {
         if (res === 0) {
           this.flag_z[0] = 1;
         }
-        this.flag_n[0] = 0;
-        this.flag_h[0] = 1;
+        this.flag_n[1] = 0;
+        this.flag_h[2] = 1;
         return 8;
       })
       // BIT 5,C
@@ -2210,8 +2210,8 @@ export class CPU {
         if (res === 0) {
           this.flag_z[0] = 1;
         }
-        this.flag_n[0] = 0;
-        this.flag_h[0] = 1;
+        this.flag_n[1] = 0;
+        this.flag_h[2] = 1;
         return 8;
       })
       // BIT 5,D
@@ -2223,8 +2223,8 @@ export class CPU {
         if (res === 0) {
           this.flag_z[0] = 1;
         }
-        this.flag_n[0] = 0;
-        this.flag_h[0] = 1;
+        this.flag_n[1] = 0;
+        this.flag_h[2] = 1;
         return 8;
       })
       // BIT 5,E
@@ -2236,8 +2236,8 @@ export class CPU {
         if (res === 0) {
           this.flag_z[0] = 1;
         }
-        this.flag_n[0] = 0;
-        this.flag_h[0] = 1;
+        this.flag_n[1] = 0;
+        this.flag_h[2] = 1;
         return 8;
       })
       // BIT 5,H
@@ -2249,8 +2249,8 @@ export class CPU {
         if (res === 0) {
           this.flag_z[0] = 1;
         }
-        this.flag_n[0] = 0;
-        this.flag_h[0] = 1;
+        this.flag_n[1] = 0;
+        this.flag_h[2] = 1;
         return 8;
       })
       // BIT 5,L
@@ -2262,8 +2262,8 @@ export class CPU {
         if (res === 0) {
           this.flag_z[0] = 1;
         }
-        this.flag_n[0] = 0;
-        this.flag_h[0] = 1;
+        this.flag_n[1] = 0;
+        this.flag_h[2] = 1;
         return 8;
       })
       // BIT 5,(HL)
@@ -2275,8 +2275,8 @@ export class CPU {
         if (res === 0) {
           this.flag_z[0] = 1;
         }
-        this.flag_n[0] = 0;
-        this.flag_h[0] = 1;
+        this.flag_n[1] = 0;
+        this.flag_h[2] = 1;
         return 16;
       })
       // BIT 5,A
@@ -2288,8 +2288,8 @@ export class CPU {
         if (res === 0) {
           this.flag_z[0] = 1;
         }
-        this.flag_n[0] = 0;
-        this.flag_h[0] = 1;
+        this.flag_n[1] = 0;
+        this.flag_h[2] = 1;
         return 8;
       })
       // BIT 6,B
@@ -2301,8 +2301,8 @@ export class CPU {
         if (res === 0) {
           this.flag_z[0] = 1;
         }
-        this.flag_n[0] = 0;
-        this.flag_h[0] = 1;
+        this.flag_n[1] = 0;
+        this.flag_h[2] = 1;
         return 8;
       })
       // BIT 6,C
@@ -2314,8 +2314,8 @@ export class CPU {
         if (res === 0) {
           this.flag_z[0] = 1;
         }
-        this.flag_n[0] = 0;
-        this.flag_h[0] = 1;
+        this.flag_n[1] = 0;
+        this.flag_h[2] = 1;
         return 8;
       })
       // BIT 6,D
@@ -2327,8 +2327,8 @@ export class CPU {
         if (res === 0) {
           this.flag_z[0] = 1;
         }
-        this.flag_n[0] = 0;
-        this.flag_h[0] = 1;
+        this.flag_n[1] = 0;
+        this.flag_h[2] = 1;
         return 8;
       })
       // BIT 6,E
@@ -2340,8 +2340,8 @@ export class CPU {
         if (res === 0) {
           this.flag_z[0] = 1;
         }
-        this.flag_n[0] = 0;
-        this.flag_h[0] = 1;
+        this.flag_n[1] = 0;
+        this.flag_h[2] = 1;
         return 8;
       })
       // BIT 6,H
@@ -2353,8 +2353,8 @@ export class CPU {
         if (res === 0) {
           this.flag_z[0] = 1;
         }
-        this.flag_n[0] = 0;
-        this.flag_h[0] = 1;
+        this.flag_n[1] = 0;
+        this.flag_h[2] = 1;
         return 8;
       })
       // BIT 6,L
@@ -2366,8 +2366,8 @@ export class CPU {
         if (res === 0) {
           this.flag_z[0] = 1;
         }
-        this.flag_n[0] = 0;
-        this.flag_h[0] = 1;
+        this.flag_n[1] = 0;
+        this.flag_h[2] = 1;
         return 8;
       })
       // BIT 6,(HL)
@@ -2379,8 +2379,8 @@ export class CPU {
         if (res === 0) {
           this.flag_z[0] = 1;
         }
-        this.flag_n[0] = 0;
-        this.flag_h[0] = 1;
+        this.flag_n[1] = 0;
+        this.flag_h[2] = 1;
         return 16;
       })
       // BIT 6,A
@@ -2392,8 +2392,8 @@ export class CPU {
         if (res === 0) {
           this.flag_z[0] = 1;
         }
-        this.flag_n[0] = 0;
-        this.flag_h[0] = 1;
+        this.flag_n[1] = 0;
+        this.flag_h[2] = 1;
         return 8;
       })
       // BIT 7,B
@@ -2405,8 +2405,8 @@ export class CPU {
         if (res === 0) {
           this.flag_z[0] = 1;
         }
-        this.flag_n[0] = 0;
-        this.flag_h[0] = 1;
+        this.flag_n[1] = 0;
+        this.flag_h[2] = 1;
         return 8;
       })
       // BIT 7,C
@@ -2418,8 +2418,8 @@ export class CPU {
         if (res === 0) {
           this.flag_z[0] = 1;
         }
-        this.flag_n[0] = 0;
-        this.flag_h[0] = 1;
+        this.flag_n[1] = 0;
+        this.flag_h[2] = 1;
         return 8;
       })
       // BIT 7,D
@@ -2431,8 +2431,8 @@ export class CPU {
         if (res === 0) {
           this.flag_z[0] = 1;
         }
-        this.flag_n[0] = 0;
-        this.flag_h[0] = 1;
+        this.flag_n[1] = 0;
+        this.flag_h[2] = 1;
         return 8;
       })
       // BIT 7,E
@@ -2444,8 +2444,8 @@ export class CPU {
         if (res === 0) {
           this.flag_z[0] = 1;
         }
-        this.flag_n[0] = 0;
-        this.flag_h[0] = 1;
+        this.flag_n[1] = 0;
+        this.flag_h[2] = 1;
         return 8;
       })
       // BIT 7,H
@@ -2457,8 +2457,8 @@ export class CPU {
         if (res === 0) {
           this.flag_z[0] = 1;
         }
-        this.flag_n[0] = 0;
-        this.flag_h[0] = 1;
+        this.flag_n[1] = 0;
+        this.flag_h[2] = 1;
         return 8;
       })
       // BIT 7,L
@@ -2470,8 +2470,8 @@ export class CPU {
         if (res === 0) {
           this.flag_z[0] = 1;
         }
-        this.flag_n[0] = 0;
-        this.flag_h[0] = 1;
+        this.flag_n[1] = 0;
+        this.flag_h[2] = 1;
         return 8;
       })
       // BIT 7,(HL)
@@ -2483,8 +2483,8 @@ export class CPU {
         if (res === 0) {
           this.flag_z[0] = 1;
         }
-        this.flag_n[0] = 0;
-        this.flag_h[0] = 1;
+        this.flag_n[1] = 0;
+        this.flag_h[2] = 1;
         return 16;
       })
       // BIT 7,A
@@ -2496,8 +2496,8 @@ export class CPU {
         if (res === 0) {
           this.flag_z[0] = 1;
         }
-        this.flag_n[0] = 0;
-        this.flag_h[0] = 1;
+        this.flag_n[1] = 0;
+        this.flag_h[2] = 1;
         return 8;
       })
       // RES 0,B

@@ -14,9 +14,9 @@ describe("Printer - XOR tests", () => {
         if (this.a[0] === 0) {
           this.flag_z[0] = 1
         }
-        this.flag_n[0] = 0;
-        this.flag_h[0] = 0;
-        this.flag_c[0] = 0;
+        this.flag_n[1] = 0;
+        this.flag_h[2] = 0;
+        this.flag_c[3] = 0;
         return 4
       })"`)
     );
@@ -33,9 +33,9 @@ describe("Printer - XOR tests", () => {
         if (this.a[0] === 0) {
           this.flag_z[0] = 1
         }
-        this.flag_n[0] = 0;
-        this.flag_h[0] = 0;
-        this.flag_c[0] = 0;
+        this.flag_n[1] = 0;
+        this.flag_h[2] = 0;
+        this.flag_c[3] = 0;
         return 8
       })"`)
     );
@@ -53,9 +53,9 @@ describe("Printer - XOR tests", () => {
         if (this.a[0] === 0) {
           this.flag_z[0] = 1
         }
-        this.flag_n[0] = 0;
-        this.flag_h[0] = 0;
-        this.flag_c[0] = 0;
+        this.flag_n[1] = 0;
+        this.flag_h[2] = 0;
+        this.flag_c[3] = 0;
         return 8
       })"`)
     );

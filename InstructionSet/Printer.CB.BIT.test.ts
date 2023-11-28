@@ -11,12 +11,13 @@ describe("Printer CB - BIT tests", () => {
       .with(0x46, ()=>{
         const v = this.mmu.readByte(this.hl)
         const res = v[0] & (1 << 0)
+        this.prefix_cb = false;
         this.pc[0] += 1;
         if (res === 0) {
           this.flag_z[0] = 1
         }
-        this.flag_n[0] = 0;
-        this.flag_h[0] = 1
+        this.flag_n[1] = 0;
+        this.flag_h[2] = 1
         return 16
       })"`)
     );
@@ -30,12 +31,13 @@ describe("Printer CB - BIT tests", () => {
       .with(0x7c, ()=>{
         const v = this.h
         const res = v[0] & (1 << 7)
+        this.prefix_cb = false;
         this.pc[0] += 1;
         if (res === 0) {
           this.flag_z[0] = 1
         }
-        this.flag_n[0] = 0;
-        this.flag_h[0] = 1
+        this.flag_n[1] = 0;
+        this.flag_h[2] = 1
         return 8
       })"`)
     );
