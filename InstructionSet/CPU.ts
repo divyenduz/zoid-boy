@@ -1308,7 +1308,11 @@ export class CPU {
       })
       // LDH (a8),A
       .with(0xe0, () => {
-        throw new Error("Instruction 'LDH (a8),A', 'e0' not implemented");
+        const v = this.a;
+        const addr = new Uint16Array(0xff00 + this.pc[0]);
+        this.mmu.writeByte(addr, v);
+        this.pc[0] += 1;
+        return 12;
       })
       // POP HL
       .with(0xe1, () => {
@@ -1388,7 +1392,10 @@ export class CPU {
       })
       // LDH A,(a8)
       .with(0xf0, () => {
-        throw new Error("Instruction 'LDH A,(a8)', 'f0' not implemented");
+        const v /*a8*/ = this.mmu.readByte(this.pc);
+        this.a = v;
+        this.pc[0] += 1;
+        return 12;
       })
       // POP AF
       .with(0xf1, () => {

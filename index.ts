@@ -36,9 +36,7 @@ async function main() {
     console.log(
       `${cpu.pc}: ${instructionData.mnemonic} (${instruction}${
         cpu.prefix_cb ? "_CB" : ""
-      }) Z: ${instructionData.Z} N: ${instructionData.N} H: ${
-        instructionData.H
-      } C: ${instructionData.C}}`
+      })`
     );
     cpu.pc[0] += 1;
     if (cpu.prefix_cb) {

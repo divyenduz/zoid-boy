@@ -392,6 +392,9 @@ export class Printer {
       .with("ld", () => {
         return this.printLDInstruction(parsedInstruction);
       })
+      .with("ldh", () => {
+        return this.printLDInstruction(parsedInstruction);
+      })
       .with("xor", () => {
         return this.printXORInstruction(parsedInstruction);
       })
