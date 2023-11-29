@@ -307,6 +307,23 @@ export class Printer {
     return code;
   }
 
+  private printADDInstruction(parsedInstruction: Statement) {
+    const instructionData = this.getInstructionData(
+      parsedInstruction.opcode,
+      false
+    );
+
+    const code = Printer.trimString(`
+    ${this.printReader(parsedInstruction.right)}
+    this.${parsedInstruction.left?.left.value}[0] += v[0]
+    ${this.printInstructionCommon(
+      instructionData,
+      `this.${parsedInstruction.left?.left.value}[0]`
+    )}
+    `);
+    return code;
+  }
+
   private printJRInstruction(parsedInstruction: Statement) {
     if (parsedInstruction.left && parsedInstruction.right) {
       // JR with jump
@@ -400,6 +417,9 @@ export class Printer {
       })
       .with("inc", () => {
         return this.printINCInstruction(parsedInstruction);
+      })
+      .with("add", () => {
+        return this.printADDInstruction(parsedInstruction);
       })
       .with("jr", () => {
         return this.printJRInstruction(parsedInstruction);

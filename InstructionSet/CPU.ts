@@ -109,7 +109,12 @@ export class CPU {
       })
       // ADD HL,BC
       .with(0x09, () => {
-        throw new Error("Instruction 'ADD HL,BC', '09' not implemented");
+        const v = this.bc;
+        this.hl[0] += v[0];
+        this.flag_n[1] = 0;
+        console.log("Implement H flag");
+        console.log("Implement C flag");
+        return 8;
       })
       // LD A,(BC)
       .with(0x0a, () => {
@@ -205,7 +210,12 @@ export class CPU {
       })
       // ADD HL,DE
       .with(0x19, () => {
-        throw new Error("Instruction 'ADD HL,DE', '19' not implemented");
+        const v = this.de;
+        this.hl[0] += v[0];
+        this.flag_n[1] = 0;
+        console.log("Implement H flag");
+        console.log("Implement C flag");
+        return 8;
       })
       // LD A,(DE)
       .with(0x1a, () => {
@@ -316,7 +326,12 @@ export class CPU {
       })
       // ADD HL,HL
       .with(0x29, () => {
-        throw new Error("Instruction 'ADD HL,HL', '29' not implemented");
+        const v = this.hl;
+        this.hl[0] += v[0];
+        this.flag_n[1] = 0;
+        console.log("Implement H flag");
+        console.log("Implement C flag");
+        return 8;
       })
       // LD A,(HL+)
       .with(0x2a, () => {
@@ -429,7 +444,12 @@ export class CPU {
       })
       // ADD HL,SP
       .with(0x39, () => {
-        throw new Error("Instruction 'ADD HL,SP', '39' not implemented");
+        const v = this.sp;
+        this.hl[0] += v[0];
+        this.flag_n[1] = 0;
+        console.log("Implement H flag");
+        console.log("Implement C flag");
+        return 8;
       })
       // LD A,(HL-)
       .with(0x3a, () => {
@@ -859,35 +879,99 @@ export class CPU {
       })
       // ADD A,B
       .with(0x80, () => {
-        throw new Error("Instruction 'ADD A,B', '80' not implemented");
+        const v = this.b;
+        this.a[0] += v[0];
+        if (this.a[0] === 0) {
+          this.flag_z[0] = 1;
+        }
+        this.flag_n[1] = 0;
+        console.log("Implement H flag");
+        console.log("Implement C flag");
+        return 4;
       })
       // ADD A,C
       .with(0x81, () => {
-        throw new Error("Instruction 'ADD A,C', '81' not implemented");
+        const v = this.c;
+        this.a[0] += v[0];
+        if (this.a[0] === 0) {
+          this.flag_z[0] = 1;
+        }
+        this.flag_n[1] = 0;
+        console.log("Implement H flag");
+        console.log("Implement C flag");
+        return 4;
       })
       // ADD A,D
       .with(0x82, () => {
-        throw new Error("Instruction 'ADD A,D', '82' not implemented");
+        const v = this.d;
+        this.a[0] += v[0];
+        if (this.a[0] === 0) {
+          this.flag_z[0] = 1;
+        }
+        this.flag_n[1] = 0;
+        console.log("Implement H flag");
+        console.log("Implement C flag");
+        return 4;
       })
       // ADD A,E
       .with(0x83, () => {
-        throw new Error("Instruction 'ADD A,E', '83' not implemented");
+        const v = this.e;
+        this.a[0] += v[0];
+        if (this.a[0] === 0) {
+          this.flag_z[0] = 1;
+        }
+        this.flag_n[1] = 0;
+        console.log("Implement H flag");
+        console.log("Implement C flag");
+        return 4;
       })
       // ADD A,H
       .with(0x84, () => {
-        throw new Error("Instruction 'ADD A,H', '84' not implemented");
+        const v = this.h;
+        this.a[0] += v[0];
+        if (this.a[0] === 0) {
+          this.flag_z[0] = 1;
+        }
+        this.flag_n[1] = 0;
+        console.log("Implement H flag");
+        console.log("Implement C flag");
+        return 4;
       })
       // ADD A,L
       .with(0x85, () => {
-        throw new Error("Instruction 'ADD A,L', '85' not implemented");
+        const v = this.l;
+        this.a[0] += v[0];
+        if (this.a[0] === 0) {
+          this.flag_z[0] = 1;
+        }
+        this.flag_n[1] = 0;
+        console.log("Implement H flag");
+        console.log("Implement C flag");
+        return 4;
       })
       // ADD A,(HL)
       .with(0x86, () => {
-        throw new Error("Instruction 'ADD A,(HL)', '86' not implemented");
+        const v = this.mmu.readByte(this.hl);
+        this.a[0] += v[0];
+        if (this.a[0] === 0) {
+          this.flag_z[0] = 1;
+        }
+        this.flag_n[1] = 0;
+        console.log("Implement H flag");
+        console.log("Implement C flag");
+        return 8;
       })
       // ADD A,A
       .with(0x87, () => {
-        throw new Error("Instruction 'ADD A,A', '87' not implemented");
+        const v = this.a;
+        this.a[0] += v[0];
+        if (this.a[0] === 0) {
+          this.flag_z[0] = 1;
+        }
+        this.flag_n[1] = 0;
+        console.log("Implement H flag");
+        console.log("Implement C flag");
+        return 4;
       })
       // ADC A,B
       .with(0x88, () => {
@@ -1203,7 +1287,16 @@ export class CPU {
       })
       // ADD A,d8
       .with(0xc6, () => {
-        throw new Error("Instruction 'ADD A,d8', 'c6' not implemented");
+        const v /*d8*/ = this.mmu.readByte(this.pc);
+        this.a[0] += v[0];
+        this.pc[0] += 1;
+        if (this.a[0] === 0) {
+          this.flag_z[0] = 1;
+        }
+        this.flag_n[1] = 0;
+        console.log("Implement H flag");
+        console.log("Implement C flag");
+        return 8;
       })
       // RST 00H
       .with(0xc7, () => {
@@ -1347,7 +1440,15 @@ export class CPU {
       })
       // ADD SP,r8
       .with(0xe8, () => {
-        throw new Error("Instruction 'ADD SP,r8', 'e8' not implemented");
+        const v /*r8*/ = this.mmu.readByte(this.pc);
+        v[0] = (0x80 ^ v[0]) - 0x80;
+        this.sp[0] += v[0];
+        this.pc[0] += 1;
+        this.flag_z[0] = 0;
+        this.flag_n[1] = 0;
+        console.log("Implement H flag");
+        console.log("Implement C flag");
+        return 16;
       })
       // JP (HL)
       .with(0xe9, () => {
