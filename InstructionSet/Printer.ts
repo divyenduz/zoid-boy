@@ -360,6 +360,41 @@ export class Printer {
     }
   }
 
+  private printCALLInstruction(parsedInstruction: Statement) {
+    const instructionData = this.getInstructionData(
+      parsedInstruction.opcode,
+      false
+    );
+
+    if (parsedInstruction.left && parsedInstruction.right) {
+      // CALL with jump
+
+      const flagMap: Record<string, string> = {
+        z: "this.flag_z[0]",
+        nz: "!(this.flag_z[0])",
+        c: "this.flag_c[3]",
+        nc: "!(this.flag_c[3])",
+      };
+
+      const code = Printer.trimString(`
+        if (${flagMap[parsedInstruction.left.left.value]}) {
+            this.sp = this.pc
+            return ${instructionData?.cycles_jump}
+        } else {
+            ${this.printInstructionCommon(instructionData)}
+        }
+        `);
+      return code;
+    } else {
+      // JR with no jump
+      const code = Printer.trimString(`
+        this.sp = this.pc
+        ${this.printInstructionCommon(instructionData)}
+        `);
+      return code;
+    }
+  }
+
   private printCBBitInstruction(parsedInstruction: Statement) {
     if (!parsedInstruction.left || !parsedInstruction.right) {
       throw new Error("Invalid BIT instruction");
@@ -423,6 +458,9 @@ export class Printer {
       })
       .with("jr", () => {
         return this.printJRInstruction(parsedInstruction);
+      })
+      .with("call", () => {
+        return this.printCALLInstruction(parsedInstruction);
       })
       // CB instructions
       .with("bit", () => {

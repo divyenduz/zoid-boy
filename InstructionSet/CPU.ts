@@ -1279,7 +1279,13 @@ export class CPU {
       })
       // CALL NZ,a16
       .with(0xc4, () => {
-        throw new Error("Instruction 'CALL NZ,a16', 'c4' not implemented");
+        if (!this.flag_z[0]) {
+          this.sp = this.pc;
+          return 24;
+        } else {
+          this.pc[0] += 2;
+          return 12;
+        }
       })
       // PUSH BC
       .with(0xc5, () => {
@@ -1321,11 +1327,19 @@ export class CPU {
       })
       // CALL Z,a16
       .with(0xcc, () => {
-        throw new Error("Instruction 'CALL Z,a16', 'cc' not implemented");
+        if (this.flag_z[0]) {
+          this.sp = this.pc;
+          return 24;
+        } else {
+          this.pc[0] += 2;
+          return 12;
+        }
       })
       // CALL a16
       .with(0xcd, () => {
-        throw new Error("Instruction 'CALL a16', 'cd' not implemented");
+        this.sp = this.pc;
+        this.pc[0] += 2;
+        return 24;
       })
       // ADC A,d8
       .with(0xce, () => {
@@ -1353,7 +1367,14 @@ export class CPU {
       })
       // CALL NC,a16
       .with(0xd4, () => {
-        throw new Error("Instruction 'CALL NC,a16', 'd4' not implemented");
+        if (!this.flag_c[3]) {
+          this.sp = this.pc;
+          return 24;
+        } else {
+          this.pc[0] += 2;
+          console.log("Implement C flag");
+          return 12;
+        }
       })
       // PUSH DE
       .with(0xd5, () => {
@@ -1385,7 +1406,14 @@ export class CPU {
       })
       // CALL C,a16
       .with(0xdc, () => {
-        throw new Error("Instruction 'CALL C,a16', 'dc' not implemented");
+        if (this.flag_c[3]) {
+          this.sp = this.pc;
+          return 24;
+        } else {
+          this.pc[0] += 2;
+          console.log("Implement C flag");
+          return 12;
+        }
       })
       // INVALID
       .with(0xd3, () => {
