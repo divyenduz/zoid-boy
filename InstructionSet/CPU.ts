@@ -207,6 +207,8 @@ export class CPU {
         const v /*r8*/ = this.mmu.readByte(this.pc);
         v[0] = (0x80 ^ v[0]) - 0x80;
         this.pc[0] += v[0];
+        this.pc[0] += 1;
+        return 12;
       })
       // ADD HL,DE
       .with(0x19, () => {

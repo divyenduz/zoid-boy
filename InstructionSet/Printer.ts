@@ -325,14 +325,12 @@ export class Printer {
   }
 
   private printJRInstruction(parsedInstruction: Statement) {
+    const instructionData = this.getInstructionData(
+      parsedInstruction.opcode,
+      false
+    );
     if (parsedInstruction.left && parsedInstruction.right) {
       // JR with jump
-
-      const instructionData = this.getInstructionData(
-        parsedInstruction.opcode,
-        false
-      );
-
       const flagMap: Record<string, string> = {
         z: "this.flag_z[0]",
         nz: "!(this.flag_z[0])",
@@ -355,6 +353,7 @@ export class Printer {
       const code = Printer.trimString(`
         ${this.printReader(parsedInstruction.left)}
         this.pc[0] += v[0]
+        ${this.printInstructionCommon(instructionData)}
         `);
       return code;
     }
