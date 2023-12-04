@@ -323,6 +323,20 @@ export class Printer {
     return code;
   }
 
+  private printDECInstruction(parsedInstruction: Statement) {
+    const instructionData = this.getInstructionData(
+      parsedInstruction.opcode,
+      false
+    );
+
+    const code = Printer.trimString(`
+    ${this.printReader(parsedInstruction.left)}
+    v[0] -= 1
+    ${this.printInstructionCommon(instructionData, "v[0]")}
+    `);
+    return code;
+  }
+
   private printADDInstruction(parsedInstruction: Statement) {
     const instructionData = this.getInstructionData(
       parsedInstruction.opcode,
@@ -470,6 +484,9 @@ export class Printer {
       })
       .with("inc", () => {
         return this.printINCInstruction(parsedInstruction);
+      })
+      .with("dec", () => {
+        return this.printDECInstruction(parsedInstruction);
       })
       .with("add", () => {
         return this.printADDInstruction(parsedInstruction);

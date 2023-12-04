@@ -47,7 +47,7 @@ export class CPU {
   execute(instruction: Uint8Array) {
     if (this.prefix_cb) {
       throw new Error(
-        "Normal instruction should not be called with prefix_cb set"
+        "Normal instruction should not be called with prefix_cb set",
       );
     }
     match(instruction[0])
@@ -86,7 +86,14 @@ export class CPU {
       })
       // DEC B
       .with(0x05, () => {
-        throw new Error("Instruction 'DEC B', '05' not implemented");
+        const v = this.b;
+        v[0] -= 1;
+        if (v[0] === 0) {
+          this.flag_z[0] = 1;
+        }
+        this.flag_n[1] = 1;
+        console.log("Implement H flag");
+        return 4;
       })
       // LD B,d8
       .with(0x06, () => {
@@ -124,7 +131,9 @@ export class CPU {
       })
       // DEC BC
       .with(0x0b, () => {
-        throw new Error("Instruction 'DEC BC', '0b' not implemented");
+        const v = this.bc;
+        v[0] -= 1;
+        return 8;
       })
       // INC C
       .with(0x0c, () => {
@@ -139,7 +148,14 @@ export class CPU {
       })
       // DEC C
       .with(0x0d, () => {
-        throw new Error("Instruction 'DEC C', '0d' not implemented");
+        const v = this.c;
+        v[0] -= 1;
+        if (v[0] === 0) {
+          this.flag_z[0] = 1;
+        }
+        this.flag_n[1] = 1;
+        console.log("Implement H flag");
+        return 4;
       })
       // LD C,d8
       .with(0x0e, () => {
@@ -189,7 +205,14 @@ export class CPU {
       })
       // DEC D
       .with(0x15, () => {
-        throw new Error("Instruction 'DEC D', '15' not implemented");
+        const v = this.d;
+        v[0] -= 1;
+        if (v[0] === 0) {
+          this.flag_z[0] = 1;
+        }
+        this.flag_n[1] = 1;
+        console.log("Implement H flag");
+        return 4;
       })
       // LD D,d8
       .with(0x16, () => {
@@ -227,7 +250,9 @@ export class CPU {
       })
       // DEC DE
       .with(0x1b, () => {
-        throw new Error("Instruction 'DEC DE', '1b' not implemented");
+        const v = this.de;
+        v[0] -= 1;
+        return 8;
       })
       // INC E
       .with(0x1c, () => {
@@ -242,7 +267,14 @@ export class CPU {
       })
       // DEC E
       .with(0x1d, () => {
-        throw new Error("Instruction 'DEC E', '1d' not implemented");
+        const v = this.e;
+        v[0] -= 1;
+        if (v[0] === 0) {
+          this.flag_z[0] = 1;
+        }
+        this.flag_n[1] = 1;
+        console.log("Implement H flag");
+        return 4;
       })
       // LD E,d8
       .with(0x1e, () => {
@@ -301,7 +333,14 @@ export class CPU {
       })
       // DEC H
       .with(0x25, () => {
-        throw new Error("Instruction 'DEC H', '25' not implemented");
+        const v = this.h;
+        v[0] -= 1;
+        if (v[0] === 0) {
+          this.flag_z[0] = 1;
+        }
+        this.flag_n[1] = 1;
+        console.log("Implement H flag");
+        return 4;
       })
       // LD H,d8
       .with(0x26, () => {
@@ -344,7 +383,9 @@ export class CPU {
       })
       // DEC HL
       .with(0x2b, () => {
-        throw new Error("Instruction 'DEC HL', '2b' not implemented");
+        const v = this.hl;
+        v[0] -= 1;
+        return 8;
       })
       // INC L
       .with(0x2c, () => {
@@ -359,7 +400,14 @@ export class CPU {
       })
       // DEC L
       .with(0x2d, () => {
-        throw new Error("Instruction 'DEC L', '2d' not implemented");
+        const v = this.l;
+        v[0] -= 1;
+        if (v[0] === 0) {
+          this.flag_z[0] = 1;
+        }
+        this.flag_n[1] = 1;
+        console.log("Implement H flag");
+        return 4;
       })
       // LD L,d8
       .with(0x2e, () => {
@@ -418,7 +466,14 @@ export class CPU {
       })
       // DEC (HL)
       .with(0x35, () => {
-        throw new Error("Instruction 'DEC (HL)', '35' not implemented");
+        const v = this.mmu.readByte(this.hl);
+        v[0] -= 1;
+        if (v[0] === 0) {
+          this.flag_z[0] = 1;
+        }
+        this.flag_n[1] = 1;
+        console.log("Implement H flag");
+        return 12;
       })
       // LD (HL),d8
       .with(0x36, () => {
@@ -462,7 +517,9 @@ export class CPU {
       })
       // DEC SP
       .with(0x3b, () => {
-        throw new Error("Instruction 'DEC SP', '3b' not implemented");
+        const v = this.sp;
+        v[0] -= 1;
+        return 8;
       })
       // INC A
       .with(0x3c, () => {
@@ -477,7 +534,14 @@ export class CPU {
       })
       // DEC A
       .with(0x3d, () => {
-        throw new Error("Instruction 'DEC A', '3d' not implemented");
+        const v = this.a;
+        v[0] -= 1;
+        if (v[0] === 0) {
+          this.flag_z[0] = 1;
+        }
+        this.flag_n[1] = 1;
+        console.log("Implement H flag");
+        return 4;
       })
       // LD A,d8
       .with(0x3e, () => {
@@ -1663,7 +1727,6 @@ export class CPU {
       // CP d8
       .with(0xfe, () => {
         const v /*d8*/ = this.mmu.readByte(this.pc);
-        console.log(v);
         const res = this.a[0] - v[0];
         this.pc[0] += 1;
         if (res === 0) {
@@ -1680,7 +1743,7 @@ export class CPU {
       })
       .otherwise(() => {
         throw new Error(
-          `Instruction "${instruction}" not implemented. Previous instruction: "${this.previousInstruction}"`
+          `Instruction "${instruction}" not implemented. Previous instruction: "${this.previousInstruction}"`,
         );
       });
 
@@ -3355,7 +3418,7 @@ export class CPU {
       })
       .otherwise(() => {
         throw new Error(
-          `Instruction "${instruction}" not implemented. Previous instruction: "${this.previousInstruction}"`
+          `Instruction "${instruction}" not implemented. Previous instruction: "${this.previousInstruction}"`,
         );
       });
 
