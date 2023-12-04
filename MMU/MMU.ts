@@ -19,6 +19,7 @@ export class MMU {
   memory: Uint8Array = new Uint8Array(this._MEMORY);
 
   constructor(bootrom: Uint8Array, rom: Uint8Array) {
+    this.memory.set(rom);
     this.memory.set(bootrom);
   }
 

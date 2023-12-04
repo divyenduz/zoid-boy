@@ -15,13 +15,10 @@ async function main() {
   let cycles = 0;
   while (true) {
     cycles += 1;
-    if (cycles > 200) {
+    if (cycles > 100) {
       console.error("BOOTROM LOAD FAILURE");
       console.log({ cycles });
-      process.exit(1);
-    }
-    if (cpu.pc[0] > 0x100) {
-      console.error("PC out of bounds");
+      console.log(logState(cpu));
       process.exit(1);
     }
     const instruction = mmu.readByte(cpu.pc);
