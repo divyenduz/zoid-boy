@@ -39,6 +39,7 @@ export class CPU {
   sp: Uint16Array = new Uint16Array(1);
 
   prefix_cb: boolean = false;
+  is_master_interrupt_enabled: boolean = false;
 
   previousInstruction: Uint8Array = new Uint8Array(1);
 

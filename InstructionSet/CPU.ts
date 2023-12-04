@@ -39,6 +39,7 @@ export class CPU {
   sp: Uint16Array = new Uint16Array(1);
 
   prefix_cb: boolean = false;
+  is_master_interrupt_enabled: boolean = false;
 
   previousInstruction: Uint8Array = new Uint8Array(1);
 
@@ -52,7 +53,9 @@ export class CPU {
     }
     match(instruction[0])
       // NOP
-      .with(0x00, () => {})
+      .with(0x00, () => {
+        return 4;
+      })
       // LD BC,d16
       .with(0x01, () => {
         const v /*d16*/ = this.mmu.readWord(this.pc);
@@ -1669,7 +1672,8 @@ export class CPU {
       })
       // DI
       .with(0xf3, () => {
-        throw new Error("Instruction 'DI', 'f3' not implemented");
+        this.is_master_interrupt_enabled = true;
+        return 4;
       })
       // INVALID
       .with(0xd3, () => {
@@ -1714,7 +1718,8 @@ export class CPU {
       })
       // EI
       .with(0xfb, () => {
-        throw new Error("Instruction 'EI', 'fb' not implemented");
+        this.is_master_interrupt_enabled = false;
+        return 4;
       })
       // INVALID
       .with(0xd3, () => {

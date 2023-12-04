@@ -465,7 +465,21 @@ export class Printer {
         return `throw new Error("Invalid instruction, should never be called");`;
       })
       .with("nop", () => {
-        return ``;
+        return `
+        ${this.printInstructionCommon(instructionData)}
+        `;
+      })
+      .with("di", () => {
+        return `
+          this.is_master_interrupt_enabled = true
+          ${this.printInstructionCommon(instructionData)}
+        `;
+      })
+      .with("ei", () => {
+        return `
+          this.is_master_interrupt_enabled = false
+          ${this.printInstructionCommon(instructionData)}
+        `;
       })
       .with("prefix", () => {
         return this.printPrefixCBInstruction(parsedInstruction);
