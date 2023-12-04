@@ -354,6 +354,20 @@ export class Printer {
     return code;
   }
 
+  private printSUBInstruction(parsedInstruction: Statement) {
+    const instructionData = this.getInstructionData(
+      parsedInstruction.opcode,
+      false
+    );
+
+    const code = Printer.trimString(`
+    ${this.printReader(parsedInstruction.left)}
+    this.a[0] -= v[0]
+    ${this.printInstructionCommon(instructionData, `this.a[0]`)}
+    `);
+    return code;
+  }
+
   private printJRInstruction(parsedInstruction: Statement) {
     const instructionData = this.getInstructionData(
       parsedInstruction.opcode,
@@ -504,6 +518,9 @@ export class Printer {
       })
       .with("add", () => {
         return this.printADDInstruction(parsedInstruction);
+      })
+      .with("sub", () => {
+        return this.printSUBInstruction(parsedInstruction);
       })
       .with("jr", () => {
         return this.printJRInstruction(parsedInstruction);

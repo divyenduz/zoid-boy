@@ -1076,35 +1076,99 @@ export class CPU {
       })
       // SUB B
       .with(0x90, () => {
-        throw new Error("Instruction 'SUB B', '90' not implemented");
+        const v = this.b;
+        this.a[0] -= v[0];
+        if (this.a[0] === 0) {
+          this.flag_z[0] = 1;
+        }
+        this.flag_n[1] = 1;
+        console.log("Implement H flag");
+        console.log("Implement C flag");
+        return 4;
       })
       // SUB C
       .with(0x91, () => {
-        throw new Error("Instruction 'SUB C', '91' not implemented");
+        const v = this.c;
+        this.a[0] -= v[0];
+        if (this.a[0] === 0) {
+          this.flag_z[0] = 1;
+        }
+        this.flag_n[1] = 1;
+        console.log("Implement H flag");
+        console.log("Implement C flag");
+        return 4;
       })
       // SUB D
       .with(0x92, () => {
-        throw new Error("Instruction 'SUB D', '92' not implemented");
+        const v = this.d;
+        this.a[0] -= v[0];
+        if (this.a[0] === 0) {
+          this.flag_z[0] = 1;
+        }
+        this.flag_n[1] = 1;
+        console.log("Implement H flag");
+        console.log("Implement C flag");
+        return 4;
       })
       // SUB E
       .with(0x93, () => {
-        throw new Error("Instruction 'SUB E', '93' not implemented");
+        const v = this.e;
+        this.a[0] -= v[0];
+        if (this.a[0] === 0) {
+          this.flag_z[0] = 1;
+        }
+        this.flag_n[1] = 1;
+        console.log("Implement H flag");
+        console.log("Implement C flag");
+        return 4;
       })
       // SUB H
       .with(0x94, () => {
-        throw new Error("Instruction 'SUB H', '94' not implemented");
+        const v = this.h;
+        this.a[0] -= v[0];
+        if (this.a[0] === 0) {
+          this.flag_z[0] = 1;
+        }
+        this.flag_n[1] = 1;
+        console.log("Implement H flag");
+        console.log("Implement C flag");
+        return 4;
       })
       // SUB L
       .with(0x95, () => {
-        throw new Error("Instruction 'SUB L', '95' not implemented");
+        const v = this.l;
+        this.a[0] -= v[0];
+        if (this.a[0] === 0) {
+          this.flag_z[0] = 1;
+        }
+        this.flag_n[1] = 1;
+        console.log("Implement H flag");
+        console.log("Implement C flag");
+        return 4;
       })
       // SUB (HL)
       .with(0x96, () => {
-        throw new Error("Instruction 'SUB (HL)', '96' not implemented");
+        const v = this.mmu.readByte(this.hl);
+        this.a[0] -= v[0];
+        if (this.a[0] === 0) {
+          this.flag_z[0] = 1;
+        }
+        this.flag_n[1] = 1;
+        console.log("Implement H flag");
+        console.log("Implement C flag");
+        return 8;
       })
       // SUB A
       .with(0x97, () => {
-        throw new Error("Instruction 'SUB A', '97' not implemented");
+        const v = this.a;
+        this.a[0] -= v[0];
+        if (this.a[0] === 0) {
+          this.flag_z[0] = 1;
+        }
+        this.flag_n[1] = 1;
+        console.log("Implement H flag");
+        console.log("Implement C flag");
+        return 4;
       })
       // SBC A,B
       .with(0x98, () => {
@@ -1515,7 +1579,16 @@ export class CPU {
       })
       // SUB d8
       .with(0xd6, () => {
-        throw new Error("Instruction 'SUB d8', 'd6' not implemented");
+        const v /*d8*/ = this.mmu.readByte(this.pc);
+        this.a[0] -= v[0];
+        this.pc[0] += 1;
+        if (this.a[0] === 0) {
+          this.flag_z[0] = 1;
+        }
+        this.flag_n[1] = 1;
+        console.log("Implement H flag");
+        console.log("Implement C flag");
+        return 8;
       })
       // RST 10H
       .with(0xd7, () => {
