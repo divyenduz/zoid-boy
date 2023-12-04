@@ -279,6 +279,22 @@ export class Printer {
     return code;
   }
 
+  private printCPInstruction(parsedInstruction: Statement) {
+    const instructionData = this.getInstructionData(
+      parsedInstruction.opcode,
+      false
+    );
+
+    // CP d8
+    console.log(parsedInstruction);
+    const code = Printer.trimString(`
+    ${this.printReader(parsedInstruction.left)}
+    const res = this.a[0] - v[0]
+    ${this.printInstructionCommon(instructionData, "res")}
+    `);
+    return code;
+  }
+
   private printXORInstruction(parsedInstruction: Statement) {
     const instructionData = this.getInstructionData(
       parsedInstruction.opcode,
@@ -445,6 +461,9 @@ export class Printer {
       })
       .with("ldh", () => {
         return this.printLDInstruction(parsedInstruction);
+      })
+      .with("cp", () => {
+        return this.printCPInstruction(parsedInstruction);
       })
       .with("xor", () => {
         return this.printXORInstruction(parsedInstruction);

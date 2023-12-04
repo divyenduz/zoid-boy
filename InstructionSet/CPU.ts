@@ -47,7 +47,7 @@ export class CPU {
   execute(instruction: Uint8Array) {
     if (this.prefix_cb) {
       throw new Error(
-        "Normal instruction should not be called with prefix_cb set",
+        "Normal instruction should not be called with prefix_cb set"
       );
     }
     match(instruction[0])
@@ -1233,35 +1233,99 @@ export class CPU {
       })
       // CP B
       .with(0xb8, () => {
-        throw new Error("Instruction 'CP B', 'b8' not implemented");
+        const v = this.b;
+        const res = this.a[0] - v[0];
+        if (res === 0) {
+          this.flag_z[0] = 1;
+        }
+        this.flag_n[1] = 1;
+        console.log("Implement H flag");
+        console.log("Implement C flag");
+        return 4;
       })
       // CP C
       .with(0xb9, () => {
-        throw new Error("Instruction 'CP C', 'b9' not implemented");
+        const v = this.c;
+        const res = this.a[0] - v[0];
+        if (res === 0) {
+          this.flag_z[0] = 1;
+        }
+        this.flag_n[1] = 1;
+        console.log("Implement H flag");
+        console.log("Implement C flag");
+        return 4;
       })
       // CP D
       .with(0xba, () => {
-        throw new Error("Instruction 'CP D', 'ba' not implemented");
+        const v = this.d;
+        const res = this.a[0] - v[0];
+        if (res === 0) {
+          this.flag_z[0] = 1;
+        }
+        this.flag_n[1] = 1;
+        console.log("Implement H flag");
+        console.log("Implement C flag");
+        return 4;
       })
       // CP E
       .with(0xbb, () => {
-        throw new Error("Instruction 'CP E', 'bb' not implemented");
+        const v = this.e;
+        const res = this.a[0] - v[0];
+        if (res === 0) {
+          this.flag_z[0] = 1;
+        }
+        this.flag_n[1] = 1;
+        console.log("Implement H flag");
+        console.log("Implement C flag");
+        return 4;
       })
       // CP H
       .with(0xbc, () => {
-        throw new Error("Instruction 'CP H', 'bc' not implemented");
+        const v = this.h;
+        const res = this.a[0] - v[0];
+        if (res === 0) {
+          this.flag_z[0] = 1;
+        }
+        this.flag_n[1] = 1;
+        console.log("Implement H flag");
+        console.log("Implement C flag");
+        return 4;
       })
       // CP L
       .with(0xbd, () => {
-        throw new Error("Instruction 'CP L', 'bd' not implemented");
+        const v = this.l;
+        const res = this.a[0] - v[0];
+        if (res === 0) {
+          this.flag_z[0] = 1;
+        }
+        this.flag_n[1] = 1;
+        console.log("Implement H flag");
+        console.log("Implement C flag");
+        return 4;
       })
       // CP (HL)
       .with(0xbe, () => {
-        throw new Error("Instruction 'CP (HL)', 'be' not implemented");
+        const v = this.mmu.readByte(this.hl);
+        const res = this.a[0] - v[0];
+        if (res === 0) {
+          this.flag_z[0] = 1;
+        }
+        this.flag_n[1] = 1;
+        console.log("Implement H flag");
+        console.log("Implement C flag");
+        return 8;
       })
       // CP A
       .with(0xbf, () => {
-        throw new Error("Instruction 'CP A', 'bf' not implemented");
+        const v = this.a;
+        const res = this.a[0] - v[0];
+        if (res === 0) {
+          this.flag_z[0] = 1;
+        }
+        this.flag_n[1] = 1;
+        console.log("Implement H flag");
+        console.log("Implement C flag");
+        return 4;
       })
       // RET NZ
       .with(0xc0, () => {
@@ -1598,7 +1662,17 @@ export class CPU {
       })
       // CP d8
       .with(0xfe, () => {
-        throw new Error("Instruction 'CP d8', 'fe' not implemented");
+        const v /*d8*/ = this.mmu.readByte(this.pc);
+        console.log(v);
+        const res = this.a[0] - v[0];
+        this.pc[0] += 1;
+        if (res === 0) {
+          this.flag_z[0] = 1;
+        }
+        this.flag_n[1] = 1;
+        console.log("Implement H flag");
+        console.log("Implement C flag");
+        return 8;
       })
       // RST 38H
       .with(0xff, () => {
@@ -1606,7 +1680,7 @@ export class CPU {
       })
       .otherwise(() => {
         throw new Error(
-          `Instruction "${instruction}" not implemented. Previous instruction: "${this.previousInstruction}"`,
+          `Instruction "${instruction}" not implemented. Previous instruction: "${this.previousInstruction}"`
         );
       });
 
@@ -3281,7 +3355,7 @@ export class CPU {
       })
       .otherwise(() => {
         throw new Error(
-          `Instruction "${instruction}" not implemented. Previous instruction: "${this.previousInstruction}"`,
+          `Instruction "${instruction}" not implemented. Previous instruction: "${this.previousInstruction}"`
         );
       });
 
