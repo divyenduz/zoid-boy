@@ -1,6 +1,6 @@
 import { describe, test, expect } from "vitest";
 
-import { Printer } from "./Printer";
+import { Printer } from "./Printer.js";
 
 describe("Printer - JR tests", () => {
   test("JR r8", () => {
@@ -13,7 +13,10 @@ describe("Printer - JR tests", () => {
         v[0] = ((0x80 ^ v[0]) - 0x80)
         this.pc[0] += v[0]
         this.pc[0] += 1;
-        return 12
+        return {
+          v,
+          cycles: 12
+        }
       })"`)
     );
   });
@@ -28,10 +31,16 @@ describe("Printer - JR tests", () => {
           const v /*r8*/ = this.mmu.readByte(this.pc);
           v[0] = ((0x80 ^ v[0]) - 0x80)
           this.pc[0] += v[0]
-          return 12
+          return {
+            v,
+            cycles: 12
+          }
         } else {
           this.pc[0] += 1;
-          return 8
+          return {
+            v: 0x00,
+            cycles: 8
+          }
         }
       })"`)
     );
@@ -47,10 +56,16 @@ describe("Printer - JR tests", () => {
           const v /*r8*/ = this.mmu.readByte(this.pc);
           v[0] = ((0x80 ^ v[0]) - 0x80)
           this.pc[0] += v[0]
-          return 12
+          return {
+            v,
+            cycles: 12
+          }
         } else {
           this.pc[0] += 1;
-          return 8
+          return {
+            v: 0x00,
+            cycles: 8
+          }
         }
       })"`)
     );

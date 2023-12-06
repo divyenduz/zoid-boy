@@ -1,6 +1,6 @@
 import { describe, test, expect } from "vitest";
 
-import { Printer } from "./Printer";
+import { Printer } from "./Printer.js";
 
 describe("Printer - CALL tests", () => {
   test("CALL NZ,a16", () => {
@@ -11,10 +11,16 @@ describe("Printer - CALL tests", () => {
       .with(0xc4, ()=>{
         if (!(this.flag_z[0])) {
           this.sp = this.pc
-          return 24
+          return {
+            v: 0x00,
+            cycles: 24
+          }
         } else {
           this.pc[0] += 2;
-          return 12
+          return {
+            v: 0x00,
+            cycles: 12
+          }
         }
       })"`)
     );
@@ -28,7 +34,10 @@ describe("Printer - CALL tests", () => {
       .with(0xcd, ()=>{
         this.sp = this.pc
         this.pc[0] += 2;
-        return 24
+        return {
+          v: this.sp,
+          cycles: 24
+        }
       })"`)
     );
   });
@@ -41,11 +50,17 @@ describe("Printer - CALL tests", () => {
       .with(0xdc, ()=>{
         if (this.flag_c[3]) {
         this.sp = this.pc
-          return 24
+          return {
+            v: 0x00,
+            cycles: 24
+          }
         } else {
           this.pc[0] += 2;
           console.log('Implement C flag')
-          return 12
+          return {
+            v: 0x00,
+            cycles: 12
+          }
         }
       })"`)
     );

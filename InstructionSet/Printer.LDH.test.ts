@@ -1,6 +1,6 @@
 import { describe, test, expect } from "vitest";
 
-import { Printer } from "./Printer";
+import { Printer } from "./Printer.js";
 
 describe("Printer - LD tests", () => {
   test("LDH (a8),A", () => {
@@ -13,7 +13,10 @@ describe("Printer - LD tests", () => {
         const addr = new Uint16Array(0xFF00 + this.pc[0])
         this.mmu.writeByte(addr, v)
         this.pc[0] += 1;
-        return 12
+        return {
+          v,
+          cycles: 12
+        }
       })"`)
     );
   });
@@ -29,7 +32,10 @@ describe("Printer - LD tests", () => {
         const v /*a8*/ = this.mmu.readByte(this.pc);
         this.a = v
         this.pc[0] += 1;
-        return 12
+        return {
+          v,
+          cycles: 12
+        }
       })"`)
     );
   });

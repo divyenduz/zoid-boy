@@ -1,6 +1,6 @@
 import { describe, test, expect } from "vitest";
 
-import { Printer } from "./Printer";
+import { Printer } from "./Printer.js";
 
 describe("Printer - XOR tests", () => {
   test("XOR C", () => {
@@ -17,7 +17,10 @@ describe("Printer - XOR tests", () => {
         this.flag_n[1] = 0;
         this.flag_h[2] = 0;
         this.flag_c[3] = 0;
-        return 4
+        return {
+          v,
+          cycles: 4
+        }
       })"`)
     );
   });
@@ -36,7 +39,10 @@ describe("Printer - XOR tests", () => {
         this.flag_n[1] = 0;
         this.flag_h[2] = 0;
         this.flag_c[3] = 0;
-        return 8
+        return {
+          v,
+          cycles: 8
+        }
       })"`)
     );
   });
@@ -56,7 +62,10 @@ describe("Printer - XOR tests", () => {
         this.flag_n[1] = 0;
         this.flag_h[2] = 0;
         this.flag_c[3] = 0;
-        return 8
+        return {
+          v,
+          cycles: 8
+        }
       })"`)
     );
   });

@@ -1,6 +1,6 @@
 import { describe, test, expect } from "vitest";
 
-import { Printer } from "./Printer";
+import { Printer } from "./Printer.js";
 
 describe("Printer - INC tests", () => {
   test("INC BC", () => {
@@ -11,7 +11,10 @@ describe("Printer - INC tests", () => {
       .with(0x03, ()=>{
         const v = this.bc
         v[0] += 1
-        return 8
+        return {
+          v,
+          cycles: 8
+        }
       })"`)
     );
   });
@@ -30,7 +33,10 @@ describe("Printer - INC tests", () => {
         }
         this.flag_n[1] = 0;
         console.log('Implement H flag')
-        return 4
+        return {
+          v,
+          cycles: 4
+        }
       })"`)
     );
   });
@@ -49,7 +55,10 @@ describe("Printer - INC tests", () => {
         }
         this.flag_n[1] = 0;
         console.log('Implement H flag')
-        return 12
+        return {
+          v,
+          cycles: 12
+        }
       })"`)
     );
   });

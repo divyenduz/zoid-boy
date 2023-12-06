@@ -1,4 +1,4 @@
-import { MMU } from "../MMU/MMU";
+import { MMU } from "../MMU/MMU.js";
 import { match } from "ts-pattern";
 //@ts-expect-error
 import Uint1Array from "uint1array";

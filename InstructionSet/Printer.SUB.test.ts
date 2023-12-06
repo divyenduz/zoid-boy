@@ -1,6 +1,6 @@
 import { describe, test, expect } from "vitest";
 
-import { Printer } from "./Printer";
+import { Printer } from "./Printer.js";
 
 describe("Printer - SUB tests", () => {
   test("SUB B", () => {
@@ -17,7 +17,10 @@ describe("Printer - SUB tests", () => {
         this.flag_n[1] = 1
         console.log('Implement H flag')
         console.log('Implement C flag')
-        return 4
+        return {
+          v,
+          cycles: 4
+        }
       })"`)
     );
   });
@@ -36,7 +39,10 @@ describe("Printer - SUB tests", () => {
         this.flag_n[1] = 1
         console.log('Implement H flag')
         console.log('Implement C flag')
-        return 8
+        return {
+          v,
+          cycles: 8
+        }
       })"`)
     );
   });
@@ -56,7 +62,10 @@ describe("Printer - SUB tests", () => {
         this.flag_n[1] = 1
         console.log('Implement H flag')
         console.log('Implement C flag')
-        return 8
+        return {
+          v,
+          cycles: 8
+        }
       })"`)
     );
   });

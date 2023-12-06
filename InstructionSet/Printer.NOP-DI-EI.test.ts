@@ -1,6 +1,6 @@
 import { describe, test, expect } from "vitest";
 
-import { Printer } from "./Printer";
+import { Printer } from "./Printer.js";
 
 describe("Printer - NOP, DI, EI tests", () => {
   test("NOP", () => {
@@ -9,7 +9,10 @@ describe("Printer - NOP, DI, EI tests", () => {
     expect(impl).toMatchInlineSnapshot(
       Printer.trimString(`"// NOP
       .with(0x00, ()=>{
-      return 4
+      return {
+        v: 0x00,
+        cycles: 4
+      }
       })"`)
     );
   });
@@ -21,7 +24,10 @@ describe("Printer - NOP, DI, EI tests", () => {
       Printer.trimString(`"// DI
       .with(0xf3, ()=>{
         this.is_master_interrupt_enabled = true
-        return 4
+        return {
+          v: 0x00,
+          cycles: 4
+        }
       })"`)
     );
   });
@@ -33,7 +39,10 @@ describe("Printer - NOP, DI, EI tests", () => {
       Printer.trimString(`"// EI
       .with(0xfb, ()=>{
         this.is_master_interrupt_enabled = false
-        return 4
+        return {
+          v: 0x00,
+          cycles: 4
+        }
       })"`)
     );
   });

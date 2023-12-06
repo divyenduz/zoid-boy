@@ -1,6 +1,6 @@
 import { describe, test, expect } from "vitest";
 
-import { Printer } from "./Printer";
+import { Printer } from "./Printer.js";
 
 describe("Printer CB - BIT tests", () => {
   test("BIT 0,(HL)", () => {
@@ -19,7 +19,10 @@ describe("Printer CB - BIT tests", () => {
         }
         this.flag_n[1] = 0;
         this.flag_h[2] = 1
-        return 16
+        return {
+          v,
+          cycles: 16
+        }
       })"`)
     );
   });
@@ -40,7 +43,10 @@ describe("Printer CB - BIT tests", () => {
         }
         this.flag_n[1] = 0;
         this.flag_h[2] = 1
-        return 8
+        return {
+          v,
+          cycles: 8
+        }
       })"`)
     );
   });

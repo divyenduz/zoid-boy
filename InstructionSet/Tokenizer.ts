@@ -1,5 +1,5 @@
 import { match } from "ts-pattern";
-import { TOKENS, Token } from "./Token";
+import { TOKENS, Token } from "./Token.js";
 
 export type MemoryType = "Register" | "Address";
 

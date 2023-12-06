@@ -1,13 +1,13 @@
 import fs from "fs";
 
-import { InstructionSet } from "./InstructionSet";
-import { InstructionSetPrefixCB } from "./InstructionSetPrefixCB";
+import { InstructionSet } from "./InstructionSet.js";
+import { InstructionSetPrefixCB } from "./InstructionSetPrefixCB.js";
 
 import { format } from "prettier";
-import { Parser } from "./Parser";
+import { Parser } from "./Parser.js";
 import { match, P } from "ts-pattern";
-import { Expression, UnaryExpression } from "./AST";
-import { Printer } from "./Printer";
+import { Expression, UnaryExpression } from "./AST.js";
+import { Printer } from "./Printer.js";
 
 export class CPUWriter {
   private readonly template: string;
@@ -46,8 +46,8 @@ export class CPUWriter {
     ];
 
     return this.template
-      .replace(`// {{ADD_EXECUTE_MATCH}}`, code.join("\n"))
-      .replace(`// {{ADD_EXECUTE_CB_MATCH}}`, codeCB.join("\n"));
+      .replace(`// {{ADD_EXECUTE_MATCH}}`, "return " + code.join("\n"))
+      .replace(`// {{ADD_EXECUTE_CB_MATCH}}`, "return " + codeCB.join("\n"));
   }
 
   writeMnemonics() {

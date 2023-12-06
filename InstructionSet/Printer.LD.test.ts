@@ -1,6 +1,6 @@
 import { describe, test, expect } from "vitest";
 
-import { Printer } from "./Printer";
+import { Printer } from "./Printer.js";
 
 describe("Printer - LD tests", () => {
   test("LD BC,d16", () => {
@@ -12,7 +12,10 @@ describe("Printer - LD tests", () => {
         const v /*d16*/ = this.mmu.readWord(this.pc);
         this.bc = v
         this.pc[0] += 2;
-        return 12
+        return {
+          v,
+          cycles: 12
+        }
       })"`)
     );
   });
@@ -26,7 +29,10 @@ describe("Printer - LD tests", () => {
         const v /*d8*/ = this.mmu.readByte(this.pc);
         this.b = v
         this.pc[0] += 1;
-        return 8
+        return {
+          v,
+          cycles: 8
+        }
       })"`)
     );
   });
@@ -40,7 +46,10 @@ describe("Printer - LD tests", () => {
         const v = this.a
         const addr = this.mmu.readWord(this.bc)
         this.mmu.writeByte(addr, v)
-        return 8
+        return {
+          v,
+          cycles: 8
+        }
       })"`)
     );
   });
@@ -55,7 +64,10 @@ describe("Printer - LD tests", () => {
         const addr /*a16*/ = this.mmu.readWord(this.pc)
         this.mmu.writeWord(addr, v)
         this.pc[0] += 2;
-        return 20
+        return {
+          v,
+          cycles: 20
+        }
       })"`)
     );
   });
@@ -68,7 +80,10 @@ describe("Printer - LD tests", () => {
       .with(0x1a, ()=>{
         const v = this.mmu.readByte(this.de)
         this.a = v
-        return 8
+        return {
+          v,
+          cycles: 8
+        }
       })"`)
     );
   });
@@ -83,7 +98,10 @@ describe("Printer - LD tests", () => {
         const addr = this.mmu.readWord(this.hl)
         this.mmu.writeByte(addr, v)
         this.hl[0] += 1
-        return 8
+        return {
+          v,
+          cycles: 8
+        }
       })"`)
     );
   });
@@ -97,7 +115,10 @@ describe("Printer - LD tests", () => {
         const v = this.mmu.readByte(this.hl)
         this.a = v
         this.hl[0] += 1
-        return 8
+        return {
+          v,
+          cycles: 8
+        }
       })"`)
     );
   });
@@ -112,7 +133,10 @@ describe("Printer - LD tests", () => {
         const addr = this.mmu.readWord(this.hl)
         this.mmu.writeByte(addr, v)
         this.pc[0] += 1;
-        return 12
+        return {
+          v,
+          cycles: 12
+        }
       })"`)
     );
   });
@@ -125,7 +149,10 @@ describe("Printer - LD tests", () => {
       .with(0x44, ()=>{
         const v = this.h
         this.b = v
-        return 4
+        return {
+          v,
+          cycles: 4
+        }
       })"`)
     );
   });
@@ -139,7 +166,10 @@ describe("Printer - LD tests", () => {
         const v = this.a
         const addr = new Uint16Array(0xFF00 + this.c[0])
         this.mmu.writeByte(addr, v)
-        return 8
+        return {
+          v,
+          cycles: 8
+        }
       })"`)
     );
   });
@@ -154,7 +184,10 @@ describe("Printer - LD tests", () => {
         const addr /*a16*/ = this.mmu.readWord(this.pc)
         this.mmu.writeByte(addr, v)
         this.pc[0] += 2;
-        return 16
+        return {
+          v,
+          cycles: 16
+        }
       })"`)
     );
   });
@@ -168,7 +201,10 @@ describe("Printer - LD tests", () => {
         const addr = new Uint16Array(0xFF00 + this.c[0])
         const v = this.mmu.readByte(addr)
         this.a = v
-        return 8
+        return {
+          v,
+          cycles: 8
+        }
       })"`)
     );
   });
@@ -188,7 +224,10 @@ describe("Printer - LD tests", () => {
         this.flag_n[1] = 0;
         console.log('Implement H flag')
         console.log('Implement C flag')
-        return 12
+        return {
+          v,
+          cycles: 12
+        }
       })"`)
     );
   });
@@ -201,7 +240,10 @@ describe("Printer - LD tests", () => {
       .with(0xf9, ()=>{
         const v = this.hl
         this.sp = v
-        return 8
+        return {
+          v,
+          cycles: 8
+        }
       })"`)
     );
   });
@@ -215,7 +257,10 @@ describe("Printer - LD tests", () => {
         const v /*a16*/ = this.mmu.readByte(this.pc);
         this.a = v
         this.pc[0] += 2;
-        return 16
+        return {
+          v,
+          cycles: 16
+        }
       })"`)
     );
   });

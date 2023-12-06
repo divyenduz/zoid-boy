@@ -1,5 +1,5 @@
-import { InstructionType } from "./Parser";
-import { MemoryType } from "./Tokenizer";
+import { InstructionType } from "./Parser.js";
+import { MemoryType } from "./Tokenizer.js";
 
 export class Program {
   constructor(public statements: Statement[]) {}

@@ -1,9 +1,11 @@
+import { match } from "ts-pattern";
 import "./helpers/TypedArrays";
-import { CPU } from "./InstructionSet/CPU";
-import { InstructionSet } from "./InstructionSet/InstructionSet";
-import { InstructionSetPrefixCB } from "./InstructionSet/InstructionSetPrefixCB";
-import { MMU } from "./MMU/MMU";
+import { CPU } from "./InstructionSet/CPU.js";
+import { InstructionSet } from "./InstructionSet/InstructionSet.js";
+import { InstructionSetPrefixCB } from "./InstructionSet/InstructionSetPrefixCB.js";
+import { MMU } from "./MMU/MMU.js";
 import fs from "fs";
+import chalk from "chalk";
 
 async function main() {
   const bootrom = await fs.readFileSync("./bootroms/gb_bios.bin");
@@ -30,17 +32,22 @@ async function main() {
     if (!instructionData) {
       throw new Error(`Instruction "${instruction}" not found.`);
     }
-    console.log(
-      `${cpu.pc}: ${instructionData.mnemonic} (${instruction}${
-        cpu.prefix_cb ? "_CB" : ""
-      })`
-    );
     cpu.pc[0] += 1;
-    if (cpu.prefix_cb) {
-      cpu.executeCB(instruction);
-    } else {
-      cpu.execute(instruction);
-    }
+
+    const r = match(cpu.prefix_cb)
+      .with(true, () => {
+        return cpu.executeCB(instruction);
+      })
+      .with(false, () => {
+        return cpu.execute(instruction);
+      })
+      .exhaustive();
+
+    console.log(
+      `${cpu.pc[0] - instructionData.length}: ${
+        instructionData.mnemonic
+      } ${chalk.red(r?.v)} (${instruction}${cpu.prefix_cb ? "_CB" : ""})`
+    );
 
     if (checkBootLoadSuccess(cpu)) {
       console.log("BOOTROM LOAD SUCCESS");

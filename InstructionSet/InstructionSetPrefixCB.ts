@@ -1,4 +1,4 @@
-import { InstructionData } from "./InstructionSet";
+import { InstructionData } from "./InstructionSet.js";
 
 export const InstructionSetPrefixCB: Record<number, InstructionData> = {
   0x00: {

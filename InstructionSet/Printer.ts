@@ -1,14 +1,14 @@
 import fs from "fs";
-import { InstructionSetPrefixCB } from "./InstructionSetPrefixCB";
-import { InstructionData, InstructionSet } from "./InstructionSet";
-import { Parser } from "./Parser";
+import { InstructionSetPrefixCB } from "./InstructionSetPrefixCB.js";
+import { InstructionData, InstructionSet } from "./InstructionSet.js";
+import { Parser } from "./Parser.js";
 import {
   BinaryExpression,
   Expression,
   NullaryExpression,
   Statement,
   UnaryExpression,
-} from "./AST";
+} from "./AST.js";
 import { match, P } from "ts-pattern";
 export class Printer {
   private readonly template: string;
@@ -245,7 +245,19 @@ export class Printer {
 
   // Note: don't use for JR instruction where cycles are different depending on jump
   private printReturnCycles(instructionData: InstructionData) {
-    return `return ${instructionData.cycles}`;
+    const parsedInstruction = this.parser.parse(instructionData.mnemonic)
+      .statements[0];
+
+    if (!parsedInstruction.left && !parsedInstruction.right) {
+      return `return {
+        v: 0x00,
+        cycles: ${instructionData.cycles}
+      }`;
+    }
+    return `return {
+      v,
+      cycles: ${instructionData.cycles}
+    }`;
   }
 
   private printInstructionCommon(
@@ -285,8 +297,6 @@ export class Printer {
       false
     );
 
-    // CP d8
-    console.log(parsedInstruction);
     const code = Printer.trimString(`
     ${this.printReader(parsedInstruction.left)}
     const res = this.a[0] - v[0]
@@ -386,9 +396,16 @@ export class Printer {
         if (${flagMap[parsedInstruction.left.left.value]}) {
             ${this.printReader(parsedInstruction.right)}
             this.pc[0] += v[0]
-            return ${instructionData?.cycles_jump}
+            return {
+              v,
+              cycles: ${instructionData?.cycles_jump}
+            }
         } else {
-            ${this.printInstructionCommon(instructionData)}
+          ${this.printPCIncrement(instructionData)}
+          return {
+            v: 0x00,
+            cycles: ${instructionData?.cycles}
+          }
         }
         `);
       return code;
@@ -422,17 +439,29 @@ export class Printer {
       const code = Printer.trimString(`
         if (${flagMap[parsedInstruction.left.left.value]}) {
             this.sp = this.pc
-            return ${instructionData?.cycles_jump}
+            return {
+              v: 0x00,
+              cycles: ${instructionData?.cycles_jump}
+            }
         } else {
-            ${this.printInstructionCommon(instructionData)}
+            ${this.printPCIncrement(instructionData)}
+            ${this.printFlagHandling(instructionData)}
+            return {
+              v: 0x00,
+              cycles: ${instructionData?.cycles}
+            }
         }
         `);
       return code;
     } else {
-      // JR with no jump
+      // CALL with no jump
       const code = Printer.trimString(`
         this.sp = this.pc
-        ${this.printInstructionCommon(instructionData)}
+        ${this.printPCIncrement(instructionData)}
+        return {
+          v: this.sp,
+          cycles: ${instructionData?.cycles}
+        }
         `);
       return code;
     }
@@ -462,7 +491,10 @@ export class Printer {
     );
     return `
     this.prefix_cb = true;
-    ${this.printReturnCycles(instructionData)}
+    return {
+      v: 0x00,
+      cycles: ${instructionData.cycles}
+    }
     `;
   }
 

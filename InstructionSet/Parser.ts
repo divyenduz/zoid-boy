@@ -1,7 +1,7 @@
 import { match } from "ts-pattern";
-import { InstructionSet } from "./InstructionSet";
-import { MemoryType, Tokenizer } from "./Tokenizer";
-import { Token } from "./Token";
+import { InstructionSet } from "./InstructionSet.js";
+import { MemoryType, Tokenizer } from "./Tokenizer.js";
+import { Token } from "./Token.js";
 import {
   Argument,
   NullaryExpression,
@@ -9,8 +9,8 @@ import {
   Program,
   BinaryExpression,
   UnaryExpression,
-} from "./AST";
-import { InstructionSetPrefixCB } from "./InstructionSetPrefixCB";
+} from "./AST.js";
+import { InstructionSetPrefixCB } from "./InstructionSetPrefixCB.js";
 
 export type InstructionType =
   | "misc"
