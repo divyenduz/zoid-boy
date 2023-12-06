@@ -20,7 +20,7 @@ async function main() {
     if (cycles > 100) {
       console.error("BOOTROM LOAD FAILURE");
       console.log({ cycles });
-      console.log(logState(cpu));
+      console.log(logExpectedState(cpu));
       process.exit(1);
     }
     const instruction = mmu.readByte(cpu.pc);
@@ -48,6 +48,7 @@ async function main() {
         instructionData.mnemonic
       } ${chalk.red(r?.v)} (${instruction}${cpu.prefix_cb ? "_CB" : ""})`
     );
+    logState(cpu);
 
     if (checkBootLoadSuccess(cpu)) {
       console.log("BOOTROM LOAD SUCCESS");
@@ -73,6 +74,23 @@ function checkBootLoadSuccess(cpu: CPU) {
 }
 
 function logState(cpu: CPU) {
+  console.table([
+    {
+      a: `${cpu.a}`,
+      f: `${cpu.f}`,
+      b: `${cpu.b}`,
+      c: `${cpu.c}`,
+      d: `${cpu.d}`,
+      e: `${cpu.e}`,
+      h: `${cpu.h}`,
+      l: `${cpu.l}`,
+      sp: `${cpu.sp}`,
+      pc: `${cpu.pc}`,
+    },
+  ]);
+}
+
+function logExpectedState(cpu: CPU) {
   console.table([
     {
       register: "a",
