@@ -17,10 +17,16 @@ async function main() {
   let cycles = 0;
   while (true) {
     cycles += 1;
-    if (cycles > 3100) {
-      console.error("BOOTROM LOAD FAILURE");
+    // if (cycles > 200000) {
+    //   console.error("BOOTROM LOAD FAILURE");
+    //   console.log({ cycles });
+    //   console.log(logExpectedState(cpu));
+    //   process.exit(1);
+    // }
+    if (cpu.pc[0] === 0x001c) {
+      console.log("BREAK");
       console.log({ cycles });
-      console.log(logExpectedState(cpu));
+      logExpectedState(cpu);
       process.exit(1);
     }
     const instruction = mmu.readByte(cpu.pc);
@@ -44,12 +50,15 @@ async function main() {
       })
       .exhaustive();
 
-    console.log(
-      `${pcCopy}: ${instructionData.mnemonic} ${chalk.red(
-        r?.v
-      )} (${instruction}${cpu.prefix_cb ? "_CB" : ""})`
-    );
-    logState(cpu);
+    if (cpu.hl[0] > 0x7fff && cpu.hl[0] < 0x9fff) {
+    } else {
+      logState(cpu);
+      console.log(
+        `${pcCopy}: ${instructionData.mnemonic} ${chalk.red(
+          r?.v
+        )} (${instruction}${cpu.prefix_cb ? "_CB" : ""})`
+      );
+    }
 
     if (checkBootLoadSuccess(cpu)) {
       console.log("BOOTROM LOAD SUCCESS");

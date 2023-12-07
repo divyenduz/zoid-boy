@@ -12,9 +12,11 @@ describe("Printer - SUB tests", () => {
         const v = this.b
         this.a[0] -= v[0]
         if (this.a[0] === 0) {
-        this.flag_z[0] = 1
+        this.flag_z[7] = 0
+        } else {
+          this.flag_z[7] = 1
         }
-        this.flag_n[1] = 1
+        this.flag_n[6] = 1
         console.log('Implement H flag')
         console.log('Implement C flag')
         return {
@@ -34,9 +36,11 @@ describe("Printer - SUB tests", () => {
         const v = this.mmu.readByte(this.hl)
         this.a[0] -= v[0]
         if (this.a[0] === 0) {
-        this.flag_z[0] = 1
+        this.flag_z[7] = 0
+        } else {
+          this.flag_z[7] = 1
         }
-        this.flag_n[1] = 1
+        this.flag_n[6] = 1
         console.log('Implement H flag')
         console.log('Implement C flag')
         return {
@@ -57,9 +61,11 @@ describe("Printer - SUB tests", () => {
         this.a[0] -= v[0]
         this.pc[0] += 1;
         if (this.a[0] === 0) {
-        this.flag_z[0] = 1
+          this.flag_z[7] = 0
+        } else {
+          this.flag_z[7] = 1
         }
-        this.flag_n[1] = 1
+        this.flag_n[6] = 1
         console.log('Implement H flag')
         console.log('Implement C flag')
         return {

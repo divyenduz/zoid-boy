@@ -10,7 +10,7 @@ describe("Printer - LD tests", () => {
       Printer.trimString(`"// LD BC,d16
       .with(0x01, ()=>{
         const v /*d16*/ = this.mmu.readWord(this.pc);
-        this.bc = v
+        this.bc.set(v)
         this.pc[0] += 2;
         return {
           v,
@@ -27,7 +27,7 @@ describe("Printer - LD tests", () => {
       Printer.trimString(`"// LD B,d8
       .with(0x06, ()=>{
         const v /*d8*/ = this.mmu.readByte(this.pc);
-        this.b = v
+        this.b.set(v)
         this.pc[0] += 1;
         return {
           v,
@@ -79,7 +79,7 @@ describe("Printer - LD tests", () => {
       Printer.trimString(`"// LD A,(DE)
       .with(0x1a, ()=>{
         const v = this.mmu.readByte(this.de)
-        this.a = v
+        this.a.set(v)
         return {
           v,
           cycles: 8
@@ -113,7 +113,7 @@ describe("Printer - LD tests", () => {
       Printer.trimString(`"// LD A,(HL+)
       .with(0x2a, ()=>{
         const v = this.mmu.readByte(this.hl)
-        this.a = v
+        this.a.set(v)
         this.hl[0] += 1
         return {
           v,
@@ -148,7 +148,7 @@ describe("Printer - LD tests", () => {
       Printer.trimString(`"// LD B,H
       .with(0x44, ()=>{
         const v = this.h
-        this.b = v
+        this.b.set(v)
         return {
           v,
           cycles: 4
@@ -200,7 +200,7 @@ describe("Printer - LD tests", () => {
       .with(0xf2, ()=>{
         const addr = new Uint16Array(0xFF00 + this.c[0])
         const v = this.mmu.readByte(addr)
-        this.a = v
+        this.a.set(v)
         return {
           v,
           cycles: 8
@@ -217,11 +217,12 @@ describe("Printer - LD tests", () => {
       Printer.trimString(`"// LD HL,SP+r8
       .with(0xf8, ()=>{
         const r8 = this.mmu.readByte(this.pc);
-        const v = new Uint16Array(this.sp[0] + ((0x80 ^ r8[0]) - 0x80));
-        this.hl = v
+        //@ts-expect-error todo, this needs to be fixed!
+        const v = new Uint8Array(this.sp[0] + new Int8Array(r8));
+        this.hl.set(v)
         this.pc[0] += 1;
-        this.flag_z[0] = 0;
-        this.flag_n[1] = 0;
+        this.flag_z[7] = 0;
+        this.flag_n[6] = 0;
         console.log('Implement H flag')
         console.log('Implement C flag')
         return {
@@ -255,7 +256,7 @@ describe("Printer - LD tests", () => {
       Printer.trimString(`"// LD A,(a16)
       .with(0xfa, ()=>{
         const v /*a16*/ = this.mmu.readByte(this.pc);
-        this.a = v
+        this.a.set(v)
         this.pc[0] += 2;
         return {
           v,

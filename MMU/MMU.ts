@@ -29,14 +29,17 @@ export class MMU {
   // Read 8-bit byte from a given address
   readByte(addr: Address) {
     const addrDecimal = Number.parseInt(addr.toString());
-    console.log(addrDecimal);
     return this.memory.subarray(addrDecimal, addrDecimal + 1);
   }
 
   // Read 16-bit word from a given address
-  readWord(addr: Address) {
+  readWord(addr: Address): Uint16Array {
     const addrDecimal = Number.parseInt(addr.toString());
-    return this.memory.subarray(addrDecimal, addrDecimal + 2);
+    const v = this.memory.subarray(addrDecimal, addrDecimal + 2);
+    const dataView = new DataView(v.buffer);
+    const r = new Uint16Array(1);
+    r[0] = dataView.getUint16(addrDecimal, true);
+    return r;
   }
 
   // Write 8-bit byte to a given address
@@ -46,9 +49,9 @@ export class MMU {
   }
 
   // Write 16-bit word to a given address
-  writeWord(addr: Address, val: Uint8Array) {
+  writeWord(addr: Address, val: Uint16Array) {
     const addrDecimal = Number.parseInt(addr.toString());
-    this.memory[addrDecimal] = val[0];
-    this.memory[addrDecimal + 1] = val[1];
+    this.memory[addrDecimal] = val[0] & 0xff;
+    this.memory[addrDecimal + 1] = (val[0] >> 8) & 0xff;
   }
 }

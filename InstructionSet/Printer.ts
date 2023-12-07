@@ -56,9 +56,8 @@ export class Printer {
         // Note: only one case of binary expression is LD HL,SP+r8
         return `
         const r8 = this.mmu.readByte(this.pc);
-        const v = new Uint16Array(this.${
-          expression.left.value
-        }[0] + ${this.inlineUnsigned(expression.right.value + "[0]")});`;
+        //@ts-expect-error todo, this needs to be fixed!
+        const v = new Uint8Array(this.${expression.left.value}[0] + new Int8Array(${expression.right.value}));`;
       })
       .with(
         P.instanceOf(NullaryExpression),
@@ -134,9 +133,15 @@ export class Printer {
                     `.trim();
             }
           } else {
-            return `
-            this.${argument.value} = v
-            `.trim();
+            if (["sp", "pc"].includes(argument.value)) {
+              return `
+              this.${argument.value} = v
+              `.trim();
+            } else {
+              return `
+              this.${argument.value}.set(v)
+              `.trim();
+            }
           }
         }
       )
@@ -168,7 +173,9 @@ export class Printer {
         }
         return `
         if (${result} === 0) {
-            this.flag_z[7] = 1
+          this.flag_z[7] = 0
+        } else {
+          this.flag_z[7] = 1
         }
         `;
       })
@@ -384,18 +391,19 @@ export class Printer {
       const flagMap: Record<string, string> = {
         z: "this.flag_z[7] === 0",
         nz: "this.flag_z[7] !== 0",
-        c: "this.flag_c[3] === 0",
-        nc: "this.flag_c[3] !== 0",
+        c: "this.flag_c[4] === 0",
+        nc: "this.flag_c[4] !== 0",
       };
 
       const code = Printer.trimString(`
         if (${flagMap[parsedInstruction.left.left.value]}) {
-            ${this.printReader(parsedInstruction.right)}
-            this.pc[0] += v[0]
-            return {
-              v,
-              cycles: ${instructionData?.cycles_jump}
-            }
+          ${this.printReader(parsedInstruction.right)}
+          ${this.printPCIncrement(instructionData)}
+          this.pc[0] += v[0]
+          return {
+            v,
+            cycles: ${instructionData?.cycles_jump}
+          }
         } else {
           ${this.printPCIncrement(instructionData)}
           return {
@@ -428,8 +436,8 @@ export class Printer {
       const flagMap: Record<string, string> = {
         z: "this.flag_z[7] === 0",
         nz: "this.flag_z[7] !== 0",
-        c: "this.flag_c[3] === 0",
-        nc: "this.flag_c[3] !== 0",
+        c: "this.flag_c[4] === 0",
+        nc: "this.flag_c[4] !== 0",
       };
 
       const code = Printer.trimString(`
@@ -473,7 +481,7 @@ export class Printer {
     );
     return `
     ${this.printReader(parsedInstruction.right)}
-    const res = v[0] & (1 << ${parsedInstruction.left.left.value})
+    const res = (v[0] >> ${parsedInstruction.left.left.value}) & 1
     this.prefix_cb = false;
     this.pc[0] -= 1; // Compensate for CB call
     ${this.printInstructionCommon(instructionData, "res")}

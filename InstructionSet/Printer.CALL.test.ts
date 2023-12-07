@@ -9,7 +9,7 @@ describe("Printer - CALL tests", () => {
     expect(impl).toMatchInlineSnapshot(
       Printer.trimString(`"// CALL NZ,a16
       .with(0xc4, ()=>{
-        if (!(this.flag_z[0])) {
+        if (this.flag_z[7] !== 0) {
           this.sp = this.pc
           return {
             v: 0x00,
@@ -48,7 +48,7 @@ describe("Printer - CALL tests", () => {
     expect(impl).toMatchInlineSnapshot(
       Printer.trimString(`"// CALL C,a16
       .with(0xdc, ()=>{
-        if (this.flag_c[3]) {
+        if (this.flag_c[4] === 0) {
         this.sp = this.pc
           return {
             v: 0x00,

@@ -29,9 +29,11 @@ describe("Printer - INC tests", () => {
         const v = this.b
         v[0] += 1
         if (v[0] === 0) {
-          this.flag_z[0] = 1
+          this.flag_z[7] = 0
+        } else {
+          this.flag_z[7] = 1
         }
-        this.flag_n[1] = 0;
+        this.flag_n[6] = 0;
         console.log('Implement H flag')
         return {
           v,
@@ -51,9 +53,11 @@ describe("Printer - INC tests", () => {
         const v = this.mmu.readByte(this.hl)
         v[0] += 1
         if (v[0] === 0) {
-          this.flag_z[0] = 1
+          this.flag_z[7] = 0
+        } else {
+          this.flag_z[7] = 1
         }
-        this.flag_n[1] = 0;
+        this.flag_n[6] = 0;
         console.log('Implement H flag')
         return {
           v,

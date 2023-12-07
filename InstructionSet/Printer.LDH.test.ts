@@ -30,7 +30,7 @@ describe("Printer - LD tests", () => {
       Printer.trimString(`"// LDH A,(a8)
       .with(0xf0, ()=>{
         const v /*a8*/ = this.mmu.readByte(this.pc);
-        this.a = v
+        this.a.set(v)
         this.pc[0] += 1;
         return {
           v,

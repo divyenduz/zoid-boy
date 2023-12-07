@@ -63,7 +63,7 @@ export class CPU {
         // LD BC,d16
         .with(0x01, () => {
           const v /*d16*/ = this.mmu.readWord(this.pc);
-          this.bc = v;
+          this.bc.set(v);
           this.pc[0] += 2;
           return {
             v,
@@ -94,9 +94,11 @@ export class CPU {
           const v = this.b;
           v[0] += 1;
           if (v[0] === 0) {
-            this.flag_z[0] = 1;
+            this.flag_z[7] = 0;
+          } else {
+            this.flag_z[7] = 1;
           }
-          this.flag_n[1] = 0;
+          this.flag_n[6] = 0;
           console.log("Implement H flag");
           return {
             v,
@@ -108,9 +110,11 @@ export class CPU {
           const v = this.b;
           v[0] -= 1;
           if (v[0] === 0) {
-            this.flag_z[0] = 1;
+            this.flag_z[7] = 0;
+          } else {
+            this.flag_z[7] = 1;
           }
-          this.flag_n[1] = 1;
+          this.flag_n[6] = 1;
           console.log("Implement H flag");
           return {
             v,
@@ -120,7 +124,7 @@ export class CPU {
         // LD B,d8
         .with(0x06, () => {
           const v /*d8*/ = this.mmu.readByte(this.pc);
-          this.b = v;
+          this.b.set(v);
           this.pc[0] += 1;
           return {
             v,
@@ -146,7 +150,7 @@ export class CPU {
         .with(0x09, () => {
           const v = this.bc;
           this.hl[0] += v[0];
-          this.flag_n[1] = 0;
+          this.flag_n[6] = 0;
           console.log("Implement H flag");
           console.log("Implement C flag");
           return {
@@ -157,7 +161,7 @@ export class CPU {
         // LD A,(BC)
         .with(0x0a, () => {
           const v = this.mmu.readByte(this.bc);
-          this.a = v;
+          this.a.set(v);
           return {
             v,
             cycles: 8,
@@ -177,9 +181,11 @@ export class CPU {
           const v = this.c;
           v[0] += 1;
           if (v[0] === 0) {
-            this.flag_z[0] = 1;
+            this.flag_z[7] = 0;
+          } else {
+            this.flag_z[7] = 1;
           }
-          this.flag_n[1] = 0;
+          this.flag_n[6] = 0;
           console.log("Implement H flag");
           return {
             v,
@@ -191,9 +197,11 @@ export class CPU {
           const v = this.c;
           v[0] -= 1;
           if (v[0] === 0) {
-            this.flag_z[0] = 1;
+            this.flag_z[7] = 0;
+          } else {
+            this.flag_z[7] = 1;
           }
-          this.flag_n[1] = 1;
+          this.flag_n[6] = 1;
           console.log("Implement H flag");
           return {
             v,
@@ -203,7 +211,7 @@ export class CPU {
         // LD C,d8
         .with(0x0e, () => {
           const v /*d8*/ = this.mmu.readByte(this.pc);
-          this.c = v;
+          this.c.set(v);
           this.pc[0] += 1;
           return {
             v,
@@ -221,7 +229,7 @@ export class CPU {
         // LD DE,d16
         .with(0x11, () => {
           const v /*d16*/ = this.mmu.readWord(this.pc);
-          this.de = v;
+          this.de.set(v);
           this.pc[0] += 2;
           return {
             v,
@@ -252,9 +260,11 @@ export class CPU {
           const v = this.d;
           v[0] += 1;
           if (v[0] === 0) {
-            this.flag_z[0] = 1;
+            this.flag_z[7] = 0;
+          } else {
+            this.flag_z[7] = 1;
           }
-          this.flag_n[1] = 0;
+          this.flag_n[6] = 0;
           console.log("Implement H flag");
           return {
             v,
@@ -266,9 +276,11 @@ export class CPU {
           const v = this.d;
           v[0] -= 1;
           if (v[0] === 0) {
-            this.flag_z[0] = 1;
+            this.flag_z[7] = 0;
+          } else {
+            this.flag_z[7] = 1;
           }
-          this.flag_n[1] = 1;
+          this.flag_n[6] = 1;
           console.log("Implement H flag");
           return {
             v,
@@ -278,7 +290,7 @@ export class CPU {
         // LD D,d8
         .with(0x16, () => {
           const v /*d8*/ = this.mmu.readByte(this.pc);
-          this.d = v;
+          this.d.set(v);
           this.pc[0] += 1;
           return {
             v,
@@ -291,8 +303,7 @@ export class CPU {
         })
         // JR r8
         .with(0x18, () => {
-          const v /*r8*/ = this.mmu.readByte(this.pc);
-          v[0] = (0x80 ^ v[0]) - 0x80;
+          const v /*r8*/ = new Int8Array(this.mmu.readByte(this.pc));
           this.pc[0] += v[0];
           this.pc[0] += 1;
           return {
@@ -304,7 +315,7 @@ export class CPU {
         .with(0x19, () => {
           const v = this.de;
           this.hl[0] += v[0];
-          this.flag_n[1] = 0;
+          this.flag_n[6] = 0;
           console.log("Implement H flag");
           console.log("Implement C flag");
           return {
@@ -315,7 +326,7 @@ export class CPU {
         // LD A,(DE)
         .with(0x1a, () => {
           const v = this.mmu.readByte(this.de);
-          this.a = v;
+          this.a.set(v);
           return {
             v,
             cycles: 8,
@@ -335,9 +346,11 @@ export class CPU {
           const v = this.e;
           v[0] += 1;
           if (v[0] === 0) {
-            this.flag_z[0] = 1;
+            this.flag_z[7] = 0;
+          } else {
+            this.flag_z[7] = 1;
           }
-          this.flag_n[1] = 0;
+          this.flag_n[6] = 0;
           console.log("Implement H flag");
           return {
             v,
@@ -349,9 +362,11 @@ export class CPU {
           const v = this.e;
           v[0] -= 1;
           if (v[0] === 0) {
-            this.flag_z[0] = 1;
+            this.flag_z[7] = 0;
+          } else {
+            this.flag_z[7] = 1;
           }
-          this.flag_n[1] = 1;
+          this.flag_n[6] = 1;
           console.log("Implement H flag");
           return {
             v,
@@ -361,7 +376,7 @@ export class CPU {
         // LD E,d8
         .with(0x1e, () => {
           const v /*d8*/ = this.mmu.readByte(this.pc);
-          this.e = v;
+          this.e.set(v);
           this.pc[0] += 1;
           return {
             v,
@@ -374,9 +389,9 @@ export class CPU {
         })
         // JR NZ,r8
         .with(0x20, () => {
-          if (!this.flag_z[0]) {
-            const v /*r8*/ = this.mmu.readByte(this.pc);
-            v[0] = (0x80 ^ v[0]) - 0x80;
+          if (this.flag_z[7] !== 0) {
+            const v /*r8*/ = new Int8Array(this.mmu.readByte(this.pc));
+            this.pc[0] += 1;
             this.pc[0] += v[0];
             return {
               v,
@@ -393,7 +408,7 @@ export class CPU {
         // LD HL,d16
         .with(0x21, () => {
           const v /*d16*/ = this.mmu.readWord(this.pc);
-          this.hl = v;
+          this.hl.set(v);
           this.pc[0] += 2;
           return {
             v,
@@ -425,9 +440,11 @@ export class CPU {
           const v = this.h;
           v[0] += 1;
           if (v[0] === 0) {
-            this.flag_z[0] = 1;
+            this.flag_z[7] = 0;
+          } else {
+            this.flag_z[7] = 1;
           }
-          this.flag_n[1] = 0;
+          this.flag_n[6] = 0;
           console.log("Implement H flag");
           return {
             v,
@@ -439,9 +456,11 @@ export class CPU {
           const v = this.h;
           v[0] -= 1;
           if (v[0] === 0) {
-            this.flag_z[0] = 1;
+            this.flag_z[7] = 0;
+          } else {
+            this.flag_z[7] = 1;
           }
-          this.flag_n[1] = 1;
+          this.flag_n[6] = 1;
           console.log("Implement H flag");
           return {
             v,
@@ -451,7 +470,7 @@ export class CPU {
         // LD H,d8
         .with(0x26, () => {
           const v /*d8*/ = this.mmu.readByte(this.pc);
-          this.h = v;
+          this.h.set(v);
           this.pc[0] += 1;
           return {
             v,
@@ -464,9 +483,9 @@ export class CPU {
         })
         // JR Z,r8
         .with(0x28, () => {
-          if (this.flag_z[0]) {
-            const v /*r8*/ = this.mmu.readByte(this.pc);
-            v[0] = (0x80 ^ v[0]) - 0x80;
+          if (this.flag_z[7] === 0) {
+            const v /*r8*/ = new Int8Array(this.mmu.readByte(this.pc));
+            this.pc[0] += 1;
             this.pc[0] += v[0];
             return {
               v,
@@ -484,7 +503,7 @@ export class CPU {
         .with(0x29, () => {
           const v = this.hl;
           this.hl[0] += v[0];
-          this.flag_n[1] = 0;
+          this.flag_n[6] = 0;
           console.log("Implement H flag");
           console.log("Implement C flag");
           return {
@@ -495,7 +514,7 @@ export class CPU {
         // LD A,(HL+)
         .with(0x2a, () => {
           const v = this.mmu.readByte(this.hl);
-          this.a = v;
+          this.a.set(v);
           this.hl[0] += 1;
           return {
             v,
@@ -516,9 +535,11 @@ export class CPU {
           const v = this.l;
           v[0] += 1;
           if (v[0] === 0) {
-            this.flag_z[0] = 1;
+            this.flag_z[7] = 0;
+          } else {
+            this.flag_z[7] = 1;
           }
-          this.flag_n[1] = 0;
+          this.flag_n[6] = 0;
           console.log("Implement H flag");
           return {
             v,
@@ -530,9 +551,11 @@ export class CPU {
           const v = this.l;
           v[0] -= 1;
           if (v[0] === 0) {
-            this.flag_z[0] = 1;
+            this.flag_z[7] = 0;
+          } else {
+            this.flag_z[7] = 1;
           }
-          this.flag_n[1] = 1;
+          this.flag_n[6] = 1;
           console.log("Implement H flag");
           return {
             v,
@@ -542,7 +565,7 @@ export class CPU {
         // LD L,d8
         .with(0x2e, () => {
           const v /*d8*/ = this.mmu.readByte(this.pc);
-          this.l = v;
+          this.l.set(v);
           this.pc[0] += 1;
           return {
             v,
@@ -555,9 +578,9 @@ export class CPU {
         })
         // JR NC,r8
         .with(0x30, () => {
-          if (!this.flag_c[3]) {
-            const v /*r8*/ = this.mmu.readByte(this.pc);
-            v[0] = (0x80 ^ v[0]) - 0x80;
+          if (this.flag_c[4] !== 0) {
+            const v /*r8*/ = new Int8Array(this.mmu.readByte(this.pc));
+            this.pc[0] += 1;
             this.pc[0] += v[0];
             return {
               v,
@@ -606,9 +629,11 @@ export class CPU {
           const v = this.mmu.readByte(this.hl);
           v[0] += 1;
           if (v[0] === 0) {
-            this.flag_z[0] = 1;
+            this.flag_z[7] = 0;
+          } else {
+            this.flag_z[7] = 1;
           }
-          this.flag_n[1] = 0;
+          this.flag_n[6] = 0;
           console.log("Implement H flag");
           return {
             v,
@@ -620,9 +645,11 @@ export class CPU {
           const v = this.mmu.readByte(this.hl);
           v[0] -= 1;
           if (v[0] === 0) {
-            this.flag_z[0] = 1;
+            this.flag_z[7] = 0;
+          } else {
+            this.flag_z[7] = 1;
           }
-          this.flag_n[1] = 1;
+          this.flag_n[6] = 1;
           console.log("Implement H flag");
           return {
             v,
@@ -646,9 +673,9 @@ export class CPU {
         })
         // JR C,r8
         .with(0x38, () => {
-          if (this.flag_c[3]) {
-            const v /*r8*/ = this.mmu.readByte(this.pc);
-            v[0] = (0x80 ^ v[0]) - 0x80;
+          if (this.flag_c[4] === 0) {
+            const v /*r8*/ = new Int8Array(this.mmu.readByte(this.pc));
+            this.pc[0] += 1;
             this.pc[0] += v[0];
             return {
               v,
@@ -666,7 +693,7 @@ export class CPU {
         .with(0x39, () => {
           const v = this.sp;
           this.hl[0] += v[0];
-          this.flag_n[1] = 0;
+          this.flag_n[6] = 0;
           console.log("Implement H flag");
           console.log("Implement C flag");
           return {
@@ -677,7 +704,7 @@ export class CPU {
         // LD A,(HL-)
         .with(0x3a, () => {
           const v = this.mmu.readByte(this.hl);
-          this.a = v;
+          this.a.set(v);
           this.hl[0] -= 1;
           return {
             v,
@@ -698,9 +725,11 @@ export class CPU {
           const v = this.a;
           v[0] += 1;
           if (v[0] === 0) {
-            this.flag_z[0] = 1;
+            this.flag_z[7] = 0;
+          } else {
+            this.flag_z[7] = 1;
           }
-          this.flag_n[1] = 0;
+          this.flag_n[6] = 0;
           console.log("Implement H flag");
           return {
             v,
@@ -712,9 +741,11 @@ export class CPU {
           const v = this.a;
           v[0] -= 1;
           if (v[0] === 0) {
-            this.flag_z[0] = 1;
+            this.flag_z[7] = 0;
+          } else {
+            this.flag_z[7] = 1;
           }
-          this.flag_n[1] = 1;
+          this.flag_n[6] = 1;
           console.log("Implement H flag");
           return {
             v,
@@ -724,7 +755,7 @@ export class CPU {
         // LD A,d8
         .with(0x3e, () => {
           const v /*d8*/ = this.mmu.readByte(this.pc);
-          this.a = v;
+          this.a.set(v);
           this.pc[0] += 1;
           return {
             v,
@@ -738,7 +769,7 @@ export class CPU {
         // LD B,B
         .with(0x40, () => {
           const v = this.b;
-          this.b = v;
+          this.b.set(v);
           return {
             v,
             cycles: 4,
@@ -747,7 +778,7 @@ export class CPU {
         // LD B,C
         .with(0x41, () => {
           const v = this.c;
-          this.b = v;
+          this.b.set(v);
           return {
             v,
             cycles: 4,
@@ -756,7 +787,7 @@ export class CPU {
         // LD B,D
         .with(0x42, () => {
           const v = this.d;
-          this.b = v;
+          this.b.set(v);
           return {
             v,
             cycles: 4,
@@ -765,7 +796,7 @@ export class CPU {
         // LD B,E
         .with(0x43, () => {
           const v = this.e;
-          this.b = v;
+          this.b.set(v);
           return {
             v,
             cycles: 4,
@@ -774,7 +805,7 @@ export class CPU {
         // LD B,H
         .with(0x44, () => {
           const v = this.h;
-          this.b = v;
+          this.b.set(v);
           return {
             v,
             cycles: 4,
@@ -783,7 +814,7 @@ export class CPU {
         // LD B,L
         .with(0x45, () => {
           const v = this.l;
-          this.b = v;
+          this.b.set(v);
           return {
             v,
             cycles: 4,
@@ -792,7 +823,7 @@ export class CPU {
         // LD B,(HL)
         .with(0x46, () => {
           const v = this.mmu.readByte(this.hl);
-          this.b = v;
+          this.b.set(v);
           return {
             v,
             cycles: 8,
@@ -801,7 +832,7 @@ export class CPU {
         // LD B,A
         .with(0x47, () => {
           const v = this.a;
-          this.b = v;
+          this.b.set(v);
           return {
             v,
             cycles: 4,
@@ -810,7 +841,7 @@ export class CPU {
         // LD C,B
         .with(0x48, () => {
           const v = this.b;
-          this.c = v;
+          this.c.set(v);
           return {
             v,
             cycles: 4,
@@ -819,7 +850,7 @@ export class CPU {
         // LD C,C
         .with(0x49, () => {
           const v = this.c;
-          this.c = v;
+          this.c.set(v);
           return {
             v,
             cycles: 4,
@@ -828,7 +859,7 @@ export class CPU {
         // LD C,D
         .with(0x4a, () => {
           const v = this.d;
-          this.c = v;
+          this.c.set(v);
           return {
             v,
             cycles: 4,
@@ -837,7 +868,7 @@ export class CPU {
         // LD C,E
         .with(0x4b, () => {
           const v = this.e;
-          this.c = v;
+          this.c.set(v);
           return {
             v,
             cycles: 4,
@@ -846,7 +877,7 @@ export class CPU {
         // LD C,H
         .with(0x4c, () => {
           const v = this.h;
-          this.c = v;
+          this.c.set(v);
           return {
             v,
             cycles: 4,
@@ -855,7 +886,7 @@ export class CPU {
         // LD C,L
         .with(0x4d, () => {
           const v = this.l;
-          this.c = v;
+          this.c.set(v);
           return {
             v,
             cycles: 4,
@@ -864,7 +895,7 @@ export class CPU {
         // LD C,(HL)
         .with(0x4e, () => {
           const v = this.mmu.readByte(this.hl);
-          this.c = v;
+          this.c.set(v);
           return {
             v,
             cycles: 8,
@@ -873,7 +904,7 @@ export class CPU {
         // LD C,A
         .with(0x4f, () => {
           const v = this.a;
-          this.c = v;
+          this.c.set(v);
           return {
             v,
             cycles: 4,
@@ -882,7 +913,7 @@ export class CPU {
         // LD D,B
         .with(0x50, () => {
           const v = this.b;
-          this.d = v;
+          this.d.set(v);
           return {
             v,
             cycles: 4,
@@ -891,7 +922,7 @@ export class CPU {
         // LD D,C
         .with(0x51, () => {
           const v = this.c;
-          this.d = v;
+          this.d.set(v);
           return {
             v,
             cycles: 4,
@@ -900,7 +931,7 @@ export class CPU {
         // LD D,D
         .with(0x52, () => {
           const v = this.d;
-          this.d = v;
+          this.d.set(v);
           return {
             v,
             cycles: 4,
@@ -909,7 +940,7 @@ export class CPU {
         // LD D,E
         .with(0x53, () => {
           const v = this.e;
-          this.d = v;
+          this.d.set(v);
           return {
             v,
             cycles: 4,
@@ -918,7 +949,7 @@ export class CPU {
         // LD D,H
         .with(0x54, () => {
           const v = this.h;
-          this.d = v;
+          this.d.set(v);
           return {
             v,
             cycles: 4,
@@ -927,7 +958,7 @@ export class CPU {
         // LD D,L
         .with(0x55, () => {
           const v = this.l;
-          this.d = v;
+          this.d.set(v);
           return {
             v,
             cycles: 4,
@@ -936,7 +967,7 @@ export class CPU {
         // LD D,(HL)
         .with(0x56, () => {
           const v = this.mmu.readByte(this.hl);
-          this.d = v;
+          this.d.set(v);
           return {
             v,
             cycles: 8,
@@ -945,7 +976,7 @@ export class CPU {
         // LD D,A
         .with(0x57, () => {
           const v = this.a;
-          this.d = v;
+          this.d.set(v);
           return {
             v,
             cycles: 4,
@@ -954,7 +985,7 @@ export class CPU {
         // LD E,B
         .with(0x58, () => {
           const v = this.b;
-          this.e = v;
+          this.e.set(v);
           return {
             v,
             cycles: 4,
@@ -963,7 +994,7 @@ export class CPU {
         // LD E,C
         .with(0x59, () => {
           const v = this.c;
-          this.e = v;
+          this.e.set(v);
           return {
             v,
             cycles: 4,
@@ -972,7 +1003,7 @@ export class CPU {
         // LD E,D
         .with(0x5a, () => {
           const v = this.d;
-          this.e = v;
+          this.e.set(v);
           return {
             v,
             cycles: 4,
@@ -981,7 +1012,7 @@ export class CPU {
         // LD E,E
         .with(0x5b, () => {
           const v = this.e;
-          this.e = v;
+          this.e.set(v);
           return {
             v,
             cycles: 4,
@@ -990,7 +1021,7 @@ export class CPU {
         // LD E,H
         .with(0x5c, () => {
           const v = this.h;
-          this.e = v;
+          this.e.set(v);
           return {
             v,
             cycles: 4,
@@ -999,7 +1030,7 @@ export class CPU {
         // LD E,L
         .with(0x5d, () => {
           const v = this.l;
-          this.e = v;
+          this.e.set(v);
           return {
             v,
             cycles: 4,
@@ -1008,7 +1039,7 @@ export class CPU {
         // LD E,(HL)
         .with(0x5e, () => {
           const v = this.mmu.readByte(this.hl);
-          this.e = v;
+          this.e.set(v);
           return {
             v,
             cycles: 8,
@@ -1017,7 +1048,7 @@ export class CPU {
         // LD E,A
         .with(0x5f, () => {
           const v = this.a;
-          this.e = v;
+          this.e.set(v);
           return {
             v,
             cycles: 4,
@@ -1026,7 +1057,7 @@ export class CPU {
         // LD H,B
         .with(0x60, () => {
           const v = this.b;
-          this.h = v;
+          this.h.set(v);
           return {
             v,
             cycles: 4,
@@ -1035,7 +1066,7 @@ export class CPU {
         // LD H,C
         .with(0x61, () => {
           const v = this.c;
-          this.h = v;
+          this.h.set(v);
           return {
             v,
             cycles: 4,
@@ -1044,7 +1075,7 @@ export class CPU {
         // LD H,D
         .with(0x62, () => {
           const v = this.d;
-          this.h = v;
+          this.h.set(v);
           return {
             v,
             cycles: 4,
@@ -1053,7 +1084,7 @@ export class CPU {
         // LD H,E
         .with(0x63, () => {
           const v = this.e;
-          this.h = v;
+          this.h.set(v);
           return {
             v,
             cycles: 4,
@@ -1062,7 +1093,7 @@ export class CPU {
         // LD H,H
         .with(0x64, () => {
           const v = this.h;
-          this.h = v;
+          this.h.set(v);
           return {
             v,
             cycles: 4,
@@ -1071,7 +1102,7 @@ export class CPU {
         // LD H,L
         .with(0x65, () => {
           const v = this.l;
-          this.h = v;
+          this.h.set(v);
           return {
             v,
             cycles: 4,
@@ -1080,7 +1111,7 @@ export class CPU {
         // LD H,(HL)
         .with(0x66, () => {
           const v = this.mmu.readByte(this.hl);
-          this.h = v;
+          this.h.set(v);
           return {
             v,
             cycles: 8,
@@ -1089,7 +1120,7 @@ export class CPU {
         // LD H,A
         .with(0x67, () => {
           const v = this.a;
-          this.h = v;
+          this.h.set(v);
           return {
             v,
             cycles: 4,
@@ -1098,7 +1129,7 @@ export class CPU {
         // LD L,B
         .with(0x68, () => {
           const v = this.b;
-          this.l = v;
+          this.l.set(v);
           return {
             v,
             cycles: 4,
@@ -1107,7 +1138,7 @@ export class CPU {
         // LD L,C
         .with(0x69, () => {
           const v = this.c;
-          this.l = v;
+          this.l.set(v);
           return {
             v,
             cycles: 4,
@@ -1116,7 +1147,7 @@ export class CPU {
         // LD L,D
         .with(0x6a, () => {
           const v = this.d;
-          this.l = v;
+          this.l.set(v);
           return {
             v,
             cycles: 4,
@@ -1125,7 +1156,7 @@ export class CPU {
         // LD L,E
         .with(0x6b, () => {
           const v = this.e;
-          this.l = v;
+          this.l.set(v);
           return {
             v,
             cycles: 4,
@@ -1134,7 +1165,7 @@ export class CPU {
         // LD L,H
         .with(0x6c, () => {
           const v = this.h;
-          this.l = v;
+          this.l.set(v);
           return {
             v,
             cycles: 4,
@@ -1143,7 +1174,7 @@ export class CPU {
         // LD L,L
         .with(0x6d, () => {
           const v = this.l;
-          this.l = v;
+          this.l.set(v);
           return {
             v,
             cycles: 4,
@@ -1152,7 +1183,7 @@ export class CPU {
         // LD L,(HL)
         .with(0x6e, () => {
           const v = this.mmu.readByte(this.hl);
-          this.l = v;
+          this.l.set(v);
           return {
             v,
             cycles: 8,
@@ -1161,7 +1192,7 @@ export class CPU {
         // LD L,A
         .with(0x6f, () => {
           const v = this.a;
-          this.l = v;
+          this.l.set(v);
           return {
             v,
             cycles: 4,
@@ -1244,7 +1275,7 @@ export class CPU {
         // LD A,B
         .with(0x78, () => {
           const v = this.b;
-          this.a = v;
+          this.a.set(v);
           return {
             v,
             cycles: 4,
@@ -1253,7 +1284,7 @@ export class CPU {
         // LD A,C
         .with(0x79, () => {
           const v = this.c;
-          this.a = v;
+          this.a.set(v);
           return {
             v,
             cycles: 4,
@@ -1262,7 +1293,7 @@ export class CPU {
         // LD A,D
         .with(0x7a, () => {
           const v = this.d;
-          this.a = v;
+          this.a.set(v);
           return {
             v,
             cycles: 4,
@@ -1271,7 +1302,7 @@ export class CPU {
         // LD A,E
         .with(0x7b, () => {
           const v = this.e;
-          this.a = v;
+          this.a.set(v);
           return {
             v,
             cycles: 4,
@@ -1280,7 +1311,7 @@ export class CPU {
         // LD A,H
         .with(0x7c, () => {
           const v = this.h;
-          this.a = v;
+          this.a.set(v);
           return {
             v,
             cycles: 4,
@@ -1289,7 +1320,7 @@ export class CPU {
         // LD A,L
         .with(0x7d, () => {
           const v = this.l;
-          this.a = v;
+          this.a.set(v);
           return {
             v,
             cycles: 4,
@@ -1298,7 +1329,7 @@ export class CPU {
         // LD A,(HL)
         .with(0x7e, () => {
           const v = this.mmu.readByte(this.hl);
-          this.a = v;
+          this.a.set(v);
           return {
             v,
             cycles: 8,
@@ -1307,7 +1338,7 @@ export class CPU {
         // LD A,A
         .with(0x7f, () => {
           const v = this.a;
-          this.a = v;
+          this.a.set(v);
           return {
             v,
             cycles: 4,
@@ -1318,9 +1349,11 @@ export class CPU {
           const v = this.b;
           this.a[0] += v[0];
           if (this.a[0] === 0) {
-            this.flag_z[0] = 1;
+            this.flag_z[7] = 0;
+          } else {
+            this.flag_z[7] = 1;
           }
-          this.flag_n[1] = 0;
+          this.flag_n[6] = 0;
           console.log("Implement H flag");
           console.log("Implement C flag");
           return {
@@ -1333,9 +1366,11 @@ export class CPU {
           const v = this.c;
           this.a[0] += v[0];
           if (this.a[0] === 0) {
-            this.flag_z[0] = 1;
+            this.flag_z[7] = 0;
+          } else {
+            this.flag_z[7] = 1;
           }
-          this.flag_n[1] = 0;
+          this.flag_n[6] = 0;
           console.log("Implement H flag");
           console.log("Implement C flag");
           return {
@@ -1348,9 +1383,11 @@ export class CPU {
           const v = this.d;
           this.a[0] += v[0];
           if (this.a[0] === 0) {
-            this.flag_z[0] = 1;
+            this.flag_z[7] = 0;
+          } else {
+            this.flag_z[7] = 1;
           }
-          this.flag_n[1] = 0;
+          this.flag_n[6] = 0;
           console.log("Implement H flag");
           console.log("Implement C flag");
           return {
@@ -1363,9 +1400,11 @@ export class CPU {
           const v = this.e;
           this.a[0] += v[0];
           if (this.a[0] === 0) {
-            this.flag_z[0] = 1;
+            this.flag_z[7] = 0;
+          } else {
+            this.flag_z[7] = 1;
           }
-          this.flag_n[1] = 0;
+          this.flag_n[6] = 0;
           console.log("Implement H flag");
           console.log("Implement C flag");
           return {
@@ -1378,9 +1417,11 @@ export class CPU {
           const v = this.h;
           this.a[0] += v[0];
           if (this.a[0] === 0) {
-            this.flag_z[0] = 1;
+            this.flag_z[7] = 0;
+          } else {
+            this.flag_z[7] = 1;
           }
-          this.flag_n[1] = 0;
+          this.flag_n[6] = 0;
           console.log("Implement H flag");
           console.log("Implement C flag");
           return {
@@ -1393,9 +1434,11 @@ export class CPU {
           const v = this.l;
           this.a[0] += v[0];
           if (this.a[0] === 0) {
-            this.flag_z[0] = 1;
+            this.flag_z[7] = 0;
+          } else {
+            this.flag_z[7] = 1;
           }
-          this.flag_n[1] = 0;
+          this.flag_n[6] = 0;
           console.log("Implement H flag");
           console.log("Implement C flag");
           return {
@@ -1408,9 +1451,11 @@ export class CPU {
           const v = this.mmu.readByte(this.hl);
           this.a[0] += v[0];
           if (this.a[0] === 0) {
-            this.flag_z[0] = 1;
+            this.flag_z[7] = 0;
+          } else {
+            this.flag_z[7] = 1;
           }
-          this.flag_n[1] = 0;
+          this.flag_n[6] = 0;
           console.log("Implement H flag");
           console.log("Implement C flag");
           return {
@@ -1423,9 +1468,11 @@ export class CPU {
           const v = this.a;
           this.a[0] += v[0];
           if (this.a[0] === 0) {
-            this.flag_z[0] = 1;
+            this.flag_z[7] = 0;
+          } else {
+            this.flag_z[7] = 1;
           }
-          this.flag_n[1] = 0;
+          this.flag_n[6] = 0;
           console.log("Implement H flag");
           console.log("Implement C flag");
           return {
@@ -1470,9 +1517,11 @@ export class CPU {
           const v = this.b;
           this.a[0] -= v[0];
           if (this.a[0] === 0) {
-            this.flag_z[0] = 1;
+            this.flag_z[7] = 0;
+          } else {
+            this.flag_z[7] = 1;
           }
-          this.flag_n[1] = 1;
+          this.flag_n[6] = 1;
           console.log("Implement H flag");
           console.log("Implement C flag");
           return {
@@ -1485,9 +1534,11 @@ export class CPU {
           const v = this.c;
           this.a[0] -= v[0];
           if (this.a[0] === 0) {
-            this.flag_z[0] = 1;
+            this.flag_z[7] = 0;
+          } else {
+            this.flag_z[7] = 1;
           }
-          this.flag_n[1] = 1;
+          this.flag_n[6] = 1;
           console.log("Implement H flag");
           console.log("Implement C flag");
           return {
@@ -1500,9 +1551,11 @@ export class CPU {
           const v = this.d;
           this.a[0] -= v[0];
           if (this.a[0] === 0) {
-            this.flag_z[0] = 1;
+            this.flag_z[7] = 0;
+          } else {
+            this.flag_z[7] = 1;
           }
-          this.flag_n[1] = 1;
+          this.flag_n[6] = 1;
           console.log("Implement H flag");
           console.log("Implement C flag");
           return {
@@ -1515,9 +1568,11 @@ export class CPU {
           const v = this.e;
           this.a[0] -= v[0];
           if (this.a[0] === 0) {
-            this.flag_z[0] = 1;
+            this.flag_z[7] = 0;
+          } else {
+            this.flag_z[7] = 1;
           }
-          this.flag_n[1] = 1;
+          this.flag_n[6] = 1;
           console.log("Implement H flag");
           console.log("Implement C flag");
           return {
@@ -1530,9 +1585,11 @@ export class CPU {
           const v = this.h;
           this.a[0] -= v[0];
           if (this.a[0] === 0) {
-            this.flag_z[0] = 1;
+            this.flag_z[7] = 0;
+          } else {
+            this.flag_z[7] = 1;
           }
-          this.flag_n[1] = 1;
+          this.flag_n[6] = 1;
           console.log("Implement H flag");
           console.log("Implement C flag");
           return {
@@ -1545,9 +1602,11 @@ export class CPU {
           const v = this.l;
           this.a[0] -= v[0];
           if (this.a[0] === 0) {
-            this.flag_z[0] = 1;
+            this.flag_z[7] = 0;
+          } else {
+            this.flag_z[7] = 1;
           }
-          this.flag_n[1] = 1;
+          this.flag_n[6] = 1;
           console.log("Implement H flag");
           console.log("Implement C flag");
           return {
@@ -1560,9 +1619,11 @@ export class CPU {
           const v = this.mmu.readByte(this.hl);
           this.a[0] -= v[0];
           if (this.a[0] === 0) {
-            this.flag_z[0] = 1;
+            this.flag_z[7] = 0;
+          } else {
+            this.flag_z[7] = 1;
           }
-          this.flag_n[1] = 1;
+          this.flag_n[6] = 1;
           console.log("Implement H flag");
           console.log("Implement C flag");
           return {
@@ -1575,9 +1636,11 @@ export class CPU {
           const v = this.a;
           this.a[0] -= v[0];
           if (this.a[0] === 0) {
-            this.flag_z[0] = 1;
+            this.flag_z[7] = 0;
+          } else {
+            this.flag_z[7] = 1;
           }
-          this.flag_n[1] = 1;
+          this.flag_n[6] = 1;
           console.log("Implement H flag");
           console.log("Implement C flag");
           return {
@@ -1654,11 +1717,13 @@ export class CPU {
           const v = this.b;
           this.a[0] ^= v[0];
           if (this.a[0] === 0) {
-            this.flag_z[0] = 1;
+            this.flag_z[7] = 0;
+          } else {
+            this.flag_z[7] = 1;
           }
-          this.flag_n[1] = 0;
-          this.flag_h[2] = 0;
-          this.flag_c[3] = 0;
+          this.flag_n[6] = 0;
+          this.flag_h[5] = 0;
+          this.flag_c[4] = 0;
           return {
             v,
             cycles: 4,
@@ -1669,11 +1734,13 @@ export class CPU {
           const v = this.c;
           this.a[0] ^= v[0];
           if (this.a[0] === 0) {
-            this.flag_z[0] = 1;
+            this.flag_z[7] = 0;
+          } else {
+            this.flag_z[7] = 1;
           }
-          this.flag_n[1] = 0;
-          this.flag_h[2] = 0;
-          this.flag_c[3] = 0;
+          this.flag_n[6] = 0;
+          this.flag_h[5] = 0;
+          this.flag_c[4] = 0;
           return {
             v,
             cycles: 4,
@@ -1684,11 +1751,13 @@ export class CPU {
           const v = this.d;
           this.a[0] ^= v[0];
           if (this.a[0] === 0) {
-            this.flag_z[0] = 1;
+            this.flag_z[7] = 0;
+          } else {
+            this.flag_z[7] = 1;
           }
-          this.flag_n[1] = 0;
-          this.flag_h[2] = 0;
-          this.flag_c[3] = 0;
+          this.flag_n[6] = 0;
+          this.flag_h[5] = 0;
+          this.flag_c[4] = 0;
           return {
             v,
             cycles: 4,
@@ -1699,11 +1768,13 @@ export class CPU {
           const v = this.e;
           this.a[0] ^= v[0];
           if (this.a[0] === 0) {
-            this.flag_z[0] = 1;
+            this.flag_z[7] = 0;
+          } else {
+            this.flag_z[7] = 1;
           }
-          this.flag_n[1] = 0;
-          this.flag_h[2] = 0;
-          this.flag_c[3] = 0;
+          this.flag_n[6] = 0;
+          this.flag_h[5] = 0;
+          this.flag_c[4] = 0;
           return {
             v,
             cycles: 4,
@@ -1714,11 +1785,13 @@ export class CPU {
           const v = this.h;
           this.a[0] ^= v[0];
           if (this.a[0] === 0) {
-            this.flag_z[0] = 1;
+            this.flag_z[7] = 0;
+          } else {
+            this.flag_z[7] = 1;
           }
-          this.flag_n[1] = 0;
-          this.flag_h[2] = 0;
-          this.flag_c[3] = 0;
+          this.flag_n[6] = 0;
+          this.flag_h[5] = 0;
+          this.flag_c[4] = 0;
           return {
             v,
             cycles: 4,
@@ -1729,11 +1802,13 @@ export class CPU {
           const v = this.l;
           this.a[0] ^= v[0];
           if (this.a[0] === 0) {
-            this.flag_z[0] = 1;
+            this.flag_z[7] = 0;
+          } else {
+            this.flag_z[7] = 1;
           }
-          this.flag_n[1] = 0;
-          this.flag_h[2] = 0;
-          this.flag_c[3] = 0;
+          this.flag_n[6] = 0;
+          this.flag_h[5] = 0;
+          this.flag_c[4] = 0;
           return {
             v,
             cycles: 4,
@@ -1744,11 +1819,13 @@ export class CPU {
           const v = this.mmu.readByte(this.hl);
           this.a[0] ^= v[0];
           if (this.a[0] === 0) {
-            this.flag_z[0] = 1;
+            this.flag_z[7] = 0;
+          } else {
+            this.flag_z[7] = 1;
           }
-          this.flag_n[1] = 0;
-          this.flag_h[2] = 0;
-          this.flag_c[3] = 0;
+          this.flag_n[6] = 0;
+          this.flag_h[5] = 0;
+          this.flag_c[4] = 0;
           return {
             v,
             cycles: 8,
@@ -1759,11 +1836,13 @@ export class CPU {
           const v = this.a;
           this.a[0] ^= v[0];
           if (this.a[0] === 0) {
-            this.flag_z[0] = 1;
+            this.flag_z[7] = 0;
+          } else {
+            this.flag_z[7] = 1;
           }
-          this.flag_n[1] = 0;
-          this.flag_h[2] = 0;
-          this.flag_c[3] = 0;
+          this.flag_n[6] = 0;
+          this.flag_h[5] = 0;
+          this.flag_c[4] = 0;
           return {
             v,
             cycles: 4,
@@ -1806,9 +1885,11 @@ export class CPU {
           const v = this.b;
           const res = this.a[0] - v[0];
           if (res === 0) {
-            this.flag_z[0] = 1;
+            this.flag_z[7] = 0;
+          } else {
+            this.flag_z[7] = 1;
           }
-          this.flag_n[1] = 1;
+          this.flag_n[6] = 1;
           console.log("Implement H flag");
           console.log("Implement C flag");
           return {
@@ -1821,9 +1902,11 @@ export class CPU {
           const v = this.c;
           const res = this.a[0] - v[0];
           if (res === 0) {
-            this.flag_z[0] = 1;
+            this.flag_z[7] = 0;
+          } else {
+            this.flag_z[7] = 1;
           }
-          this.flag_n[1] = 1;
+          this.flag_n[6] = 1;
           console.log("Implement H flag");
           console.log("Implement C flag");
           return {
@@ -1836,9 +1919,11 @@ export class CPU {
           const v = this.d;
           const res = this.a[0] - v[0];
           if (res === 0) {
-            this.flag_z[0] = 1;
+            this.flag_z[7] = 0;
+          } else {
+            this.flag_z[7] = 1;
           }
-          this.flag_n[1] = 1;
+          this.flag_n[6] = 1;
           console.log("Implement H flag");
           console.log("Implement C flag");
           return {
@@ -1851,9 +1936,11 @@ export class CPU {
           const v = this.e;
           const res = this.a[0] - v[0];
           if (res === 0) {
-            this.flag_z[0] = 1;
+            this.flag_z[7] = 0;
+          } else {
+            this.flag_z[7] = 1;
           }
-          this.flag_n[1] = 1;
+          this.flag_n[6] = 1;
           console.log("Implement H flag");
           console.log("Implement C flag");
           return {
@@ -1866,9 +1953,11 @@ export class CPU {
           const v = this.h;
           const res = this.a[0] - v[0];
           if (res === 0) {
-            this.flag_z[0] = 1;
+            this.flag_z[7] = 0;
+          } else {
+            this.flag_z[7] = 1;
           }
-          this.flag_n[1] = 1;
+          this.flag_n[6] = 1;
           console.log("Implement H flag");
           console.log("Implement C flag");
           return {
@@ -1881,9 +1970,11 @@ export class CPU {
           const v = this.l;
           const res = this.a[0] - v[0];
           if (res === 0) {
-            this.flag_z[0] = 1;
+            this.flag_z[7] = 0;
+          } else {
+            this.flag_z[7] = 1;
           }
-          this.flag_n[1] = 1;
+          this.flag_n[6] = 1;
           console.log("Implement H flag");
           console.log("Implement C flag");
           return {
@@ -1896,9 +1987,11 @@ export class CPU {
           const v = this.mmu.readByte(this.hl);
           const res = this.a[0] - v[0];
           if (res === 0) {
-            this.flag_z[0] = 1;
+            this.flag_z[7] = 0;
+          } else {
+            this.flag_z[7] = 1;
           }
-          this.flag_n[1] = 1;
+          this.flag_n[6] = 1;
           console.log("Implement H flag");
           console.log("Implement C flag");
           return {
@@ -1911,9 +2004,11 @@ export class CPU {
           const v = this.a;
           const res = this.a[0] - v[0];
           if (res === 0) {
-            this.flag_z[0] = 1;
+            this.flag_z[7] = 0;
+          } else {
+            this.flag_z[7] = 1;
           }
-          this.flag_n[1] = 1;
+          this.flag_n[6] = 1;
           console.log("Implement H flag");
           console.log("Implement C flag");
           return {
@@ -1939,7 +2034,7 @@ export class CPU {
         })
         // CALL NZ,a16
         .with(0xc4, () => {
-          if (!this.flag_z[0]) {
+          if (this.flag_z[7] !== 0) {
             this.sp = this.pc;
             return {
               v: 0x00,
@@ -1963,9 +2058,11 @@ export class CPU {
           this.a[0] += v[0];
           this.pc[0] += 1;
           if (this.a[0] === 0) {
-            this.flag_z[0] = 1;
+            this.flag_z[7] = 0;
+          } else {
+            this.flag_z[7] = 1;
           }
-          this.flag_n[1] = 0;
+          this.flag_n[6] = 0;
           console.log("Implement H flag");
           console.log("Implement C flag");
           return {
@@ -1999,7 +2096,7 @@ export class CPU {
         })
         // CALL Z,a16
         .with(0xcc, () => {
-          if (this.flag_z[0]) {
+          if (this.flag_z[7] === 0) {
             this.sp = this.pc;
             return {
               v: 0x00,
@@ -2048,7 +2145,7 @@ export class CPU {
         })
         // CALL NC,a16
         .with(0xd4, () => {
-          if (!this.flag_c[3]) {
+          if (this.flag_c[4] !== 0) {
             this.sp = this.pc;
             return {
               v: 0x00,
@@ -2073,9 +2170,11 @@ export class CPU {
           this.a[0] -= v[0];
           this.pc[0] += 1;
           if (this.a[0] === 0) {
-            this.flag_z[0] = 1;
+            this.flag_z[7] = 0;
+          } else {
+            this.flag_z[7] = 1;
           }
-          this.flag_n[1] = 1;
+          this.flag_n[6] = 1;
           console.log("Implement H flag");
           console.log("Implement C flag");
           return {
@@ -2105,7 +2204,7 @@ export class CPU {
         })
         // CALL C,a16
         .with(0xdc, () => {
-          if (this.flag_c[3]) {
+          if (this.flag_c[4] === 0) {
             this.sp = this.pc;
             return {
               v: 0x00,
@@ -2179,12 +2278,11 @@ export class CPU {
         })
         // ADD SP,r8
         .with(0xe8, () => {
-          const v /*r8*/ = this.mmu.readByte(this.pc);
-          v[0] = (0x80 ^ v[0]) - 0x80;
+          const v /*r8*/ = new Int8Array(this.mmu.readByte(this.pc));
           this.sp[0] += v[0];
           this.pc[0] += 1;
-          this.flag_z[0] = 0;
-          this.flag_n[1] = 0;
+          this.flag_z[7] = 0;
+          this.flag_n[6] = 0;
           console.log("Implement H flag");
           console.log("Implement C flag");
           return {
@@ -2225,11 +2323,13 @@ export class CPU {
           this.a[0] ^= v[0];
           this.pc[0] += 1;
           if (this.a[0] === 0) {
-            this.flag_z[0] = 1;
+            this.flag_z[7] = 0;
+          } else {
+            this.flag_z[7] = 1;
           }
-          this.flag_n[1] = 0;
-          this.flag_h[2] = 0;
-          this.flag_c[3] = 0;
+          this.flag_n[6] = 0;
+          this.flag_h[5] = 0;
+          this.flag_c[4] = 0;
           return {
             v,
             cycles: 8,
@@ -2242,7 +2342,7 @@ export class CPU {
         // LDH A,(a8)
         .with(0xf0, () => {
           const v /*a8*/ = this.mmu.readByte(this.pc);
-          this.a = v;
+          this.a.set(v);
           this.pc[0] += 1;
           return {
             v,
@@ -2257,7 +2357,7 @@ export class CPU {
         .with(0xf2, () => {
           const addr = new Uint16Array(0xff00 + this.c[0]);
           const v = this.mmu.readByte(addr);
-          this.a = v;
+          this.a.set(v);
           return {
             v,
             cycles: 8,
@@ -2290,11 +2390,12 @@ export class CPU {
         // LD HL,SP+r8
         .with(0xf8, () => {
           const r8 = this.mmu.readByte(this.pc);
-          const v = new Uint16Array(this.sp[0] + ((0x80 ^ r8[0]) - 0x80));
-          this.hl = v;
+          //@ts-expect-error todo, this needs to be fixed!
+          const v = new Uint8Array(this.sp[0] + new Int8Array(r8));
+          this.hl.set(v);
           this.pc[0] += 1;
-          this.flag_z[0] = 0;
-          this.flag_n[1] = 0;
+          this.flag_z[7] = 0;
+          this.flag_n[6] = 0;
           console.log("Implement H flag");
           console.log("Implement C flag");
           return {
@@ -2314,7 +2415,7 @@ export class CPU {
         // LD A,(a16)
         .with(0xfa, () => {
           const v /*a16*/ = this.mmu.readByte(this.pc);
-          this.a = v;
+          this.a.set(v);
           this.pc[0] += 2;
           return {
             v,
@@ -2343,9 +2444,11 @@ export class CPU {
           const res = this.a[0] - v[0];
           this.pc[0] += 1;
           if (res === 0) {
-            this.flag_z[0] = 1;
+            this.flag_z[7] = 0;
+          } else {
+            this.flag_z[7] = 1;
           }
-          this.flag_n[1] = 1;
+          this.flag_n[6] = 1;
           console.log("Implement H flag");
           console.log("Implement C flag");
           return {
@@ -2629,15 +2732,17 @@ export class CPU {
         // BIT 0,B
         .with(0x40, () => {
           const v = this.b;
-          const res = v[0] & (1 << 0);
+          const res = (v[0] >> 0) & 1;
           this.prefix_cb = false;
           this.pc[0] -= 1; // Compensate for CB call
           this.pc[0] += 1;
           if (res === 0) {
-            this.flag_z[0] = 1;
+            this.flag_z[7] = 0;
+          } else {
+            this.flag_z[7] = 1;
           }
-          this.flag_n[1] = 0;
-          this.flag_h[2] = 1;
+          this.flag_n[6] = 0;
+          this.flag_h[5] = 1;
           return {
             v,
             cycles: 8,
@@ -2646,15 +2751,17 @@ export class CPU {
         // BIT 0,C
         .with(0x41, () => {
           const v = this.c;
-          const res = v[0] & (1 << 0);
+          const res = (v[0] >> 0) & 1;
           this.prefix_cb = false;
           this.pc[0] -= 1; // Compensate for CB call
           this.pc[0] += 1;
           if (res === 0) {
-            this.flag_z[0] = 1;
+            this.flag_z[7] = 0;
+          } else {
+            this.flag_z[7] = 1;
           }
-          this.flag_n[1] = 0;
-          this.flag_h[2] = 1;
+          this.flag_n[6] = 0;
+          this.flag_h[5] = 1;
           return {
             v,
             cycles: 8,
@@ -2663,15 +2770,17 @@ export class CPU {
         // BIT 0,D
         .with(0x42, () => {
           const v = this.d;
-          const res = v[0] & (1 << 0);
+          const res = (v[0] >> 0) & 1;
           this.prefix_cb = false;
           this.pc[0] -= 1; // Compensate for CB call
           this.pc[0] += 1;
           if (res === 0) {
-            this.flag_z[0] = 1;
+            this.flag_z[7] = 0;
+          } else {
+            this.flag_z[7] = 1;
           }
-          this.flag_n[1] = 0;
-          this.flag_h[2] = 1;
+          this.flag_n[6] = 0;
+          this.flag_h[5] = 1;
           return {
             v,
             cycles: 8,
@@ -2680,15 +2789,17 @@ export class CPU {
         // BIT 0,E
         .with(0x43, () => {
           const v = this.e;
-          const res = v[0] & (1 << 0);
+          const res = (v[0] >> 0) & 1;
           this.prefix_cb = false;
           this.pc[0] -= 1; // Compensate for CB call
           this.pc[0] += 1;
           if (res === 0) {
-            this.flag_z[0] = 1;
+            this.flag_z[7] = 0;
+          } else {
+            this.flag_z[7] = 1;
           }
-          this.flag_n[1] = 0;
-          this.flag_h[2] = 1;
+          this.flag_n[6] = 0;
+          this.flag_h[5] = 1;
           return {
             v,
             cycles: 8,
@@ -2697,15 +2808,17 @@ export class CPU {
         // BIT 0,H
         .with(0x44, () => {
           const v = this.h;
-          const res = v[0] & (1 << 0);
+          const res = (v[0] >> 0) & 1;
           this.prefix_cb = false;
           this.pc[0] -= 1; // Compensate for CB call
           this.pc[0] += 1;
           if (res === 0) {
-            this.flag_z[0] = 1;
+            this.flag_z[7] = 0;
+          } else {
+            this.flag_z[7] = 1;
           }
-          this.flag_n[1] = 0;
-          this.flag_h[2] = 1;
+          this.flag_n[6] = 0;
+          this.flag_h[5] = 1;
           return {
             v,
             cycles: 8,
@@ -2714,15 +2827,17 @@ export class CPU {
         // BIT 0,L
         .with(0x45, () => {
           const v = this.l;
-          const res = v[0] & (1 << 0);
+          const res = (v[0] >> 0) & 1;
           this.prefix_cb = false;
           this.pc[0] -= 1; // Compensate for CB call
           this.pc[0] += 1;
           if (res === 0) {
-            this.flag_z[0] = 1;
+            this.flag_z[7] = 0;
+          } else {
+            this.flag_z[7] = 1;
           }
-          this.flag_n[1] = 0;
-          this.flag_h[2] = 1;
+          this.flag_n[6] = 0;
+          this.flag_h[5] = 1;
           return {
             v,
             cycles: 8,
@@ -2731,15 +2846,17 @@ export class CPU {
         // BIT 0,(HL)
         .with(0x46, () => {
           const v = this.mmu.readByte(this.hl);
-          const res = v[0] & (1 << 0);
+          const res = (v[0] >> 0) & 1;
           this.prefix_cb = false;
           this.pc[0] -= 1; // Compensate for CB call
           this.pc[0] += 1;
           if (res === 0) {
-            this.flag_z[0] = 1;
+            this.flag_z[7] = 0;
+          } else {
+            this.flag_z[7] = 1;
           }
-          this.flag_n[1] = 0;
-          this.flag_h[2] = 1;
+          this.flag_n[6] = 0;
+          this.flag_h[5] = 1;
           return {
             v,
             cycles: 16,
@@ -2748,15 +2865,17 @@ export class CPU {
         // BIT 0,A
         .with(0x47, () => {
           const v = this.a;
-          const res = v[0] & (1 << 0);
+          const res = (v[0] >> 0) & 1;
           this.prefix_cb = false;
           this.pc[0] -= 1; // Compensate for CB call
           this.pc[0] += 1;
           if (res === 0) {
-            this.flag_z[0] = 1;
+            this.flag_z[7] = 0;
+          } else {
+            this.flag_z[7] = 1;
           }
-          this.flag_n[1] = 0;
-          this.flag_h[2] = 1;
+          this.flag_n[6] = 0;
+          this.flag_h[5] = 1;
           return {
             v,
             cycles: 8,
@@ -2765,15 +2884,17 @@ export class CPU {
         // BIT 1,B
         .with(0x48, () => {
           const v = this.b;
-          const res = v[0] & (1 << 1);
+          const res = (v[0] >> 1) & 1;
           this.prefix_cb = false;
           this.pc[0] -= 1; // Compensate for CB call
           this.pc[0] += 1;
           if (res === 0) {
-            this.flag_z[0] = 1;
+            this.flag_z[7] = 0;
+          } else {
+            this.flag_z[7] = 1;
           }
-          this.flag_n[1] = 0;
-          this.flag_h[2] = 1;
+          this.flag_n[6] = 0;
+          this.flag_h[5] = 1;
           return {
             v,
             cycles: 8,
@@ -2782,15 +2903,17 @@ export class CPU {
         // BIT 1,C
         .with(0x49, () => {
           const v = this.c;
-          const res = v[0] & (1 << 1);
+          const res = (v[0] >> 1) & 1;
           this.prefix_cb = false;
           this.pc[0] -= 1; // Compensate for CB call
           this.pc[0] += 1;
           if (res === 0) {
-            this.flag_z[0] = 1;
+            this.flag_z[7] = 0;
+          } else {
+            this.flag_z[7] = 1;
           }
-          this.flag_n[1] = 0;
-          this.flag_h[2] = 1;
+          this.flag_n[6] = 0;
+          this.flag_h[5] = 1;
           return {
             v,
             cycles: 8,
@@ -2799,15 +2922,17 @@ export class CPU {
         // BIT 1,D
         .with(0x4a, () => {
           const v = this.d;
-          const res = v[0] & (1 << 1);
+          const res = (v[0] >> 1) & 1;
           this.prefix_cb = false;
           this.pc[0] -= 1; // Compensate for CB call
           this.pc[0] += 1;
           if (res === 0) {
-            this.flag_z[0] = 1;
+            this.flag_z[7] = 0;
+          } else {
+            this.flag_z[7] = 1;
           }
-          this.flag_n[1] = 0;
-          this.flag_h[2] = 1;
+          this.flag_n[6] = 0;
+          this.flag_h[5] = 1;
           return {
             v,
             cycles: 8,
@@ -2816,15 +2941,17 @@ export class CPU {
         // BIT 1,E
         .with(0x4b, () => {
           const v = this.e;
-          const res = v[0] & (1 << 1);
+          const res = (v[0] >> 1) & 1;
           this.prefix_cb = false;
           this.pc[0] -= 1; // Compensate for CB call
           this.pc[0] += 1;
           if (res === 0) {
-            this.flag_z[0] = 1;
+            this.flag_z[7] = 0;
+          } else {
+            this.flag_z[7] = 1;
           }
-          this.flag_n[1] = 0;
-          this.flag_h[2] = 1;
+          this.flag_n[6] = 0;
+          this.flag_h[5] = 1;
           return {
             v,
             cycles: 8,
@@ -2833,15 +2960,17 @@ export class CPU {
         // BIT 1,H
         .with(0x4c, () => {
           const v = this.h;
-          const res = v[0] & (1 << 1);
+          const res = (v[0] >> 1) & 1;
           this.prefix_cb = false;
           this.pc[0] -= 1; // Compensate for CB call
           this.pc[0] += 1;
           if (res === 0) {
-            this.flag_z[0] = 1;
+            this.flag_z[7] = 0;
+          } else {
+            this.flag_z[7] = 1;
           }
-          this.flag_n[1] = 0;
-          this.flag_h[2] = 1;
+          this.flag_n[6] = 0;
+          this.flag_h[5] = 1;
           return {
             v,
             cycles: 8,
@@ -2850,15 +2979,17 @@ export class CPU {
         // BIT 1,L
         .with(0x4d, () => {
           const v = this.l;
-          const res = v[0] & (1 << 1);
+          const res = (v[0] >> 1) & 1;
           this.prefix_cb = false;
           this.pc[0] -= 1; // Compensate for CB call
           this.pc[0] += 1;
           if (res === 0) {
-            this.flag_z[0] = 1;
+            this.flag_z[7] = 0;
+          } else {
+            this.flag_z[7] = 1;
           }
-          this.flag_n[1] = 0;
-          this.flag_h[2] = 1;
+          this.flag_n[6] = 0;
+          this.flag_h[5] = 1;
           return {
             v,
             cycles: 8,
@@ -2867,15 +2998,17 @@ export class CPU {
         // BIT 1,(HL)
         .with(0x4e, () => {
           const v = this.mmu.readByte(this.hl);
-          const res = v[0] & (1 << 1);
+          const res = (v[0] >> 1) & 1;
           this.prefix_cb = false;
           this.pc[0] -= 1; // Compensate for CB call
           this.pc[0] += 1;
           if (res === 0) {
-            this.flag_z[0] = 1;
+            this.flag_z[7] = 0;
+          } else {
+            this.flag_z[7] = 1;
           }
-          this.flag_n[1] = 0;
-          this.flag_h[2] = 1;
+          this.flag_n[6] = 0;
+          this.flag_h[5] = 1;
           return {
             v,
             cycles: 16,
@@ -2884,15 +3017,17 @@ export class CPU {
         // BIT 1,A
         .with(0x4f, () => {
           const v = this.a;
-          const res = v[0] & (1 << 1);
+          const res = (v[0] >> 1) & 1;
           this.prefix_cb = false;
           this.pc[0] -= 1; // Compensate for CB call
           this.pc[0] += 1;
           if (res === 0) {
-            this.flag_z[0] = 1;
+            this.flag_z[7] = 0;
+          } else {
+            this.flag_z[7] = 1;
           }
-          this.flag_n[1] = 0;
-          this.flag_h[2] = 1;
+          this.flag_n[6] = 0;
+          this.flag_h[5] = 1;
           return {
             v,
             cycles: 8,
@@ -2901,15 +3036,17 @@ export class CPU {
         // BIT 2,B
         .with(0x50, () => {
           const v = this.b;
-          const res = v[0] & (1 << 2);
+          const res = (v[0] >> 2) & 1;
           this.prefix_cb = false;
           this.pc[0] -= 1; // Compensate for CB call
           this.pc[0] += 1;
           if (res === 0) {
-            this.flag_z[0] = 1;
+            this.flag_z[7] = 0;
+          } else {
+            this.flag_z[7] = 1;
           }
-          this.flag_n[1] = 0;
-          this.flag_h[2] = 1;
+          this.flag_n[6] = 0;
+          this.flag_h[5] = 1;
           return {
             v,
             cycles: 8,
@@ -2918,15 +3055,17 @@ export class CPU {
         // BIT 2,C
         .with(0x51, () => {
           const v = this.c;
-          const res = v[0] & (1 << 2);
+          const res = (v[0] >> 2) & 1;
           this.prefix_cb = false;
           this.pc[0] -= 1; // Compensate for CB call
           this.pc[0] += 1;
           if (res === 0) {
-            this.flag_z[0] = 1;
+            this.flag_z[7] = 0;
+          } else {
+            this.flag_z[7] = 1;
           }
-          this.flag_n[1] = 0;
-          this.flag_h[2] = 1;
+          this.flag_n[6] = 0;
+          this.flag_h[5] = 1;
           return {
             v,
             cycles: 8,
@@ -2935,15 +3074,17 @@ export class CPU {
         // BIT 2,D
         .with(0x52, () => {
           const v = this.d;
-          const res = v[0] & (1 << 2);
+          const res = (v[0] >> 2) & 1;
           this.prefix_cb = false;
           this.pc[0] -= 1; // Compensate for CB call
           this.pc[0] += 1;
           if (res === 0) {
-            this.flag_z[0] = 1;
+            this.flag_z[7] = 0;
+          } else {
+            this.flag_z[7] = 1;
           }
-          this.flag_n[1] = 0;
-          this.flag_h[2] = 1;
+          this.flag_n[6] = 0;
+          this.flag_h[5] = 1;
           return {
             v,
             cycles: 8,
@@ -2952,15 +3093,17 @@ export class CPU {
         // BIT 2,E
         .with(0x53, () => {
           const v = this.e;
-          const res = v[0] & (1 << 2);
+          const res = (v[0] >> 2) & 1;
           this.prefix_cb = false;
           this.pc[0] -= 1; // Compensate for CB call
           this.pc[0] += 1;
           if (res === 0) {
-            this.flag_z[0] = 1;
+            this.flag_z[7] = 0;
+          } else {
+            this.flag_z[7] = 1;
           }
-          this.flag_n[1] = 0;
-          this.flag_h[2] = 1;
+          this.flag_n[6] = 0;
+          this.flag_h[5] = 1;
           return {
             v,
             cycles: 8,
@@ -2969,15 +3112,17 @@ export class CPU {
         // BIT 2,H
         .with(0x54, () => {
           const v = this.h;
-          const res = v[0] & (1 << 2);
+          const res = (v[0] >> 2) & 1;
           this.prefix_cb = false;
           this.pc[0] -= 1; // Compensate for CB call
           this.pc[0] += 1;
           if (res === 0) {
-            this.flag_z[0] = 1;
+            this.flag_z[7] = 0;
+          } else {
+            this.flag_z[7] = 1;
           }
-          this.flag_n[1] = 0;
-          this.flag_h[2] = 1;
+          this.flag_n[6] = 0;
+          this.flag_h[5] = 1;
           return {
             v,
             cycles: 8,
@@ -2986,15 +3131,17 @@ export class CPU {
         // BIT 2,L
         .with(0x55, () => {
           const v = this.l;
-          const res = v[0] & (1 << 2);
+          const res = (v[0] >> 2) & 1;
           this.prefix_cb = false;
           this.pc[0] -= 1; // Compensate for CB call
           this.pc[0] += 1;
           if (res === 0) {
-            this.flag_z[0] = 1;
+            this.flag_z[7] = 0;
+          } else {
+            this.flag_z[7] = 1;
           }
-          this.flag_n[1] = 0;
-          this.flag_h[2] = 1;
+          this.flag_n[6] = 0;
+          this.flag_h[5] = 1;
           return {
             v,
             cycles: 8,
@@ -3003,15 +3150,17 @@ export class CPU {
         // BIT 2,(HL)
         .with(0x56, () => {
           const v = this.mmu.readByte(this.hl);
-          const res = v[0] & (1 << 2);
+          const res = (v[0] >> 2) & 1;
           this.prefix_cb = false;
           this.pc[0] -= 1; // Compensate for CB call
           this.pc[0] += 1;
           if (res === 0) {
-            this.flag_z[0] = 1;
+            this.flag_z[7] = 0;
+          } else {
+            this.flag_z[7] = 1;
           }
-          this.flag_n[1] = 0;
-          this.flag_h[2] = 1;
+          this.flag_n[6] = 0;
+          this.flag_h[5] = 1;
           return {
             v,
             cycles: 16,
@@ -3020,15 +3169,17 @@ export class CPU {
         // BIT 2,A
         .with(0x57, () => {
           const v = this.a;
-          const res = v[0] & (1 << 2);
+          const res = (v[0] >> 2) & 1;
           this.prefix_cb = false;
           this.pc[0] -= 1; // Compensate for CB call
           this.pc[0] += 1;
           if (res === 0) {
-            this.flag_z[0] = 1;
+            this.flag_z[7] = 0;
+          } else {
+            this.flag_z[7] = 1;
           }
-          this.flag_n[1] = 0;
-          this.flag_h[2] = 1;
+          this.flag_n[6] = 0;
+          this.flag_h[5] = 1;
           return {
             v,
             cycles: 8,
@@ -3037,15 +3188,17 @@ export class CPU {
         // BIT 3,B
         .with(0x58, () => {
           const v = this.b;
-          const res = v[0] & (1 << 3);
+          const res = (v[0] >> 3) & 1;
           this.prefix_cb = false;
           this.pc[0] -= 1; // Compensate for CB call
           this.pc[0] += 1;
           if (res === 0) {
-            this.flag_z[0] = 1;
+            this.flag_z[7] = 0;
+          } else {
+            this.flag_z[7] = 1;
           }
-          this.flag_n[1] = 0;
-          this.flag_h[2] = 1;
+          this.flag_n[6] = 0;
+          this.flag_h[5] = 1;
           return {
             v,
             cycles: 8,
@@ -3054,15 +3207,17 @@ export class CPU {
         // BIT 3,C
         .with(0x59, () => {
           const v = this.c;
-          const res = v[0] & (1 << 3);
+          const res = (v[0] >> 3) & 1;
           this.prefix_cb = false;
           this.pc[0] -= 1; // Compensate for CB call
           this.pc[0] += 1;
           if (res === 0) {
-            this.flag_z[0] = 1;
+            this.flag_z[7] = 0;
+          } else {
+            this.flag_z[7] = 1;
           }
-          this.flag_n[1] = 0;
-          this.flag_h[2] = 1;
+          this.flag_n[6] = 0;
+          this.flag_h[5] = 1;
           return {
             v,
             cycles: 8,
@@ -3071,15 +3226,17 @@ export class CPU {
         // BIT 3,D
         .with(0x5a, () => {
           const v = this.d;
-          const res = v[0] & (1 << 3);
+          const res = (v[0] >> 3) & 1;
           this.prefix_cb = false;
           this.pc[0] -= 1; // Compensate for CB call
           this.pc[0] += 1;
           if (res === 0) {
-            this.flag_z[0] = 1;
+            this.flag_z[7] = 0;
+          } else {
+            this.flag_z[7] = 1;
           }
-          this.flag_n[1] = 0;
-          this.flag_h[2] = 1;
+          this.flag_n[6] = 0;
+          this.flag_h[5] = 1;
           return {
             v,
             cycles: 8,
@@ -3088,15 +3245,17 @@ export class CPU {
         // BIT 3,E
         .with(0x5b, () => {
           const v = this.e;
-          const res = v[0] & (1 << 3);
+          const res = (v[0] >> 3) & 1;
           this.prefix_cb = false;
           this.pc[0] -= 1; // Compensate for CB call
           this.pc[0] += 1;
           if (res === 0) {
-            this.flag_z[0] = 1;
+            this.flag_z[7] = 0;
+          } else {
+            this.flag_z[7] = 1;
           }
-          this.flag_n[1] = 0;
-          this.flag_h[2] = 1;
+          this.flag_n[6] = 0;
+          this.flag_h[5] = 1;
           return {
             v,
             cycles: 8,
@@ -3105,15 +3264,17 @@ export class CPU {
         // BIT 3,H
         .with(0x5c, () => {
           const v = this.h;
-          const res = v[0] & (1 << 3);
+          const res = (v[0] >> 3) & 1;
           this.prefix_cb = false;
           this.pc[0] -= 1; // Compensate for CB call
           this.pc[0] += 1;
           if (res === 0) {
-            this.flag_z[0] = 1;
+            this.flag_z[7] = 0;
+          } else {
+            this.flag_z[7] = 1;
           }
-          this.flag_n[1] = 0;
-          this.flag_h[2] = 1;
+          this.flag_n[6] = 0;
+          this.flag_h[5] = 1;
           return {
             v,
             cycles: 8,
@@ -3122,15 +3283,17 @@ export class CPU {
         // BIT 3,L
         .with(0x5d, () => {
           const v = this.l;
-          const res = v[0] & (1 << 3);
+          const res = (v[0] >> 3) & 1;
           this.prefix_cb = false;
           this.pc[0] -= 1; // Compensate for CB call
           this.pc[0] += 1;
           if (res === 0) {
-            this.flag_z[0] = 1;
+            this.flag_z[7] = 0;
+          } else {
+            this.flag_z[7] = 1;
           }
-          this.flag_n[1] = 0;
-          this.flag_h[2] = 1;
+          this.flag_n[6] = 0;
+          this.flag_h[5] = 1;
           return {
             v,
             cycles: 8,
@@ -3139,15 +3302,17 @@ export class CPU {
         // BIT 3,(HL)
         .with(0x5e, () => {
           const v = this.mmu.readByte(this.hl);
-          const res = v[0] & (1 << 3);
+          const res = (v[0] >> 3) & 1;
           this.prefix_cb = false;
           this.pc[0] -= 1; // Compensate for CB call
           this.pc[0] += 1;
           if (res === 0) {
-            this.flag_z[0] = 1;
+            this.flag_z[7] = 0;
+          } else {
+            this.flag_z[7] = 1;
           }
-          this.flag_n[1] = 0;
-          this.flag_h[2] = 1;
+          this.flag_n[6] = 0;
+          this.flag_h[5] = 1;
           return {
             v,
             cycles: 16,
@@ -3156,15 +3321,17 @@ export class CPU {
         // BIT 3,A
         .with(0x5f, () => {
           const v = this.a;
-          const res = v[0] & (1 << 3);
+          const res = (v[0] >> 3) & 1;
           this.prefix_cb = false;
           this.pc[0] -= 1; // Compensate for CB call
           this.pc[0] += 1;
           if (res === 0) {
-            this.flag_z[0] = 1;
+            this.flag_z[7] = 0;
+          } else {
+            this.flag_z[7] = 1;
           }
-          this.flag_n[1] = 0;
-          this.flag_h[2] = 1;
+          this.flag_n[6] = 0;
+          this.flag_h[5] = 1;
           return {
             v,
             cycles: 8,
@@ -3173,15 +3340,17 @@ export class CPU {
         // BIT 4,B
         .with(0x60, () => {
           const v = this.b;
-          const res = v[0] & (1 << 4);
+          const res = (v[0] >> 4) & 1;
           this.prefix_cb = false;
           this.pc[0] -= 1; // Compensate for CB call
           this.pc[0] += 1;
           if (res === 0) {
-            this.flag_z[0] = 1;
+            this.flag_z[7] = 0;
+          } else {
+            this.flag_z[7] = 1;
           }
-          this.flag_n[1] = 0;
-          this.flag_h[2] = 1;
+          this.flag_n[6] = 0;
+          this.flag_h[5] = 1;
           return {
             v,
             cycles: 8,
@@ -3190,15 +3359,17 @@ export class CPU {
         // BIT 4,C
         .with(0x61, () => {
           const v = this.c;
-          const res = v[0] & (1 << 4);
+          const res = (v[0] >> 4) & 1;
           this.prefix_cb = false;
           this.pc[0] -= 1; // Compensate for CB call
           this.pc[0] += 1;
           if (res === 0) {
-            this.flag_z[0] = 1;
+            this.flag_z[7] = 0;
+          } else {
+            this.flag_z[7] = 1;
           }
-          this.flag_n[1] = 0;
-          this.flag_h[2] = 1;
+          this.flag_n[6] = 0;
+          this.flag_h[5] = 1;
           return {
             v,
             cycles: 8,
@@ -3207,15 +3378,17 @@ export class CPU {
         // BIT 4,D
         .with(0x62, () => {
           const v = this.d;
-          const res = v[0] & (1 << 4);
+          const res = (v[0] >> 4) & 1;
           this.prefix_cb = false;
           this.pc[0] -= 1; // Compensate for CB call
           this.pc[0] += 1;
           if (res === 0) {
-            this.flag_z[0] = 1;
+            this.flag_z[7] = 0;
+          } else {
+            this.flag_z[7] = 1;
           }
-          this.flag_n[1] = 0;
-          this.flag_h[2] = 1;
+          this.flag_n[6] = 0;
+          this.flag_h[5] = 1;
           return {
             v,
             cycles: 8,
@@ -3224,15 +3397,17 @@ export class CPU {
         // BIT 4,E
         .with(0x63, () => {
           const v = this.e;
-          const res = v[0] & (1 << 4);
+          const res = (v[0] >> 4) & 1;
           this.prefix_cb = false;
           this.pc[0] -= 1; // Compensate for CB call
           this.pc[0] += 1;
           if (res === 0) {
-            this.flag_z[0] = 1;
+            this.flag_z[7] = 0;
+          } else {
+            this.flag_z[7] = 1;
           }
-          this.flag_n[1] = 0;
-          this.flag_h[2] = 1;
+          this.flag_n[6] = 0;
+          this.flag_h[5] = 1;
           return {
             v,
             cycles: 8,
@@ -3241,15 +3416,17 @@ export class CPU {
         // BIT 4,H
         .with(0x64, () => {
           const v = this.h;
-          const res = v[0] & (1 << 4);
+          const res = (v[0] >> 4) & 1;
           this.prefix_cb = false;
           this.pc[0] -= 1; // Compensate for CB call
           this.pc[0] += 1;
           if (res === 0) {
-            this.flag_z[0] = 1;
+            this.flag_z[7] = 0;
+          } else {
+            this.flag_z[7] = 1;
           }
-          this.flag_n[1] = 0;
-          this.flag_h[2] = 1;
+          this.flag_n[6] = 0;
+          this.flag_h[5] = 1;
           return {
             v,
             cycles: 8,
@@ -3258,15 +3435,17 @@ export class CPU {
         // BIT 4,L
         .with(0x65, () => {
           const v = this.l;
-          const res = v[0] & (1 << 4);
+          const res = (v[0] >> 4) & 1;
           this.prefix_cb = false;
           this.pc[0] -= 1; // Compensate for CB call
           this.pc[0] += 1;
           if (res === 0) {
-            this.flag_z[0] = 1;
+            this.flag_z[7] = 0;
+          } else {
+            this.flag_z[7] = 1;
           }
-          this.flag_n[1] = 0;
-          this.flag_h[2] = 1;
+          this.flag_n[6] = 0;
+          this.flag_h[5] = 1;
           return {
             v,
             cycles: 8,
@@ -3275,15 +3454,17 @@ export class CPU {
         // BIT 4,(HL)
         .with(0x66, () => {
           const v = this.mmu.readByte(this.hl);
-          const res = v[0] & (1 << 4);
+          const res = (v[0] >> 4) & 1;
           this.prefix_cb = false;
           this.pc[0] -= 1; // Compensate for CB call
           this.pc[0] += 1;
           if (res === 0) {
-            this.flag_z[0] = 1;
+            this.flag_z[7] = 0;
+          } else {
+            this.flag_z[7] = 1;
           }
-          this.flag_n[1] = 0;
-          this.flag_h[2] = 1;
+          this.flag_n[6] = 0;
+          this.flag_h[5] = 1;
           return {
             v,
             cycles: 16,
@@ -3292,15 +3473,17 @@ export class CPU {
         // BIT 4,A
         .with(0x67, () => {
           const v = this.a;
-          const res = v[0] & (1 << 4);
+          const res = (v[0] >> 4) & 1;
           this.prefix_cb = false;
           this.pc[0] -= 1; // Compensate for CB call
           this.pc[0] += 1;
           if (res === 0) {
-            this.flag_z[0] = 1;
+            this.flag_z[7] = 0;
+          } else {
+            this.flag_z[7] = 1;
           }
-          this.flag_n[1] = 0;
-          this.flag_h[2] = 1;
+          this.flag_n[6] = 0;
+          this.flag_h[5] = 1;
           return {
             v,
             cycles: 8,
@@ -3309,15 +3492,17 @@ export class CPU {
         // BIT 5,B
         .with(0x68, () => {
           const v = this.b;
-          const res = v[0] & (1 << 5);
+          const res = (v[0] >> 5) & 1;
           this.prefix_cb = false;
           this.pc[0] -= 1; // Compensate for CB call
           this.pc[0] += 1;
           if (res === 0) {
-            this.flag_z[0] = 1;
+            this.flag_z[7] = 0;
+          } else {
+            this.flag_z[7] = 1;
           }
-          this.flag_n[1] = 0;
-          this.flag_h[2] = 1;
+          this.flag_n[6] = 0;
+          this.flag_h[5] = 1;
           return {
             v,
             cycles: 8,
@@ -3326,15 +3511,17 @@ export class CPU {
         // BIT 5,C
         .with(0x69, () => {
           const v = this.c;
-          const res = v[0] & (1 << 5);
+          const res = (v[0] >> 5) & 1;
           this.prefix_cb = false;
           this.pc[0] -= 1; // Compensate for CB call
           this.pc[0] += 1;
           if (res === 0) {
-            this.flag_z[0] = 1;
+            this.flag_z[7] = 0;
+          } else {
+            this.flag_z[7] = 1;
           }
-          this.flag_n[1] = 0;
-          this.flag_h[2] = 1;
+          this.flag_n[6] = 0;
+          this.flag_h[5] = 1;
           return {
             v,
             cycles: 8,
@@ -3343,15 +3530,17 @@ export class CPU {
         // BIT 5,D
         .with(0x6a, () => {
           const v = this.d;
-          const res = v[0] & (1 << 5);
+          const res = (v[0] >> 5) & 1;
           this.prefix_cb = false;
           this.pc[0] -= 1; // Compensate for CB call
           this.pc[0] += 1;
           if (res === 0) {
-            this.flag_z[0] = 1;
+            this.flag_z[7] = 0;
+          } else {
+            this.flag_z[7] = 1;
           }
-          this.flag_n[1] = 0;
-          this.flag_h[2] = 1;
+          this.flag_n[6] = 0;
+          this.flag_h[5] = 1;
           return {
             v,
             cycles: 8,
@@ -3360,15 +3549,17 @@ export class CPU {
         // BIT 5,E
         .with(0x6b, () => {
           const v = this.e;
-          const res = v[0] & (1 << 5);
+          const res = (v[0] >> 5) & 1;
           this.prefix_cb = false;
           this.pc[0] -= 1; // Compensate for CB call
           this.pc[0] += 1;
           if (res === 0) {
-            this.flag_z[0] = 1;
+            this.flag_z[7] = 0;
+          } else {
+            this.flag_z[7] = 1;
           }
-          this.flag_n[1] = 0;
-          this.flag_h[2] = 1;
+          this.flag_n[6] = 0;
+          this.flag_h[5] = 1;
           return {
             v,
             cycles: 8,
@@ -3377,15 +3568,17 @@ export class CPU {
         // BIT 5,H
         .with(0x6c, () => {
           const v = this.h;
-          const res = v[0] & (1 << 5);
+          const res = (v[0] >> 5) & 1;
           this.prefix_cb = false;
           this.pc[0] -= 1; // Compensate for CB call
           this.pc[0] += 1;
           if (res === 0) {
-            this.flag_z[0] = 1;
+            this.flag_z[7] = 0;
+          } else {
+            this.flag_z[7] = 1;
           }
-          this.flag_n[1] = 0;
-          this.flag_h[2] = 1;
+          this.flag_n[6] = 0;
+          this.flag_h[5] = 1;
           return {
             v,
             cycles: 8,
@@ -3394,15 +3587,17 @@ export class CPU {
         // BIT 5,L
         .with(0x6d, () => {
           const v = this.l;
-          const res = v[0] & (1 << 5);
+          const res = (v[0] >> 5) & 1;
           this.prefix_cb = false;
           this.pc[0] -= 1; // Compensate for CB call
           this.pc[0] += 1;
           if (res === 0) {
-            this.flag_z[0] = 1;
+            this.flag_z[7] = 0;
+          } else {
+            this.flag_z[7] = 1;
           }
-          this.flag_n[1] = 0;
-          this.flag_h[2] = 1;
+          this.flag_n[6] = 0;
+          this.flag_h[5] = 1;
           return {
             v,
             cycles: 8,
@@ -3411,15 +3606,17 @@ export class CPU {
         // BIT 5,(HL)
         .with(0x6e, () => {
           const v = this.mmu.readByte(this.hl);
-          const res = v[0] & (1 << 5);
+          const res = (v[0] >> 5) & 1;
           this.prefix_cb = false;
           this.pc[0] -= 1; // Compensate for CB call
           this.pc[0] += 1;
           if (res === 0) {
-            this.flag_z[0] = 1;
+            this.flag_z[7] = 0;
+          } else {
+            this.flag_z[7] = 1;
           }
-          this.flag_n[1] = 0;
-          this.flag_h[2] = 1;
+          this.flag_n[6] = 0;
+          this.flag_h[5] = 1;
           return {
             v,
             cycles: 16,
@@ -3428,15 +3625,17 @@ export class CPU {
         // BIT 5,A
         .with(0x6f, () => {
           const v = this.a;
-          const res = v[0] & (1 << 5);
+          const res = (v[0] >> 5) & 1;
           this.prefix_cb = false;
           this.pc[0] -= 1; // Compensate for CB call
           this.pc[0] += 1;
           if (res === 0) {
-            this.flag_z[0] = 1;
+            this.flag_z[7] = 0;
+          } else {
+            this.flag_z[7] = 1;
           }
-          this.flag_n[1] = 0;
-          this.flag_h[2] = 1;
+          this.flag_n[6] = 0;
+          this.flag_h[5] = 1;
           return {
             v,
             cycles: 8,
@@ -3445,15 +3644,17 @@ export class CPU {
         // BIT 6,B
         .with(0x70, () => {
           const v = this.b;
-          const res = v[0] & (1 << 6);
+          const res = (v[0] >> 6) & 1;
           this.prefix_cb = false;
           this.pc[0] -= 1; // Compensate for CB call
           this.pc[0] += 1;
           if (res === 0) {
-            this.flag_z[0] = 1;
+            this.flag_z[7] = 0;
+          } else {
+            this.flag_z[7] = 1;
           }
-          this.flag_n[1] = 0;
-          this.flag_h[2] = 1;
+          this.flag_n[6] = 0;
+          this.flag_h[5] = 1;
           return {
             v,
             cycles: 8,
@@ -3462,15 +3663,17 @@ export class CPU {
         // BIT 6,C
         .with(0x71, () => {
           const v = this.c;
-          const res = v[0] & (1 << 6);
+          const res = (v[0] >> 6) & 1;
           this.prefix_cb = false;
           this.pc[0] -= 1; // Compensate for CB call
           this.pc[0] += 1;
           if (res === 0) {
-            this.flag_z[0] = 1;
+            this.flag_z[7] = 0;
+          } else {
+            this.flag_z[7] = 1;
           }
-          this.flag_n[1] = 0;
-          this.flag_h[2] = 1;
+          this.flag_n[6] = 0;
+          this.flag_h[5] = 1;
           return {
             v,
             cycles: 8,
@@ -3479,15 +3682,17 @@ export class CPU {
         // BIT 6,D
         .with(0x72, () => {
           const v = this.d;
-          const res = v[0] & (1 << 6);
+          const res = (v[0] >> 6) & 1;
           this.prefix_cb = false;
           this.pc[0] -= 1; // Compensate for CB call
           this.pc[0] += 1;
           if (res === 0) {
-            this.flag_z[0] = 1;
+            this.flag_z[7] = 0;
+          } else {
+            this.flag_z[7] = 1;
           }
-          this.flag_n[1] = 0;
-          this.flag_h[2] = 1;
+          this.flag_n[6] = 0;
+          this.flag_h[5] = 1;
           return {
             v,
             cycles: 8,
@@ -3496,15 +3701,17 @@ export class CPU {
         // BIT 6,E
         .with(0x73, () => {
           const v = this.e;
-          const res = v[0] & (1 << 6);
+          const res = (v[0] >> 6) & 1;
           this.prefix_cb = false;
           this.pc[0] -= 1; // Compensate for CB call
           this.pc[0] += 1;
           if (res === 0) {
-            this.flag_z[0] = 1;
+            this.flag_z[7] = 0;
+          } else {
+            this.flag_z[7] = 1;
           }
-          this.flag_n[1] = 0;
-          this.flag_h[2] = 1;
+          this.flag_n[6] = 0;
+          this.flag_h[5] = 1;
           return {
             v,
             cycles: 8,
@@ -3513,15 +3720,17 @@ export class CPU {
         // BIT 6,H
         .with(0x74, () => {
           const v = this.h;
-          const res = v[0] & (1 << 6);
+          const res = (v[0] >> 6) & 1;
           this.prefix_cb = false;
           this.pc[0] -= 1; // Compensate for CB call
           this.pc[0] += 1;
           if (res === 0) {
-            this.flag_z[0] = 1;
+            this.flag_z[7] = 0;
+          } else {
+            this.flag_z[7] = 1;
           }
-          this.flag_n[1] = 0;
-          this.flag_h[2] = 1;
+          this.flag_n[6] = 0;
+          this.flag_h[5] = 1;
           return {
             v,
             cycles: 8,
@@ -3530,15 +3739,17 @@ export class CPU {
         // BIT 6,L
         .with(0x75, () => {
           const v = this.l;
-          const res = v[0] & (1 << 6);
+          const res = (v[0] >> 6) & 1;
           this.prefix_cb = false;
           this.pc[0] -= 1; // Compensate for CB call
           this.pc[0] += 1;
           if (res === 0) {
-            this.flag_z[0] = 1;
+            this.flag_z[7] = 0;
+          } else {
+            this.flag_z[7] = 1;
           }
-          this.flag_n[1] = 0;
-          this.flag_h[2] = 1;
+          this.flag_n[6] = 0;
+          this.flag_h[5] = 1;
           return {
             v,
             cycles: 8,
@@ -3547,15 +3758,17 @@ export class CPU {
         // BIT 6,(HL)
         .with(0x76, () => {
           const v = this.mmu.readByte(this.hl);
-          const res = v[0] & (1 << 6);
+          const res = (v[0] >> 6) & 1;
           this.prefix_cb = false;
           this.pc[0] -= 1; // Compensate for CB call
           this.pc[0] += 1;
           if (res === 0) {
-            this.flag_z[0] = 1;
+            this.flag_z[7] = 0;
+          } else {
+            this.flag_z[7] = 1;
           }
-          this.flag_n[1] = 0;
-          this.flag_h[2] = 1;
+          this.flag_n[6] = 0;
+          this.flag_h[5] = 1;
           return {
             v,
             cycles: 16,
@@ -3564,15 +3777,17 @@ export class CPU {
         // BIT 6,A
         .with(0x77, () => {
           const v = this.a;
-          const res = v[0] & (1 << 6);
+          const res = (v[0] >> 6) & 1;
           this.prefix_cb = false;
           this.pc[0] -= 1; // Compensate for CB call
           this.pc[0] += 1;
           if (res === 0) {
-            this.flag_z[0] = 1;
+            this.flag_z[7] = 0;
+          } else {
+            this.flag_z[7] = 1;
           }
-          this.flag_n[1] = 0;
-          this.flag_h[2] = 1;
+          this.flag_n[6] = 0;
+          this.flag_h[5] = 1;
           return {
             v,
             cycles: 8,
@@ -3581,15 +3796,17 @@ export class CPU {
         // BIT 7,B
         .with(0x78, () => {
           const v = this.b;
-          const res = v[0] & (1 << 7);
+          const res = (v[0] >> 7) & 1;
           this.prefix_cb = false;
           this.pc[0] -= 1; // Compensate for CB call
           this.pc[0] += 1;
           if (res === 0) {
-            this.flag_z[0] = 1;
+            this.flag_z[7] = 0;
+          } else {
+            this.flag_z[7] = 1;
           }
-          this.flag_n[1] = 0;
-          this.flag_h[2] = 1;
+          this.flag_n[6] = 0;
+          this.flag_h[5] = 1;
           return {
             v,
             cycles: 8,
@@ -3598,15 +3815,17 @@ export class CPU {
         // BIT 7,C
         .with(0x79, () => {
           const v = this.c;
-          const res = v[0] & (1 << 7);
+          const res = (v[0] >> 7) & 1;
           this.prefix_cb = false;
           this.pc[0] -= 1; // Compensate for CB call
           this.pc[0] += 1;
           if (res === 0) {
-            this.flag_z[0] = 1;
+            this.flag_z[7] = 0;
+          } else {
+            this.flag_z[7] = 1;
           }
-          this.flag_n[1] = 0;
-          this.flag_h[2] = 1;
+          this.flag_n[6] = 0;
+          this.flag_h[5] = 1;
           return {
             v,
             cycles: 8,
@@ -3615,15 +3834,17 @@ export class CPU {
         // BIT 7,D
         .with(0x7a, () => {
           const v = this.d;
-          const res = v[0] & (1 << 7);
+          const res = (v[0] >> 7) & 1;
           this.prefix_cb = false;
           this.pc[0] -= 1; // Compensate for CB call
           this.pc[0] += 1;
           if (res === 0) {
-            this.flag_z[0] = 1;
+            this.flag_z[7] = 0;
+          } else {
+            this.flag_z[7] = 1;
           }
-          this.flag_n[1] = 0;
-          this.flag_h[2] = 1;
+          this.flag_n[6] = 0;
+          this.flag_h[5] = 1;
           return {
             v,
             cycles: 8,
@@ -3632,15 +3853,17 @@ export class CPU {
         // BIT 7,E
         .with(0x7b, () => {
           const v = this.e;
-          const res = v[0] & (1 << 7);
+          const res = (v[0] >> 7) & 1;
           this.prefix_cb = false;
           this.pc[0] -= 1; // Compensate for CB call
           this.pc[0] += 1;
           if (res === 0) {
-            this.flag_z[0] = 1;
+            this.flag_z[7] = 0;
+          } else {
+            this.flag_z[7] = 1;
           }
-          this.flag_n[1] = 0;
-          this.flag_h[2] = 1;
+          this.flag_n[6] = 0;
+          this.flag_h[5] = 1;
           return {
             v,
             cycles: 8,
@@ -3649,15 +3872,17 @@ export class CPU {
         // BIT 7,H
         .with(0x7c, () => {
           const v = this.h;
-          const res = v[0] & (1 << 7);
+          const res = (v[0] >> 7) & 1;
           this.prefix_cb = false;
           this.pc[0] -= 1; // Compensate for CB call
           this.pc[0] += 1;
           if (res === 0) {
-            this.flag_z[0] = 1;
+            this.flag_z[7] = 0;
+          } else {
+            this.flag_z[7] = 1;
           }
-          this.flag_n[1] = 0;
-          this.flag_h[2] = 1;
+          this.flag_n[6] = 0;
+          this.flag_h[5] = 1;
           return {
             v,
             cycles: 8,
@@ -3666,15 +3891,17 @@ export class CPU {
         // BIT 7,L
         .with(0x7d, () => {
           const v = this.l;
-          const res = v[0] & (1 << 7);
+          const res = (v[0] >> 7) & 1;
           this.prefix_cb = false;
           this.pc[0] -= 1; // Compensate for CB call
           this.pc[0] += 1;
           if (res === 0) {
-            this.flag_z[0] = 1;
+            this.flag_z[7] = 0;
+          } else {
+            this.flag_z[7] = 1;
           }
-          this.flag_n[1] = 0;
-          this.flag_h[2] = 1;
+          this.flag_n[6] = 0;
+          this.flag_h[5] = 1;
           return {
             v,
             cycles: 8,
@@ -3683,15 +3910,17 @@ export class CPU {
         // BIT 7,(HL)
         .with(0x7e, () => {
           const v = this.mmu.readByte(this.hl);
-          const res = v[0] & (1 << 7);
+          const res = (v[0] >> 7) & 1;
           this.prefix_cb = false;
           this.pc[0] -= 1; // Compensate for CB call
           this.pc[0] += 1;
           if (res === 0) {
-            this.flag_z[0] = 1;
+            this.flag_z[7] = 0;
+          } else {
+            this.flag_z[7] = 1;
           }
-          this.flag_n[1] = 0;
-          this.flag_h[2] = 1;
+          this.flag_n[6] = 0;
+          this.flag_h[5] = 1;
           return {
             v,
             cycles: 16,
@@ -3700,15 +3929,17 @@ export class CPU {
         // BIT 7,A
         .with(0x7f, () => {
           const v = this.a;
-          const res = v[0] & (1 << 7);
+          const res = (v[0] >> 7) & 1;
           this.prefix_cb = false;
           this.pc[0] -= 1; // Compensate for CB call
           this.pc[0] += 1;
           if (res === 0) {
-            this.flag_z[0] = 1;
+            this.flag_z[7] = 0;
+          } else {
+            this.flag_z[7] = 1;
           }
-          this.flag_n[1] = 0;
-          this.flag_h[2] = 1;
+          this.flag_n[6] = 0;
+          this.flag_h[5] = 1;
           return {
             v,
             cycles: 8,

@@ -9,8 +9,7 @@ describe("Printer - JR tests", () => {
     expect(impl).toMatchInlineSnapshot(
       Printer.trimString(`"// JR r8
       .with(0x18, ()=>{
-        const v /*r8*/ = this.mmu.readByte(this.pc);
-        v[0] = ((0x80 ^ v[0]) - 0x80)
+        const v /*r8*/ = new Int8Array(this.mmu.readByte(this.pc))
         this.pc[0] += v[0]
         this.pc[0] += 1;
         return {
@@ -27,9 +26,9 @@ describe("Printer - JR tests", () => {
     expect(impl).toMatchInlineSnapshot(
       Printer.trimString(`"// JR NZ,r8
       .with(0x20, ()=>{
-        if (!(this.flag_z[0])) {
-          const v /*r8*/ = this.mmu.readByte(this.pc);
-          v[0] = ((0x80 ^ v[0]) - 0x80)
+        if (this.flag_z[7] !== 0) {
+          const v /*r8*/ = new Int8Array(this.mmu.readByte(this.pc))
+          this.pc[0] += 1;
           this.pc[0] += v[0]
           return {
             v,
@@ -52,9 +51,9 @@ describe("Printer - JR tests", () => {
     expect(impl).toMatchInlineSnapshot(
       Printer.trimString(`"// JR C,r8
       .with(0x38, ()=>{
-        if (this.flag_c[3]) {
-          const v /*r8*/ = this.mmu.readByte(this.pc);
-          v[0] = ((0x80 ^ v[0]) - 0x80)
+        if (this.flag_c[4] === 0) {
+          const v /*r8*/ = new Int8Array(this.mmu.readByte(this.pc))
+          this.pc[0] += 1;
           this.pc[0] += v[0]
           return {
             v,

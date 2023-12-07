@@ -12,11 +12,13 @@ describe("Printer - XOR tests", () => {
         const v = this.c
         this.a[0] ^= v[0]
         if (this.a[0] === 0) {
-          this.flag_z[0] = 1
+          this.flag_z[7] = 0
+        } else {
+          this.flag_z[7] = 1
         }
-        this.flag_n[1] = 0;
-        this.flag_h[2] = 0;
-        this.flag_c[3] = 0;
+        this.flag_n[6] = 0;
+        this.flag_h[5] = 0;
+        this.flag_c[4] = 0;
         return {
           v,
           cycles: 4
@@ -34,11 +36,13 @@ describe("Printer - XOR tests", () => {
         const v = this.mmu.readByte(this.hl)
         this.a[0] ^= v[0]
         if (this.a[0] === 0) {
-          this.flag_z[0] = 1
+          this.flag_z[7] = 0
+        } else {
+          this.flag_z[7] = 1
         }
-        this.flag_n[1] = 0;
-        this.flag_h[2] = 0;
-        this.flag_c[3] = 0;
+        this.flag_n[6] = 0;
+        this.flag_h[5] = 0;
+        this.flag_c[4] = 0;
         return {
           v,
           cycles: 8
@@ -57,11 +61,13 @@ describe("Printer - XOR tests", () => {
         this.a[0] ^= v[0]
         this.pc[0] += 1;
         if (this.a[0] === 0) {
-          this.flag_z[0] = 1
+          this.flag_z[7] = 0
+        } else {
+          this.flag_z[7] = 1
         }
-        this.flag_n[1] = 0;
-        this.flag_h[2] = 0;
-        this.flag_c[3] = 0;
+        this.flag_n[6] = 0;
+        this.flag_h[5] = 0;
+        this.flag_c[4] = 0;
         return {
           v,
           cycles: 8

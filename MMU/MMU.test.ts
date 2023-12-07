@@ -26,7 +26,8 @@ describe("MMU tests", () => {
 
   test("can read word at 0x0001", () => {
     const addr = new Uint8Array([0x01, 0x00]); // 0x0001
-    const wordToRead = new Uint8Array([0xfe, 0xff]);
+    // const wordToRead = new Uint8Array([0xfe, 0xff]);
+    const wordToRead = new Uint16Array([0xfffe]); // Endian swapped
     const mmu = new MMU(bootrom, rom);
     const word = mmu.readWord(addr);
     expect(word).toStrictEqual(wordToRead);
@@ -34,7 +35,8 @@ describe("MMU tests", () => {
 
   test("can write word at 0x0001", () => {
     const addr = new Uint8Array([0x01, 0x00]); // 0x0001
-    const wordToWrite = new Uint8Array([0xff, 0xff]);
+    // const wordToWrite = new Uint8Array([0xff, 0xff]);
+    const wordToWrite = new Uint16Array([0xffff]);
     const mmu = new MMU(bootrom, rom);
     mmu.writeWord(addr, wordToWrite);
     const word = mmu.readWord(addr);
@@ -64,7 +66,8 @@ describe("MMU tests", () => {
     const addr = new Uint8Array([0x01, 0x0a]); // 0x0A01
     // hexdump -C roms/Tetris.gb | grep 0a00 | pbcopy
     // 00000a00  05 28 03 19 18 fa cd 98  0a af e0 cc 3e 55 e0 01  |.(..........>U..|
-    const wordToRead = new Uint8Array([0x28, 0x03]);
+    // const wordToRead = new Uint8Array([0x28, 0x03]);
+    const wordToRead = new Uint16Array([0x0328]);
     const mmu = new MMU(bootrom, rom);
     console.log(`${addr}`);
     const word = mmu.readWord(addr);
@@ -73,7 +76,8 @@ describe("MMU tests", () => {
 
   test("can write word at 0x0A01", () => {
     const addr = new Uint8Array([0x01, 0x0a]); // 0x0A01
-    const wordToWrite = new Uint8Array([0xff, 0xff]);
+    // const wordToWrite = new Uint8Array([0xff, 0xff]);
+    const wordToWrite = new Uint16Array([0xffff]);
     const mmu = new MMU(bootrom, rom);
     mmu.writeWord(addr, wordToWrite);
     const word = mmu.readWord(addr);

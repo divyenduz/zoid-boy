@@ -11,7 +11,7 @@ describe("Printer - ADD tests", () => {
       .with(0x09, ()=>{
         const v = this.bc
         this.hl[0] += v[0]
-        this.flag_n[1] = 0;
+        this.flag_n[6] = 0;
         console.log('Implement H flag')
         console.log('Implement C flag')
         return {
@@ -31,9 +31,11 @@ describe("Printer - ADD tests", () => {
         const v = this.b
         this.a[0] += v[0]
         if (this.a[0] === 0) {
-          this.flag_z[0] = 1
+            this.flag_z[7] = 0
+        } else {
+          this.flag_z[7] = 1
         }
-        this.flag_n[1] = 0;
+        this.flag_n[6] = 0;
         console.log('Implement H flag')
         console.log('Implement C flag')
         return {
@@ -53,9 +55,11 @@ describe("Printer - ADD tests", () => {
         const v = this.mmu.readByte(this.hl)
         this.a[0] += v[0]
         if (this.a[0] === 0) {
-          this.flag_z[0] = 1
+            this.flag_z[7] = 0
+        } else {
+          this.flag_z[7] = 1
         }
-        this.flag_n[1] = 0;
+        this.flag_n[6] = 0;
         console.log('Implement H flag')
         console.log('Implement C flag')
         return {
@@ -76,9 +80,11 @@ describe("Printer - ADD tests", () => {
         this.a[0] += v[0]
         this.pc[0] += 1;
         if (this.a[0] === 0) {
-        this.flag_z[0] = 1
+          this.flag_z[7] = 0
+        } else {
+          this.flag_z[7] = 1
         }
-        this.flag_n[1] = 0;
+        this.flag_n[6] = 0;
         console.log('Implement H flag')
         console.log('Implement C flag')
         return {
@@ -95,12 +101,11 @@ describe("Printer - ADD tests", () => {
     expect(impl).toMatchInlineSnapshot(
       Printer.trimString(`"// ADD SP,r8
       .with(0xe8, ()=>{
-        const v /*r8*/ = this.mmu.readByte(this.pc);
-        v[0] = ((0x80 ^ v[0]) - 0x80)
+        const v /*r8*/ = new Int8Array(this.mmu.readByte(this.pc))
         this.sp[0] += v[0]
         this.pc[0] += 1;
-        this.flag_z[0] = 0;
-        this.flag_n[1] = 0;
+        this.flag_z[7] = 0;
+        this.flag_n[6] = 0;
         console.log('Implement H flag')
         console.log('Implement C flag')
         return {
