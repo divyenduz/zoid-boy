@@ -2234,7 +2234,9 @@ export class CPU {
         // LDH (a8),A
         .with(0xe0, () => {
           const v = this.a;
-          const addr = new Uint16Array(0xff00 + this.pc[0]);
+          const addr = new Uint16Array(1);
+          const a8 = new Int8Array(this.mmu.readByte(this.pc));
+          addr.set([0xff00 + a8[0]]);
           this.mmu.writeByte(addr, v);
           this.pc[0] += 1;
           return {
@@ -2249,7 +2251,9 @@ export class CPU {
         // LD (C),A
         .with(0xe2, () => {
           const v = this.a;
-          const addr = new Uint16Array(0xff00 + this.c[0]);
+          const addr = new Uint16Array(1);
+          const a8 = new Int8Array(this.mmu.readByte(this.c));
+          addr.set([0xff00 + a8[0]]);
           this.mmu.writeByte(addr, v);
           return {
             v,

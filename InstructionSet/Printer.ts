@@ -123,7 +123,9 @@ export class Printer {
             const writerFn = is8Bit ? "writeByte" : "writeWord";
             if (argument.is8Bit) {
               return `
-              const addr = new Uint16Array(0xFF00 + ${fromAddr}[0])
+              const addr = new Uint16Array(1)
+              const a8 = new Int8Array(this.mmu.readByte(${fromAddr}))
+              addr.set([0xFF00 + a8[0]])
               this.mmu.${writerFn}(addr, v)
               `;
             } else {
