@@ -17,7 +17,7 @@ async function main() {
   let cycles = 0;
   while (true) {
     cycles += 1;
-    if (cycles > 100) {
+    if (cycles > 3100) {
       console.error("BOOTROM LOAD FAILURE");
       console.log({ cycles });
       console.log(logExpectedState(cpu));
@@ -32,6 +32,7 @@ async function main() {
     if (!instructionData) {
       throw new Error(`Instruction "${instruction}" not found.`);
     }
+    const pcCopy = new Uint16Array(cpu.pc);
     cpu.pc[0] += 1;
 
     const r = match(cpu.prefix_cb)
@@ -44,9 +45,9 @@ async function main() {
       .exhaustive();
 
     console.log(
-      `${cpu.pc[0] - instructionData.length}: ${
-        instructionData.mnemonic
-      } ${chalk.red(r?.v)} (${instruction}${cpu.prefix_cb ? "_CB" : ""})`
+      `${pcCopy}: ${instructionData.mnemonic} ${chalk.red(
+        r?.v
+      )} (${instruction}${cpu.prefix_cb ? "_CB" : ""})`
     );
     logState(cpu);
 

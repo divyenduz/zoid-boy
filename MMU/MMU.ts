@@ -1,4 +1,7 @@
 const MEMORY_SIZE = 65536;
+
+type Address = Uint8Array | Uint16Array;
+
 export class MMU {
   /**
    * The Z80 is an 8-bit chip, so all the internal workings operate on one byte at a time;
@@ -24,23 +27,28 @@ export class MMU {
   }
 
   // Read 8-bit byte from a given address
-  readByte(addr: Uint16Array) {
-    return this.memory.subarray(addr[0], addr[0] + 1);
+  readByte(addr: Address) {
+    const addrDecimal = Number.parseInt(addr.toString());
+    console.log(addrDecimal);
+    return this.memory.subarray(addrDecimal, addrDecimal + 1);
   }
 
   // Read 16-bit word from a given address
-  readWord(addr: Uint16Array) {
-    return new Uint16Array(this.memory.subarray(addr[0], addr[0] + 2));
+  readWord(addr: Address) {
+    const addrDecimal = Number.parseInt(addr.toString());
+    return this.memory.subarray(addrDecimal, addrDecimal + 2);
   }
 
   // Write 8-bit byte to a given address
-  writeByte(addr: Uint16Array, val: Uint8Array) {
-    this.memory[addr[0]] = val[0];
+  writeByte(addr: Address, val: Uint8Array) {
+    const addrDecimal = Number.parseInt(addr.toString());
+    this.memory[addrDecimal] = val[0];
   }
 
   // Write 16-bit word to a given address
-  writeWord(addr: Uint16Array, val: Uint16Array) {
-    this.memory[addr[0]] = val[0];
-    this.memory[addr[0] + 1] = val[1];
+  writeWord(addr: Address, val: Uint8Array) {
+    const addrDecimal = Number.parseInt(addr.toString());
+    this.memory[addrDecimal] = val[0];
+    this.memory[addrDecimal + 1] = val[1];
   }
 }
