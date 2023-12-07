@@ -47,10 +47,6 @@ export class Printer {
     return n.toString(16).padStart(2, "0");
   }
 
-  private inlineUnsigned(addr: string) {
-    return `((0x80 ^ ${addr}) - 0x80)`;
-  }
-
   private printReader(expression: Expression | null, is8Bit: boolean = true) {
     if (!expression) {
       return ``;
@@ -86,14 +82,14 @@ export class Printer {
           } else {
             const readerFn =
               is8Bit || argument.value === "d8" ? "readByte" : "readWord";
-            return `
-            const v /*${argument.value}*/ = this.mmu.${readerFn}(this.pc);
-            ${
-              argument.value === "r8"
-                ? `v[0] = ${this.inlineUnsigned("v[0]")}`
-                : ""
-            }
-            `.trim();
+
+            return match(argument.value)
+              .with("r8", () => {
+                return `const v /*${argument.value}*/ = new Int8Array(this.mmu.${readerFn}(this.pc))`.trim();
+              })
+              .otherwise(() => {
+                return `const v /*${argument.value}*/ = this.mmu.${readerFn}(this.pc);`.trim();
+              });
           }
         }
       )
@@ -172,15 +168,15 @@ export class Printer {
         }
         return `
         if (${result} === 0) {
-            this.flag_z[0] = 1
+            this.flag_z[7] = 1
         }
         `;
       })
       .with("1", () => {
-        return `this.flag_z[0] = 1`;
+        return `this.flag_z[7] = 1`;
       })
       .with("0", () => {
-        return `this.flag_z[0] = 0;`;
+        return `this.flag_z[7] = 0;`;
       })
       .with("-", () => {
         return ``;
@@ -192,10 +188,10 @@ export class Printer {
         return `console.log('Implement N flag')`;
       })
       .with("1", () => {
-        return `this.flag_n[1] = 1`;
+        return `this.flag_n[6] = 1`;
       })
       .with("0", () => {
-        return `this.flag_n[1] = 0;`;
+        return `this.flag_n[6] = 0;`;
       })
       .with("-", () => {
         return ``;
@@ -207,10 +203,10 @@ export class Printer {
         return `console.log('Implement H flag')`;
       })
       .with("1", () => {
-        return `this.flag_h[2] = 1`;
+        return `this.flag_h[5] = 1`;
       })
       .with("0", () => {
-        return `this.flag_h[2] = 0;`;
+        return `this.flag_h[5] = 0;`;
       })
       .with("-", () => {
         return ``;
@@ -222,10 +218,10 @@ export class Printer {
         return `console.log('Implement C flag')`;
       })
       .with("1", () => {
-        return `this.flag_c[3] = `;
+        return `this.flag_c[4] = 1`;
       })
       .with("0", () => {
-        return `this.flag_c[3] = 0;`;
+        return `this.flag_c[4] = 0;`;
       })
       .with("-", () => {
         return ``;
@@ -386,10 +382,10 @@ export class Printer {
     if (parsedInstruction.left && parsedInstruction.right) {
       // JR with jump
       const flagMap: Record<string, string> = {
-        z: "this.flag_z[0]",
-        nz: "!(this.flag_z[0])",
-        c: "this.flag_c[3]",
-        nc: "!(this.flag_c[3])",
+        z: "this.flag_z[7] === 0",
+        nz: "this.flag_z[7] !== 0",
+        c: "this.flag_c[3] === 0",
+        nc: "this.flag_c[3] !== 0",
       };
 
       const code = Printer.trimString(`
@@ -430,10 +426,10 @@ export class Printer {
       // CALL with jump
 
       const flagMap: Record<string, string> = {
-        z: "this.flag_z[0]",
-        nz: "!(this.flag_z[0])",
-        c: "this.flag_c[3]",
-        nc: "!(this.flag_c[3])",
+        z: "this.flag_z[7] === 0",
+        nz: "this.flag_z[7] !== 0",
+        c: "this.flag_c[3] === 0",
+        nc: "this.flag_c[3] !== 0",
       };
 
       const code = Printer.trimString(`
